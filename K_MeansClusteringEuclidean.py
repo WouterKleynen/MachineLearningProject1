@@ -7,9 +7,9 @@ class K_MeansClusteringEuclidean:
     def __init__(self, dataFilePath, K):
         self.data           = pd.read_csv(dataFilePath).to_numpy()
         self.amountOfClusters = K
-        self.N              = len(self.data)
+        self.amountOfRows = len(self.data)
         self.M              = len(self.data[0])
-        self.practice_data  = self.data[0:self.N,1:] # remove ID's
+        self.practice_data  = self.data[0:self.amountOfRows,1:] # remove ID's
         self.maxima         = np.zeros(self.M-1)
         self.centroids      = np.zeros((self.amountOfClusters-1,self.M-1))
         self.distances      = np.zeros((len(self.practice_data), len(self.centroids)))
