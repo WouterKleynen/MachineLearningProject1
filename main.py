@@ -4,4 +4,4 @@ classInstance = K_MeansClusteringEuclidean('Dataset/EastWestAirlinesCluster.csv'
 classInstance.getMaximaColumns()
 classInstance.updateCentroids()
 classInstance.getDistances()
-print(classInstance.amountOfColumns)
+print(classInstance.centroidToPointsDistances)
