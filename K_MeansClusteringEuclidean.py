@@ -22,9 +22,9 @@ class K_MeansClusteringEuclidean:
     
     #Set centroids as evenly spaced accross all columns
     def updateCentroids(self):
-        for x in range(self.amountOfClusters - 1):
-            for i in range(self.amountOfColumns-1):
-                self.centroids[x,i] = int(self.columnsMaximaVector[i]*x/(self.amountOfClusters-1)) 
+        for clusterIndex in range(self.amountOfClusters - 1):
+            for columnIndex in range(self.amountOfColumns-1):
+                self.centroids[clusterIndex,columnIndex] = int(self.columnsMaximaVector[columnIndex]*clusterIndex/(self.amountOfClusters-1)) 
         
     #Define Euclidean distance
     def Euclidean(self, a,b):
