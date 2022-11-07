@@ -9,7 +9,7 @@ class K_MeansClusteringEuclidean:
         self.amountOfClusters          = K
         self.amountOfRows              = len(self.data)
         self.amountOfColumns           = len(self.data[0])
-        self.practice_data             = self.data[0:self.amountOfRows, 1:] # remove ID's
+        self.practice_data             = self.data[0 : self.amountOfRows, 1 :] # remove ID's
         self.columnsMaximaVector       = np.zeros(self.amountOfColumns - 1)
         self.centroids                 = np.zeros((self.amountOfClusters, self.amountOfColumns-1))
         self.centroidToPointsDistances = np.zeros((len(self.practice_data), len(self.centroids)))
@@ -23,14 +23,13 @@ class K_MeansClusteringEuclidean:
     #Set centroids as evenly spaced accross all columns
     def updateCentroids(self):
         for clusterIndex in range(self.amountOfClusters - 1):
-            for columnIndex in range(self.amountOfColumns-1):
-                self.centroids[clusterIndex,columnIndex] = int(self.columnsMaximaVector[columnIndex]*clusterIndex/(self.amountOfClusters-1)) 
+            for columnIndex in range(self.amountOfColumns - 1):
+                self.centroids[clusterIndex, columnIndex] = int(self.columnsMaximaVector[columnIndex]*clusterIndex/(self.amountOfClusters)) 
         
     #Define Euclidean distance
     def Euclidean(self, a,b):
         return np.linalg.norm(a-b)
         
-    
     #Compare all data to every centroid and see which is closest
     def getDistances(self):
         for x in range (len(self.practice_data)):
