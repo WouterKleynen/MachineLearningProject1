@@ -1,5 +1,4 @@
-import K_MeansClusteringEuclidean
-
+from K_MeansClusteringEuclidean import *
 
 classInstance = K_MeansClusteringEuclidean('Dataset/EastWestAirlinesCluster.csv', 10)
 classInstance.getMaximaColumns()

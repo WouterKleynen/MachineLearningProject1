@@ -9,7 +9,7 @@ class K_MeansClusteringEuclidean:
         self.K              = K
         self.N              = len(self.data)
         self.M              = len(self.data[0])
-        self.practice_data  = self.dataFile[0:self.N,1:] # remove ID's
+        self.practice_data  = self.data[0:self.N,1:] # remove ID's
         self.maxima         = np.zeros(self.M-1)
         self.centroids      = np.zeros((self.K-1,self.M-1))
         self.distances      = np.zeros((len(self.practice_data), len(self.centroids)))
@@ -38,6 +38,12 @@ class K_MeansClusteringEuclidean:
                 self.distances[x,i] = self.Euclidean(self.practice_data[x], self.centroids[i])
                 
 
+
+# classInstance = K_MeansClusteringEuclidean('Dataset/EastWestAirlinesCluster.csv', 10)
+# classInstance.getMaximaColumns()
+# classInstance.updateCentroids()
+# classInstance.getDistances()
+# print(classInstance.distances)
 
 # Old code:
 
