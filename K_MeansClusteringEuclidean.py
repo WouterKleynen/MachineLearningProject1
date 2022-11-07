@@ -6,12 +6,12 @@ class K_MeansClusteringEuclidean:
     
     def __init__(self, dataFilePath, K):
         self.data           = pd.read_csv(dataFilePath).to_numpy()
-        self.K              = K
+        self.amountOfClusters = K
         self.N              = len(self.data)
         self.M              = len(self.data[0])
         self.practice_data  = self.data[0:self.N,1:] # remove ID's
         self.maxima         = np.zeros(self.M-1)
-        self.centroids      = np.zeros((self.K-1,self.M-1))
+        self.centroids      = np.zeros((self.amountOfClusters-1,self.M-1))
         self.distances      = np.zeros((len(self.practice_data), len(self.centroids)))
 
         
@@ -22,9 +22,9 @@ class K_MeansClusteringEuclidean:
     
     #Set centroids as evenly spaced accross all columns
     def updateCentroids(self):
-        for x in range(self.K - 1):
+        for x in range(self.amountOfClusters - 1):
             for i in range(self.M-1):
-                self.centroids[x,i] = int(self.maxima[i]*x/(self.K-1)) 
+                self.centroids[x,i] = int(self.maxima[i]*x/(self.amountOfClusters-1)) 
         
     #Define Euclidean distance
     def Euclidean(self, a,b):
