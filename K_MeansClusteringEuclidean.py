@@ -5,14 +5,14 @@ import numpy as np
 class K_MeansClusteringEuclidean:
     
     def __init__(self, dataFilePath, K):
-        self.data             = pd.read_csv(dataFilePath).to_numpy()
-        self.amountOfClusters = K
-        self.amountOfRows     = len(self.data)
-        self.amountOfColumns  = len(self.data[0])
-        self.practice_data    = self.data[0:self.amountOfRows,1:] # remove ID's
-        self.columnsMaximaVector = np.zeros(self.amountOfColumns-1)
-        self.centroids           = np.zeros((self.amountOfClusters-1,self.amountOfColumns-1))
-        self.distances           = np.zeros((len(self.practice_data), len(self.centroids)))
+        self.data                      = pd.read_csv(dataFilePath).to_numpy()
+        self.amountOfClusters          = K
+        self.amountOfRows              = len(self.data)
+        self.amountOfColumns           = len(self.data[0])
+        self.practice_data             = self.data[0:self.amountOfRows,1:] # remove ID's
+        self.columnsMaximaVector       = np.zeros(self.amountOfColumns-1)
+        self.centroids                 = np.zeros((self.amountOfClusters-1, self.amountOfColumns-1))
+        self.centroidToPointsDistances = np.zeros((len(self.practice_data), len(self.centroids)))
 
         
     #Initialize dataset and find maxima for all columns
@@ -35,7 +35,7 @@ class K_MeansClusteringEuclidean:
     def getDistances(self):
         for x in range (len(self.practice_data)):
             for i in range(len(self.centroids)):
-                self.distances[x,i] = self.Euclidean(self.practice_data[x], self.centroids[i])
+                self.centroidToPointsDistances[x,i] = self.Euclidean(self.practice_data[x], self.centroids[i])
                 
 
 
