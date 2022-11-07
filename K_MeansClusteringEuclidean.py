@@ -17,8 +17,8 @@ class K_MeansClusteringEuclidean:
         
     #Initialize dataset and find maxima for all columns
     def getMaximaColumns(self):
-        for i in range(self.amountOfColumns-1):
-            self.columnsMaximaVector[i] = max(self.practice_data[:,i])
+        for columnIndex in range(self.amountOfColumns-1):
+            self.columnsMaximaVector[columnIndex] = max(self.practice_data[:,columnIndex])
     
     #Set centroids as evenly spaced accross all columns
     def updateCentroids(self):
