@@ -15,27 +15,32 @@ class K_MeansClusteringEuclidean:
         self.centroids                 = np.zeros((self.amountOfClusters, self.amountOfColumns-1))
         self.centroidToPointsDistances = np.zeros((self.amountOfRows, len(self.centroids)))
         
-    #Initialize dataset and find maxima for all columns
+    # Gets maxima for all columns
     def getMaximaColumns(self):
         for columnIndex in range(self.amountOfColumns-1):
             self.columnsMaximaVector[columnIndex] = max(self.practice_data[:,columnIndex])
     
-    #Set centroids as evenly spaced accross all columns
-    def updateCentroids(self):
+    # Set centroids as evenly spaced accross all columns
+    def setCentroids(self):
         for clusterIndex in range(self.amountOfClusters - 1):
             for columnIndex in range(self.amountOfColumns - 1):
                 self.centroids[clusterIndex, columnIndex] = int(self.columnsMaximaVector[columnIndex] * clusterIndex / (self.amountOfClusters)) 
         
     #Define Euclidean distance of 2 vectors 
-    def Euclidean(self, a,b):
+    def getEuclideanDistance(self, a,b):
         return np.linalg.norm(a-b)
         
-    # Calculate distance of every point to each centroid. Row i stores the distances of ID i to each cluster
+    # Gets the distance of every point to each centroid. Row i stores the distance of data row i to each cluster
     def getDistances(self):
         for rowIndex in range (self.amountOfRows):
             for centroidIndex in range(len(self.centroids)):
-                self.centroidToPointsDistances[rowIndex, centroidIndex] = self.Euclidean(self.practice_data[rowIndex], self.centroids[centroidIndex])
-                
+                self.centroidToPointsDistances[rowIndex, centroidIndex] = self.getEuclideanDistance(self.practice_data[rowIndex], self.centroids[centroidIndex])
+    
+    # Gets the index of the cluster of which it's centroid is closest to data row i
+    def getIndecesClosestCentroids(self):
+        indecesClosestCentroids = []
+        for rowIndex in range(self.amountOfRows):
+            indecesClosestCentroids.append(np.argmin(self.centroidToPointsDistances[rowIndex]))
 
 
 
