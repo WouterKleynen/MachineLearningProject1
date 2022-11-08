@@ -1,129 +1,88 @@
 import pandas as pd
 import numpy as np
 
+# Throughout the code we denote point i by the row vector at position i of the dataFile, not ID i. 
+# Each variable of Vector or Matrix type is denoted as such at the end of the variable name.
 
 class K_MeansClusteringEuclidean:
     
-    # Setup of the start parameters
+    # Setup for the start parameters
     def __init__(self, dataFilePath, K):
-        self.data                      = pd.read_csv(dataFilePath).to_numpy()
-        self.amountOfClusters          = K
-        self.amountOfRows              = len(self.data)
-        self.amountOfColumns           = len(self.data[0]) # Since we will remove the ID's we usually work with 1 column less
-        self.idVector                  = self.data[:, 0]
-        self.practice_data             = self.data[:, 1:] # Remove ID's
-        self.columnsMaximaVector       = np.zeros(self.amountOfColumns - 1)
-        self.centroids                 = np.zeros((self.amountOfClusters, self.amountOfColumns-1))
-        self.centroidToPointsDistances = np.zeros((self.amountOfRows, len(self.centroids)))
-        self.clusterDictionary         = {}
+        self.data                            = pd.read_csv(dataFilePath).to_numpy()
+        self.amountOfClusters                = K
+        self.amountOfRows                    = len(self.data)
+        self.amountOfColumns                 = len(self.data[0]) # Since we will remove the ID's we usually work with 1 column less
+        self.idVector                        = self.data[:, 0]
+        self.dataWithoutIDMatrix             = self.data[:, 1:] # Remove ID's
+        self.columnsMaximaVector             = np.zeros(self.amountOfColumns - 1)
+        self.centroidsMatrix                 = np.zeros((self.amountOfClusters, self.amountOfColumns-1))
+        self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, len(self.centroidsMatrix)))
+        self.clusterDictionary               = {}
         # create dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry
         for clusterIndex in range(0, self.amountOfClusters):
             self.clusterDictionary[clusterIndex] = []
             
         
-    # Gets maxima of each column and store in a vector 
+    # Gets maxima of each column and store these values in columnsMaximaVector
     def getMaximaOfColumns(self):
         for columnIndex in range(self.amountOfColumns-1):
-            self.columnsMaximaVector[columnIndex] = max(self.practice_data[:,columnIndex])
+            self.columnsMaximaVector[columnIndex] = max(self.dataWithoutIDMatrix[:,columnIndex])
     
-    # Set centroids at the start of the algorithm as evenly spaced accross all columns
+    # Sets centroids at the start of the algorithm as evenly spaced accross all columns.
+    # Returns centroidsMatrix where row i consists of the start Centroid values for Cluster i. 
     def setStartCentroids(self):
         for clusterIndex in range(self.amountOfClusters - 1):
             for columnIndex in range(self.amountOfColumns - 1):
-                self.centroids[clusterIndex, columnIndex] = int(self.columnsMaximaVector[columnIndex] * clusterIndex / (self.amountOfClusters)) 
+                self.centroidsMatrix[clusterIndex, columnIndex] = int(self.columnsMaximaVector[columnIndex] * clusterIndex / (self.amountOfClusters)) 
         
     # Gets Euclidean distance of 2 vectors 
     def getEuclideanDistance(self, a,b):
         return np.linalg.norm(a-b)
         
-    # Gets the distance of every point to each centroid. Row i stores the distance of data row i (point i) to each cluster
+    # Gets the distance of every point to each centroid. 
+    # Returns a centroidToPointsDistancesMatrix where Row i stores the distance of point i to each cluster.
     def getDistanceOfPointsToCentroids(self):
         for rowIndex in range (self.amountOfRows):
-            for centroidIndex in range(len(self.centroids)):
-                self.centroidToPointsDistances[rowIndex, centroidIndex] = self.getEuclideanDistance(self.practice_data[rowIndex], self.centroids[centroidIndex])
+            for centroidIndex in range(len(self.centroidsMatrix)):
+                self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = self.getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
     
     # # Gets the index of the cluster of which it's centroid is closest to data row i
     # def getIndecesClosestCentroids(self):
     #     indecesClosestCentroids = []
     #     for rowIndex in range(self.amountOfRows):
-    #         indecesClosestCentroids.append(np.argmin(self.centroidToPointsDistances[rowIndex]))
+    #         indecesClosestCentroids.append(np.argmin(self.centroidToPointsDistancesMatrix[rowIndex]))
     #     return indecesClosestCentroids
     
-    # Gets the index of the cluster which is closest to the point at rowIndex of the data
-    def getIndexClosestCluster(self, rowIndex):
-        return np.argmin(self.centroidToPointsDistances[rowIndex])
     
-    # Updates each cluster key of the clusterDictionary with all points that are closest to that cluster
-    def updateClusterDictionary(self):
+    # Gets the index of the cluster which is closest to the point at rowIndex of the data.
+    def getIndexClosestCluster(self, rowIndex):
+        return np.argmin(self.centroidToPointsDistancesMatrix[rowIndex])
+    
+    # Sets each cluster key of the clusterDictionary with all points that are closest to that cluster.
+    def setClusterDictionary(self):
         for rowIndex in range(self.amountOfRows):
             id = self.idVector[rowIndex]
             closestClusterIndex = self.getIndexClosestCluster(rowIndex)
             self.clusterDictionary[closestClusterIndex].append(id)
     
+    # Gets the cluster entry from the clusterDictionary by its index. 
     def getClusterEntries(self, clusterIndex):
         return self.clusterDictionary[clusterIndex]
     
-    # Gets the length of each cluser i.e. the amount of points it contains
+    # Gets the length of each cluser i.e. the amount of points it contains.
     def getClusterSize(self, clusterVector):
         return len(clusterVector)
     
-    def getSumOfClusterEntries(self, clusterVector):
-        return sum(clusterVector)
+    # def getPointFromId(self, id):
+    #     index = np.where(matrix[0, :] == value)[0].item()
+    #     return 
     
-    def updateCenters(self):
-        for clusterIndex in range(0, self.amountOfClusters):
-            IDsInCluster = self.getClusterEntries(clusterIndex)
-            sumOfClusterEntries = self.getSumOfClusterEntries
-            return 
+    # def getSumOfClusterEntries(self, clusterVector):
+    #     return sum(clusterVector)
     
-    def getPointFromId(self):
-        return 
-
+    # def updateCenters(self):
+    #     for clusterIndex in range(0, self.amountOfClusters):
+    #         IDsInCluster = self.getClusterEntries(clusterIndex)
+    #         sumOfClusterEntries = self.getSumOfClusterEntries
+    #         return 
     
-    
-        
-        
-        
-
-
-# import pandas as pd
-# import numpy as np
-
-# df = pd.read_csv('Dataset/EastWestAirlinesCluster.csv')
-
-# data = df.to_numpy()
-
-# #Size of practice data
-# N = len(data)
-# M = len(data[0])
-
-# #Define variable for K-means clustering
-# K = 10
-
-# #Initialize dataset and find maxima for all columns
-# practice_data = data[0:N,1:]
-
-# maxima = np.zeros(11)
-# for i in range(11):
-#     maxima[i] = max(practice_data[:,i])
-    
-# #Set centroids as  evenly spaced accross all columns
-# centroids = np.zeros((K,11))    
-# for x in range(K):
-#     for i in range(11):
-#         centroids[x,i] = int(maxima[i]*x/K)
-
-# #Define Euclidean distance
-
-# def Euclidean(a,b):
-#     dist = np.linalg.norm(a-b)
-#     return dist
-    
-
-# #Compare all data to every centroid and see which is closest
-# distances = np.zeros((len(practice_data),len(centroids)))
-# for x in range (len(practice_data)):
-#     for i in range(len(centroids)):
-#         distances[x,i] = Euclidean(practice_data[x],centroids[i])
-
-# print(distances)
