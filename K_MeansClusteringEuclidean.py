@@ -22,6 +22,10 @@ class K_MeansClusteringEuclidean:
         for clusterIndex in range(0, self.amountOfClusters):
             self.clusterDictionary[clusterIndex] = []
         
+    def clearClusterDictionary(self):
+        for clusterIndex in range(0, self.amountOfClusters):
+            self.clusterDictionary[clusterIndex] = []
+    
     # Gets maxima of each column and store these values in columnsMaximaVector
     def getMaximaOfColumns(self):
         for columnIndex in range(self.amountOfColumns-1):
@@ -52,6 +56,8 @@ class K_MeansClusteringEuclidean:
     
     # Sets each cluster key of the clusterDictionary with all points that are closest to that cluster.
     def setClusterDictionary(self):
+        self.clearClusterDictionary()
+        print(self.clusterDictionary)
         for rowIndex in range(self.amountOfRows):
             id = self.idVector[rowIndex]
             closestClusterIndex = self.getIndexClosestCluster(rowIndex)
