@@ -6,7 +6,7 @@ dataSetFilePath = 'Dataset/EastWestAirlinesCluster.csv'
 classInstance = K_MeansClusteringEuclidean(dataSetFilePath, K)
 classInstance.getMaximaOfColumns()
 classInstance.setStartCentroids()
-print(classInstance.centroidsMatrix)
 classInstance.getDistanceOfPointsToCentroids()
 classInstance.setClusterDictionary()
+print(classInstance.clusterDictionary)
 classInstance.updateCentroids()

@@ -40,10 +40,10 @@ class K_MeansClusteringEuclidean:
         return np.linalg.norm(a-b)
         
     # Gets the distance of every point to each centroid. 
-    # Returns a centroidToPointsDistancesMatrix where Row i stores the distance of point i to each cluster.
+    # Returns a centroidToPointsDistancesMatrix where Row i stores the distance of point i to each cluster indexed by the column index.
     def getDistanceOfPointsToCentroids(self):
-        for rowIndex in range (self.amountOfRows):
-            for centroidIndex in range(len(self.centroidsMatrix)):
+        for rowIndex in range (0, self.amountOfRows):
+            for centroidIndex in range(self.amountOfClusters):
                 self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = self.getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
     
     # Gets the index of the cluster which is closest to the point at rowIndex of the data.
