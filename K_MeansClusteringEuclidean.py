@@ -57,7 +57,6 @@ class K_MeansClusteringEuclidean:
     # Sets each cluster key of the clusterDictionary with all points that are closest to that cluster.
     def setClusterDictionary(self):
         self.clearClusterDictionary()
-        print(self.clusterDictionary)
         for rowIndex in range(self.amountOfRows):
             id = self.idVector[rowIndex]
             closestClusterIndex = self.getIndexClosestCluster(rowIndex)

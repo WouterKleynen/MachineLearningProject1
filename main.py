@@ -8,20 +8,8 @@ classInstance.getMaximaOfColumns()
 classInstance.setStartCentroids()
 print(classInstance.lossFunction())
 
-classInstance.getDistanceOfPointsToCentroids()
-classInstance.setClusterDictionary()
-classInstance.updateCentroids()
-print(classInstance.lossFunction())
-
-classInstance.getDistanceOfPointsToCentroids()
-classInstance.setClusterDictionary()
-classInstance.updateCentroids()
-print(classInstance.lossFunction())
-
-classInstance.getDistanceOfPointsToCentroids()
-classInstance.setClusterDictionary()
-classInstance.updateCentroids()
-print(classInstance.lossFunction())
-
-
-
+for i in range(50):
+    classInstance.getDistanceOfPointsToCentroids()
+    classInstance.setClusterDictionary()
+    classInstance.updateCentroids()
+    print(classInstance.lossFunction())
