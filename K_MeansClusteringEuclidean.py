@@ -96,18 +96,20 @@ class K_MeansClusteringEuclidean:
     def setCentroidOfCluster(self, clusterIndex, clusterVectorSize, sumOfClusterVectorEntries):
         self.centroidsMatrix[clusterIndex, :] = self.getNewCentroid(clusterVectorSize, sumOfClusterVectorEntries)
     
+    # Updates the Centroids of all clusters by calculatin the new cluster poits average
     def updateCentroids(self):
         for clusterIndex in range(0, self.amountOfClusters):
             clusterVector = self.getClusterVector(clusterIndex)
             clusterVectorSize = self.getClusterVectorSize(clusterVector)
             sumOfClusterVectorEntries = self.getSumOfClusterVectorEntries(clusterVector)
             self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)
-          
+    
+    # Get the clusterIndex-th row of the centroidsMatrix to get the centroid belonging to the cluster of that index 
     def getCentroidVector(self, clusterIndex):
         return self.centroidsMatrix[clusterIndex, :]
      
-    # Get the sum of distances of the data points to the centers of the clusters  they belong to
-    def lossFunction(self):
+    # Get the sum of distances of the data points to the centers of the clusters they belong to
+    def getLossFunctionValue(self):
         loss = 0
         for clusterIndex in range(0, self.amountOfClusters):
             clusterVector = self.getClusterVector(clusterIndex)
@@ -117,7 +119,18 @@ class K_MeansClusteringEuclidean:
                 loss += self.getEuclideanDistance(centroidVector, point)
         return loss
                 
-            
-        
 
-    
+# Sets the first centroids by means of the maxima of the data columns
+def setStartCentroids(k_MeansClusteringEuclidean):
+    k_MeansClusteringEuclidean.getMaximaOfColumns()
+    k_MeansClusteringEuclidean.setClusterDictionary()
+    k_MeansClusteringEuclidean.setStartCentroids()
+    return k_MeansClusteringEuclidean
+
+
+# Is called in every loop to decrease the Loss function
+def improveLossFunction(k_MeansClusteringEuclidean):
+    k_MeansClusteringEuclidean.getDistanceOfPointsToCentroids()
+    k_MeansClusteringEuclidean.setClusterDictionary()
+    k_MeansClusteringEuclidean.updateCentroids()
+    return k_MeansClusteringEuclidean

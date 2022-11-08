@@ -3,13 +3,16 @@ from K_MeansClusteringEuclidean import *
 K = 10
 dataSetFilePath = 'Dataset/EastWestAirlinesCluster.csv'
 
-classInstance = K_MeansClusteringEuclidean(dataSetFilePath, K)
-classInstance.getMaximaOfColumns()
-classInstance.setStartCentroids()
-print(classInstance.lossFunction())
+
+k_MeansClusteringEuclidean = setStartCentroids(K_MeansClusteringEuclidean(dataSetFilePath, K))
+startLossFunctionValue = k_MeansClusteringEuclidean.getLossFunctionValue()
+previousLossFuncitonvalue = startLossFunctionValue
 
 for i in range(50):
-    classInstance.getDistanceOfPointsToCentroids()
-    classInstance.setClusterDictionary()
-    classInstance.updateCentroids()
-    print(classInstance.lossFunction())
+    print(previousLossFuncitonvalue)
+    improveLossFunction(k_MeansClusteringEuclidean)
+    newLossFunctionValue = k_MeansClusteringEuclidean.getLossFunctionValue()
+    if (previousLossFuncitonvalue - newLossFunctionValue < 10):
+        print(f"Final lost function value = {newLossFunctionValue}")
+        break
+    previousLossFuncitonvalue = newLossFunctionValue
