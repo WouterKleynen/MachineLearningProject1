@@ -13,7 +13,7 @@ class K_MeansClusteringEuclidean:
         self.practice_data             = self.data[0 : self.amountOfRows, 1 :] # remove ID's
         self.columnsMaximaVector       = np.zeros(self.amountOfColumns - 1)
         self.centroids                 = np.zeros((self.amountOfClusters, self.amountOfColumns-1))
-        self.centroidToPointsDistances = np.zeros((len(self.practice_data), len(self.centroids)))
+        self.centroidToPointsDistances = np.zeros((self.amountOfRows, len(self.centroids)))
         
     #Initialize dataset and find maxima for all columns
     def getMaximaColumns(self):
@@ -32,9 +32,9 @@ class K_MeansClusteringEuclidean:
         
     # Calculate distance of every point to each centroid and store in the centroidToPointsDistances matrix
     def getDistances(self):
-        for rowIndex in range (len(self.practice_data)):
-            for i in range(len(self.centroids)):
-                self.centroidToPointsDistances[rowIndex,i] = self.Euclidean(self.practice_data[rowIndex], self.centroids[i])
+        for rowIndex in range (self.amountOfRows):
+            for centroidIndex in range(len(self.centroids)):
+                self.centroidToPointsDistances[rowIndex, centroidIndex] = self.Euclidean(self.practice_data[rowIndex], self.centroids[centroidIndex])
                 
 
 
