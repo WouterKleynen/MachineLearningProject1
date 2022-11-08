@@ -9,19 +9,21 @@ class K_MeansClusteringEuclidean:
         self.data                      = pd.read_csv(dataFilePath).to_numpy()
         self.amountOfClusters          = K
         self.amountOfRows              = len(self.data)
-        self.amountOfColumns           = len(self.data[0])
-        self.practice_data             = self.data[0 : self.amountOfRows, 1 :] # remove ID's
+        self.amountOfColumns           = len(self.data[0]) # Since we will remove the ID's we usually work with 1 column less
+        self.idArray                   = self.data[:, 0]
+        self.practice_data             = self.data[:, 1:] # Remove ID's
         self.columnsMaximaVector       = np.zeros(self.amountOfColumns - 1)
         self.centroids                 = np.zeros((self.amountOfClusters, self.amountOfColumns-1))
         self.centroidToPointsDistances = np.zeros((self.amountOfRows, len(self.centroids)))
+        self.pointToClusterDictionary  = {} 
         
     # Gets maxima for all columns
-    def getMaximaColumns(self):
+    def getMaximaOfColumns(self):
         for columnIndex in range(self.amountOfColumns-1):
             self.columnsMaximaVector[columnIndex] = max(self.practice_data[:,columnIndex])
     
-    # Set centroids as evenly spaced accross all columns
-    def setCentroids(self):
+    # Set centroids at the start of the algorithm as evenly spaced accross all columns
+    def setStartCentroids(self):
         for clusterIndex in range(self.amountOfClusters - 1):
             for columnIndex in range(self.amountOfColumns - 1):
                 self.centroids[clusterIndex, columnIndex] = int(self.columnsMaximaVector[columnIndex] * clusterIndex / (self.amountOfClusters)) 
@@ -30,8 +32,8 @@ class K_MeansClusteringEuclidean:
     def getEuclideanDistance(self, a,b):
         return np.linalg.norm(a-b)
         
-    # Gets the distance of every point to each centroid. Row i stores the distance of data row i to each cluster
-    def getDistances(self):
+    # Gets the distance of every point to each centroid. Row i stores the distance of data row i (point i) to each cluster
+    def getDistanceOfPointsToCentroids(self):
         for rowIndex in range (self.amountOfRows):
             for centroidIndex in range(len(self.centroids)):
                 self.centroidToPointsDistances[rowIndex, centroidIndex] = self.getEuclideanDistance(self.practice_data[rowIndex], self.centroids[centroidIndex])
@@ -41,6 +43,17 @@ class K_MeansClusteringEuclidean:
         indecesClosestCentroids = []
         for rowIndex in range(self.amountOfRows):
             indecesClosestCentroids.append(np.argmin(self.centroidToPointsDistances[rowIndex]))
+        return indecesClosestCentroids
+    
+    # Gets the minimum of the row of each Centroid to Points distance matrix, i.e. the index of the closest cluster to each point
+    def getMinimumOfCentroidToPointsDistancesRow(self, rowIndex):
+        return np.argmin(self.centroidToPointsDistances[rowIndex])
+    
+    # Updates dictionary where each key is the ID and the value is the closest cluster index 
+    def updatePointToClusterDictionary(self):
+        for rowIndex in range(self.amountOfRows):
+            self.pointToClusterDictionary[self.idArray[rowIndex]] =  self.getMinimumOfCentroidToPointsDistancesRow(rowIndex)
+            
 
 
 
