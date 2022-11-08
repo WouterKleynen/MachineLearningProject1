@@ -1,7 +1,9 @@
 from K_MeansClusteringEuclidean import *
 
-classInstance = K_MeansClusteringEuclidean('Dataset/EastWestAirlinesCluster.csv', 10)
+K = 10
+dataSetFilePath = 'Dataset/EastWestAirlinesCluster.csv'
+
+classInstance = K_MeansClusteringEuclidean(dataSetFilePath, K)
 classInstance.getMaximaColumns()
 classInstance.updateCentroids()
 classInstance.getDistances()
-print(classInstance.centroidToPointsDistances)

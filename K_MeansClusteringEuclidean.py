@@ -30,7 +30,7 @@ class K_MeansClusteringEuclidean:
     def Euclidean(self, a,b):
         return np.linalg.norm(a-b)
         
-    # Calculate distance of every point to each centroid and store in the centroidToPointsDistances matrix
+    # Calculate distance of every point to each centroid. Row i stores the distances of ID i to each cluster
     def getDistances(self):
         for rowIndex in range (self.amountOfRows):
             for centroidIndex in range(len(self.centroids)):
