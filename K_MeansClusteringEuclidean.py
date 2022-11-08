@@ -10,14 +10,19 @@ class K_MeansClusteringEuclidean:
         self.amountOfClusters          = K
         self.amountOfRows              = len(self.data)
         self.amountOfColumns           = len(self.data[0]) # Since we will remove the ID's we usually work with 1 column less
-        self.idArray                   = self.data[:, 0]
+        self.idVector                  = self.data[:, 0]
         self.practice_data             = self.data[:, 1:] # Remove ID's
         self.columnsMaximaVector       = np.zeros(self.amountOfColumns - 1)
         self.centroids                 = np.zeros((self.amountOfClusters, self.amountOfColumns-1))
         self.centroidToPointsDistances = np.zeros((self.amountOfRows, len(self.centroids)))
-        self.pointToClusterDictionary  = {} 
+        self.clusterDictionary         = {}
+        self.clusterSizes              = np.zeros(self.amountOfClusters)
+        # create dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry
+        for clusterIndex in range(0, self.amountOfClusters):
+            self.clusterDictionary[clusterIndex] = []
+            
         
-    # Gets maxima for all columns
+    # Gets maxima of each column and store in a vector 
     def getMaximaOfColumns(self):
         for columnIndex in range(self.amountOfColumns-1):
             self.columnsMaximaVector[columnIndex] = max(self.practice_data[:,columnIndex])
@@ -28,7 +33,7 @@ class K_MeansClusteringEuclidean:
             for columnIndex in range(self.amountOfColumns - 1):
                 self.centroids[clusterIndex, columnIndex] = int(self.columnsMaximaVector[columnIndex] * clusterIndex / (self.amountOfClusters)) 
         
-    #Define Euclidean distance of 2 vectors 
+    # Gets Euclidean distance of 2 vectors 
     def getEuclideanDistance(self, a,b):
         return np.linalg.norm(a-b)
         
@@ -45,16 +50,25 @@ class K_MeansClusteringEuclidean:
             indecesClosestCentroids.append(np.argmin(self.centroidToPointsDistances[rowIndex]))
         return indecesClosestCentroids
     
-    # Gets the minimum of the row of each Centroid to Points distance matrix, i.e. the index of the closest cluster to each point
-    def getMinimumOfCentroidToPointsDistancesRow(self, rowIndex):
+    # Gets the index of the cluster which is closest to the point at rowIndex of the data
+    def getIndexClosestCluster(self, rowIndex):
         return np.argmin(self.centroidToPointsDistances[rowIndex])
     
-    # Updates dictionary where each key is the ID and the value is the closest cluster index 
-    def updatePointToClusterDictionary(self):
+    # Updates each cluster key of the clusterDictionary with all points that are closest to that cluster
+    def updateClusterDictionary(self):
         for rowIndex in range(self.amountOfRows):
-            self.pointToClusterDictionary[self.idArray[rowIndex]] =  self.getMinimumOfCentroidToPointsDistancesRow(rowIndex)
-            
-
+            id = self.idVector[rowIndex]
+            closestClusterIndex = self.getIndexClosestCluster(rowIndex)
+            self.clusterDictionary[closestClusterIndex].append(id)
+    
+    # Gets the length of each cluser i.e. the amount of points it contains
+    def getSizeOfClusters(self):
+        for clusterIndex in range(0, self.amountOfClusters):
+            IDsInCluster = self.clusterDictionary[clusterIndex]
+            lengthOfCluster = len(IDsInCluster)
+            self.clusterSizes[clusterIndex] = lengthOfCluster
+        
+        
 
 
 # import pandas as pd
