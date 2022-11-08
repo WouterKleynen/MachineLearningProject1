@@ -80,6 +80,7 @@ class K_MeansClusteringEuclidean:
             sum += self.getPointFromPointIndex(self.getPointIndexFromId(id))    
         return sum
     
+    # Gets the new averaged value of the centroid of the given cluster
     def getNewCentroid(self, clusterVectorSize, sumOfClusterVectorEntries):
         if (clusterVectorSize == 0): 
             return 0 
@@ -96,5 +97,22 @@ class K_MeansClusteringEuclidean:
             clusterVectorSize = self.getClusterVectorSize(clusterVector)
             sumOfClusterVectorEntries = self.getSumOfClusterVectorEntries(clusterVector)
             self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)
+          
+    def getCentroidVector(self, clusterIndex):
+        return self.centroidsMatrix[clusterIndex, :]
+     
+    # Get the sum of distances of the data points to the centers of the clusters  they belong to
+    def lossFunction(self):
+        loss = 0
+        for clusterIndex in range(0, self.amountOfClusters):
+            clusterVector = self.getClusterVector(clusterIndex)
+            centroidVector = self.getCentroidVector(clusterIndex)
+            for id in clusterVector:
+                point = self.getPointFromPointIndex(self.getPointIndexFromId(id))    
+                loss += self.getEuclideanDistance(centroidVector, point)
+        return loss
+                
+            
+        
 
     

@@ -10,3 +10,8 @@ classInstance.getDistanceOfPointsToCentroids()
 classInstance.setClusterDictionary()
 print(classInstance.clusterDictionary)
 classInstance.updateCentroids()
+print(classInstance.clusterDictionary)
+classInstance.updateCentroids()
+print(classInstance.clusterDictionary)
+
+
