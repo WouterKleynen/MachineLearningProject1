@@ -8,5 +8,4 @@ classInstance.getMaximaOfColumns()
 classInstance.setStartCentroids()
 classInstance.getDistanceOfPointsToCentroids()
 classInstance.setClusterDictionary()
-print(classInstance.clusterDictionary)
-
+classInstance.updateCentroids()

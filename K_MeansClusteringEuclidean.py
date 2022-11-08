@@ -21,7 +21,6 @@ class K_MeansClusteringEuclidean:
         # create dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry
         for clusterIndex in range(0, self.amountOfClusters):
             self.clusterDictionary[clusterIndex] = []
-            
         
     # Gets maxima of each column and store these values in columnsMaximaVector
     def getMaximaOfColumns(self):
@@ -46,14 +45,6 @@ class K_MeansClusteringEuclidean:
             for centroidIndex in range(len(self.centroidsMatrix)):
                 self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = self.getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
     
-    # # Gets the index of the cluster of which it's centroid is closest to data row i
-    # def getIndecesClosestCentroids(self):
-    #     indecesClosestCentroids = []
-    #     for rowIndex in range(self.amountOfRows):
-    #         indecesClosestCentroids.append(np.argmin(self.centroidToPointsDistancesMatrix[rowIndex]))
-    #     return indecesClosestCentroids
-    
-    
     # Gets the index of the cluster which is closest to the point at rowIndex of the data.
     def getIndexClosestCluster(self, rowIndex):
         return np.argmin(self.centroidToPointsDistancesMatrix[rowIndex])
@@ -65,24 +56,41 @@ class K_MeansClusteringEuclidean:
             closestClusterIndex = self.getIndexClosestCluster(rowIndex)
             self.clusterDictionary[closestClusterIndex].append(id)
     
-    # Gets the cluster entry from the clusterDictionary by its index. 
-    def getClusterEntries(self, clusterIndex):
+    # Gets the cluster vector given the corresponding clusterIndex from the clusterDictionary by its index. 
+    def getClusterVector(self, clusterIndex):
         return self.clusterDictionary[clusterIndex]
     
     # Gets the length of each cluser i.e. the amount of points it contains.
-    def getClusterSize(self, clusterVector):
+    def getClusterVectorSize(self, clusterVector):
         return len(clusterVector)
     
-    # def getPointFromId(self, id):
-    #     index = np.where(matrix[0, :] == value)[0].item()
-    #     return 
+    # Gets the corresponding point index (row index) in dataWithoutIDMatrix given the ID value.
+    def getPointIndexFromId(self, id):
+        return np.where(self.idVector == id)[0][0]
     
-    # def getSumOfClusterEntries(self, clusterVector):
-    #     return sum(clusterVector)
+    # Gets the corresponding point (row) in dataWithoutIDMatrix given the Point Index value. 
+    def getPointFromPointIndex(self, pointIndex):
+        return self.dataWithoutIDMatrix[pointIndex, :]
     
-    # def updateCenters(self):
-    #     for clusterIndex in range(0, self.amountOfClusters):
-    #         IDsInCluster = self.getClusterEntries(clusterIndex)
-    #         sumOfClusterEntries = self.getSumOfClusterEntries
-    #         return 
+    # Gets the sum of all points in the given clusterVector
+    def getSumOfClusterVectorEntries(self, clusterVector):
+        sum = np.zeros(self.amountOfColumns - 1)
+        for id in clusterVector:
+            sum += self.getPointFromPointIndex(self.getPointIndexFromId(id))    
+        return sum
+    
+    def getCentroid(self, clusterVectorSize, sumOfClusterVectorEntries):
+        if (clusterVectorSize == 0): 
+            return 0 
+        else:
+            return sumOfClusterVectorEntries / clusterVectorSize
+        
+    
+    def updateCentroids(self):
+        for clusterIndex in range(0, self.amountOfClusters):
+            clusterVector = self.getClusterVector(clusterIndex)
+            clusterVectorSize = self.getClusterVectorSize(clusterVector)
+            sumOfClusterVectorEntries = self.getSumOfClusterVectorEntries(clusterVector)
+            print(self.getCentroid(clusterVectorSize, sumOfClusterVectorEntries))
+
     
