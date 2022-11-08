@@ -16,7 +16,6 @@ class K_MeansClusteringEuclidean:
         self.centroids                 = np.zeros((self.amountOfClusters, self.amountOfColumns-1))
         self.centroidToPointsDistances = np.zeros((self.amountOfRows, len(self.centroids)))
         self.clusterDictionary         = {}
-        self.clusterSizes              = np.zeros(self.amountOfClusters)
         # create dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry
         for clusterIndex in range(0, self.amountOfClusters):
             self.clusterDictionary[clusterIndex] = []
@@ -43,12 +42,12 @@ class K_MeansClusteringEuclidean:
             for centroidIndex in range(len(self.centroids)):
                 self.centroidToPointsDistances[rowIndex, centroidIndex] = self.getEuclideanDistance(self.practice_data[rowIndex], self.centroids[centroidIndex])
     
-    # Gets the index of the cluster of which it's centroid is closest to data row i
-    def getIndecesClosestCentroids(self):
-        indecesClosestCentroids = []
-        for rowIndex in range(self.amountOfRows):
-            indecesClosestCentroids.append(np.argmin(self.centroidToPointsDistances[rowIndex]))
-        return indecesClosestCentroids
+    # # Gets the index of the cluster of which it's centroid is closest to data row i
+    # def getIndecesClosestCentroids(self):
+    #     indecesClosestCentroids = []
+    #     for rowIndex in range(self.amountOfRows):
+    #         indecesClosestCentroids.append(np.argmin(self.centroidToPointsDistances[rowIndex]))
+    #     return indecesClosestCentroids
     
     # Gets the index of the cluster which is closest to the point at rowIndex of the data
     def getIndexClosestCluster(self, rowIndex):
@@ -61,12 +60,28 @@ class K_MeansClusteringEuclidean:
             closestClusterIndex = self.getIndexClosestCluster(rowIndex)
             self.clusterDictionary[closestClusterIndex].append(id)
     
+    def getClusterEntries(self, clusterIndex):
+        return self.clusterDictionary[clusterIndex]
+    
     # Gets the length of each cluser i.e. the amount of points it contains
-    def getSizeOfClusters(self):
+    def getClusterSize(self, clusterVector):
+        return len(clusterVector)
+    
+    def getSumOfClusterEntries(self, clusterVector):
+        return sum(clusterVector)
+    
+    def updateCenters(self):
         for clusterIndex in range(0, self.amountOfClusters):
-            IDsInCluster = self.clusterDictionary[clusterIndex]
-            lengthOfCluster = len(IDsInCluster)
-            self.clusterSizes[clusterIndex] = lengthOfCluster
+            IDsInCluster = self.getClusterEntries(clusterIndex)
+            sumOfClusterEntries = self.getSumOfClusterEntries
+            return 
+    
+    def getPointFromId(self):
+        return 
+
+    
+    
+        
         
         
 
