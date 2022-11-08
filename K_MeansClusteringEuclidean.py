@@ -30,9 +30,10 @@ class K_MeansClusteringEuclidean:
     # Sets centroids at the start of the algorithm as evenly spaced accross all columns.
     # Returns centroidsMatrix where row i consists of the start Centroid values for Cluster i. 
     def setStartCentroids(self):
-        for clusterIndex in range(self.amountOfClusters - 1):
-            for columnIndex in range(self.amountOfColumns - 1):
-                self.centroidsMatrix[clusterIndex, columnIndex] = int(self.columnsMaximaVector[columnIndex] * clusterIndex / (self.amountOfClusters)) 
+        for clusterIndex in range(0, self.amountOfClusters):
+            for columnIndex in range(0, self.amountOfColumns - 1):
+                # Here we use clusterIndex + 1, otherwise the first cluster (0-th index) would cause mulitplication by 0 and thus the startCentroid would be the 0 vector. 
+                self.centroidsMatrix[clusterIndex, columnIndex] = int(self.columnsMaximaVector[columnIndex] * (clusterIndex + 1) / (self.amountOfClusters)) 
         
     # Gets Euclidean distance of 2 vectors 
     def getEuclideanDistance(self, a,b):
@@ -79,18 +80,21 @@ class K_MeansClusteringEuclidean:
             sum += self.getPointFromPointIndex(self.getPointIndexFromId(id))    
         return sum
     
-    def getCentroid(self, clusterVectorSize, sumOfClusterVectorEntries):
+    def getNewCentroid(self, clusterVectorSize, sumOfClusterVectorEntries):
         if (clusterVectorSize == 0): 
             return 0 
         else:
             return sumOfClusterVectorEntries / clusterVectorSize
-        
+
+    # set the clusterIndex-th row of centroidsMatrix to the new centroid of that cluster        
+    def setCentroidOfCluster(self, clusterIndex, clusterVectorSize, sumOfClusterVectorEntries):
+        self.centroidsMatrix[clusterIndex, :] = self.getNewCentroid(clusterVectorSize, sumOfClusterVectorEntries)
     
     def updateCentroids(self):
         for clusterIndex in range(0, self.amountOfClusters):
             clusterVector = self.getClusterVector(clusterIndex)
             clusterVectorSize = self.getClusterVectorSize(clusterVector)
             sumOfClusterVectorEntries = self.getSumOfClusterVectorEntries(clusterVector)
-            print(self.getCentroid(clusterVectorSize, sumOfClusterVectorEntries))
+            self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)
 
     
