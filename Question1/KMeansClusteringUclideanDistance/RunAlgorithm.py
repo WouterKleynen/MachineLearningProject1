@@ -1,5 +1,5 @@
 # import from K_MeansClusteringEuclidean.py the class KMeansClusteringEuclidean
-from KMeansClusteringEuclidean import KMeansClusteringEuclidean
+from AlgorithmClass import KMeansClusteringEuclidean
 
 # Set data File path to that of the assignment data sheet.
 dataSetFilePath = 'Dataset/EastWestAirlinesCluster.csv'
@@ -51,6 +51,7 @@ def improveUntilTresholdReached(K, treshold):
     previousLossFunctionvalue = startLossFunctionValue
     # loop from 0 to a very higher number so the centroids can be updated in each loop until the stopping criterium is reached
     while (previousLossFunctionvalue != None):
+        # update each previous loss function value with a new improved one
         previousLossFunctionvalue = runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, K, treshold)
 
-improveUntilTresholdReached(10, 1.000_01)
+# improveUntilTresholdReached(10, 1.000_01)
