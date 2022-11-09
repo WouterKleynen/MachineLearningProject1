@@ -1,5 +1,5 @@
 # import from K_MeansClusteringEuclidean.py where all the used functions are located.
-from KMeansClusteringEuclidean import *
+from KMeansClustering.KMeansClusteringEuclidean import *
 
 # Set the amount of Cluster (K) to 10.
 K = 10
