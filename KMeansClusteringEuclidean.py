@@ -4,7 +4,7 @@ import numpy as np
 # Throughout the code we denote point i by the row vector at position i of the dataFile, not ID i. 
 # Each variable of Vector or Matrix type is denoted as such at the end of the variable name.
 
-class K_MeansClusteringEuclidean:
+class KMeansClusteringEuclidean:
     
     # Setup for the start parameters
     def __init__(self, dataFilePath, K):
@@ -18,6 +18,10 @@ class K_MeansClusteringEuclidean:
         self.centroidsMatrix                 = np.zeros((self.amountOfClusters, self.amountOfColumns-1))
         self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, len(self.centroidsMatrix)))
         self.clusterDictionary               = {}
+    
+    #########################################################################################################
+    # Getter functions
+    #########################################################################################################
     
     # create empty dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry        
     def clearClusterDictionary(self):
@@ -119,7 +123,7 @@ class K_MeansClusteringEuclidean:
                 
 
 # Sets the first centroids by means of the maxima of the data columns
-def setStartCentroids(k_MeansClusteringEuclidean):
+def firstRun(k_MeansClusteringEuclidean):
     k_MeansClusteringEuclidean.getMaximaOfColumns()
     k_MeansClusteringEuclidean.setClusterDictionary()
     k_MeansClusteringEuclidean.setStartCentroids()

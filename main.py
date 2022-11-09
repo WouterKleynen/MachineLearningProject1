@@ -1,10 +1,16 @@
-from K_MeansClusteringEuclidean import *
+# import from K_MeansClusteringEuclidean.py where all the used functions are located.
+from KMeansClusteringEuclidean import *
 
+# Set the amount of Cluster (K) to 10.
 K = 10
+# Set data File path to that of the assignment data sheet.
 dataSetFilePath = 'Dataset/EastWestAirlinesCluster.csv'
 
+# Create an instance of the KMeansClusteringEuclidean class.
+k_MeansClusteringEuclidean = KMeansClusteringEuclidean(dataSetFilePath, K)
 
-k_MeansClusteringEuclidean = setStartCentroids(K_MeansClusteringEuclidean(dataSetFilePath, K))
+# Set the start Centroids and fill each cluster with it's closest data points for the first run of the algorithm.
+k_MeansClusteringEuclidean = firstRun(k_MeansClusteringEuclidean)
 startLossFunctionValue = k_MeansClusteringEuclidean.getLossFunctionValue()
 previousLossFuncitonvalue = startLossFunctionValue
 
