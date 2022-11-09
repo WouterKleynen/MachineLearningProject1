@@ -29,7 +29,7 @@ def runFirstIteration(K):
     return currentAlgorithmIterationValues
 
 # Is called in every iteration to decrease the Loss Function
-def improveLossFunction(previousLossFunctionvalue, currentAlgorithmIterationValues, K, threshold):
+def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, K, threshold):
     print(previousLossFunctionvalue)
     # Update the centroids by using the improveLossFunction() function
     currentAlgorithmIterationValues.improveLossFunctionValue()
@@ -52,6 +52,6 @@ def improveUntilTresholdReached(K, treshold):
     previousLossFunctionvalue = startLossFunctionValue
     # loop from 0 to a very higher number so the centroids can be updated in each loop until the stopping criterium is reached
     while (previousLossFunctionvalue != None):
-        previousLossFunctionvalue = improveLossFunction(previousLossFunctionvalue, currentAlgorithmIterationValues, K, treshold)
+        previousLossFunctionvalue = runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, K, treshold)
 
 improveUntilTresholdReached(10, 1.000_01)
