@@ -27,9 +27,10 @@ def runFirstIteration(K):
     currentAlgorithmIterationValues.firstIteration()
     return currentAlgorithmIterationValues
 
-# Is called in every iteration to decrease the Loss Function
-def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, K, threshold):
-    print(previousLossFunctionvalue)
+# Is called in every iteration to decrease the Loss Function. If the intermediate loss function values need to be printed, set printIntermediateLossFunctionValues to true
+def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, K, threshold, printIntermediateLossFunctionValues = False):
+    if printIntermediateLossFunctionValues == True:
+        print(previousLossFunctionvalue)
     # Update the centroids by using the improveLossFunction() function
     currentAlgorithmIterationValues.improveLossFunctionValue()
     # Determine the value of the loss function after the new centroid update
@@ -42,7 +43,7 @@ def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, 
     # update the loss function value to be able to compare the new value to the old value
     return newLossFunctionValue
 
-def improveUntilTresholdReached(K, treshold):
+def improveUntilTresholdReached(K, treshold, printIntermediateLossFunctionValues=False):
     # Update to first Iteration (this differs from other iteration since it has to construct start centroids)
     currentAlgorithmIterationValues = runFirstIteration(K)
     # Calculate the start loss function value after the first iteration
@@ -52,6 +53,6 @@ def improveUntilTresholdReached(K, treshold):
     # loop from 0 to a very higher number so the centroids can be updated in each loop until the stopping criterium is reached
     while (previousLossFunctionvalue != None):
         # update each previous loss function value with a new improved one
-        previousLossFunctionvalue = runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, K, treshold)
+        previousLossFunctionvalue = runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, K, treshold, printIntermediateLossFunctionValues)
 
-# improveUntilTresholdReached(10, 1.000_01)
+improveUntilTresholdReached(10, 1.000_01, True)
