@@ -130,7 +130,7 @@ class KMeansClusteringEuclidean:
             self.clusterDictionary[clusterIndex] = []
     
     #########################################################################################################
-    #  Functions used in main.py
+    #  Functions used in Question1.py
     #########################################################################################################
 
     # Sets the first centroids by means of the maxima of the data columns

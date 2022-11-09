@@ -1,31 +1,57 @@
 # import from K_MeansClusteringEuclidean.py where all the used functions are located.
 from Question1.KMeansClusteringEuclidean import *
 
-def cluster(K):
-    # Set data File path to that of the assignment data sheet.
-    dataSetFilePath = 'Dataset/EastWestAirlinesCluster.csv'
-    # Create an instance of the KMeansClusteringEuclidean class.
-    k_MeansClusteringEuclidean = KMeansClusteringEuclidean(dataSetFilePath, K)
-    # Set the start Centroids and fill each cluster with its closest data points for the first run of the algorithm.
-    k_MeansClusteringEuclidean.firstIteration()
-    # Calculate the start loss function value after the first iteration
-    startLossFunctionValue = k_MeansClusteringEuclidean.calculateLossFunctionValue()
-    # set previousLossFuncitonvalue to startLossFunctionValue so they can be compared in the for loop
-    previousLossFuncitonvalue = startLossFunctionValue
+# Set data File path to that of the assignment data sheet.
+dataSetFilePath = 'Dataset/EastWestAirlinesCluster.csv'
 
+#########################################################################################################
+#  Functions used in main.py
+#########################################################################################################
+
+# Sets the first centroids by means of the maxima of the data columns
+def firstIterationSteps(self):
+    self.getMaximaOfColumns()
+    self.setClusterDictionary()
+    self.setStartCentroids()
+
+# Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
+def improveLossFunctionValue(self):
+    self.setDistanceOfPointsToCentroidsMatrix()
+    self.setClusterDictionary()
+    self.setCentroids()
+
+# The first iteration differs from other iteration since it has to construct start centroids
+def runFirstIteration(K):
+    # Create an instance of the KMeansClusteringEuclidean class.
+    currentAlgorithmIterationValues = KMeansClusteringEuclidean(dataSetFilePath, K)
+    # Set the start Centroids and fill each cluster with its closest data points for the first run of the algorithm.
+    currentAlgorithmIterationValues.firstIteration()
+    return currentAlgorithmIterationValues
+
+# Is called in every iteration to decrease the Loss Function
+def improveLossFunction(previousLossFunctionvalue, currentAlgorithmIterationValues, K, threshold):
+    print(previousLossFunctionvalue)
+    # Update the centroids by using the improveLossFunction() function
+    currentAlgorithmIterationValues.improveLossFunctionValue()
+    # Determine the value of the loss function after the new centroid update
+    newLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
+    # Since newLossFunctionValue <= previousLossFuncitonvalue we get a decreasing number, we stop when they're very close i.e. their fraction is very small
+    if (previousLossFunctionvalue/newLossFunctionValue < threshold):
+        print(f"Final loss function value for K = {K}  is {newLossFunctionValue}")
+        # Return None when the ratio is below the Treshold
+        return None
+    # update the loss function value to be able to compare the new value to the old value
+    return newLossFunctionValue
+
+def improveUntilTresholdReached(K, treshold):
+    # Update to first Iteration (this differs from other iteration since it has to construct start centroids)
+    currentAlgorithmIterationValues = runFirstIteration(K)
+    # Calculate the start loss function value after the first iteration
+    startLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
+    # set previousLossFuncitonvalue to startLossFunctionValue so they can be compared in the for loop
+    previousLossFunctionvalue = startLossFunctionValue
     # loop from 0 to a very higher number so the centroids can be updated in each loop until the stopping criterium is reached
-    for i in range(10_000_000):
-        print(previousLossFuncitonvalue)
-        # Update the centroids by using the improveLossFunction() function
-        k_MeansClusteringEuclidean.improveLossFunctionValue()
-        # Determine the value of the loss function after the new centroid update
-        newLossFunctionValue = k_MeansClusteringEuclidean.calculateLossFunctionValue()
-        # Since newLossFunctionValue <= previousLossFuncitonvalue we get a decreasing number, we stop when they're very close i.e. their fraction is very small
-        if (previousLossFuncitonvalue/newLossFunctionValue < 1.000_001):
-            print(f"Final loss function value for K = {K}  is {newLossFunctionValue}")
-            # Quit the for loop when this condition is met
-            break
-        # update the loss function value to be able to compare the new value to the old
-        previousLossFuncitonvalue = newLossFunctionValue
-    
-cluster(10)
+    while (previousLossFunctionvalue != None):
+        previousLossFunctionvalue = improveLossFunction(previousLossFunctionvalue, currentAlgorithmIterationValues, K, treshold)
+
+improveUntilTresholdReached(10, 1.000_01)
