@@ -29,8 +29,6 @@ class KMeansClusteringEuclidean:
         for columnIndex in range(self.amountOfColumns-1):
             self.columnsMaximaVector[columnIndex] = max(self.dataWithoutIDMatrix[:,columnIndex])
     
-    
-    
     # Gets the index of the cluster which is closest to the point at rowIndex of the data.
     def getIndexClosestCluster(self, rowIndex):
         return np.argmin(self.centroidToPointsDistancesMatrix[rowIndex])
@@ -50,13 +48,6 @@ class KMeansClusteringEuclidean:
     # Gets the corresponding point (row) in dataWithoutIDMatrix given the Point Index value. 
     def getPointFromPointIndex(self, pointIndex):
         return self.dataWithoutIDMatrix[pointIndex, :]
-    
-    # Gets the sum of all points in the given clusterVector
-    def getSumOfClusterVectorEntries(self, clusterVector):
-        sum = np.zeros(self.amountOfColumns - 1)
-        for id in clusterVector:
-            sum += self.getPointFromPointIndex(self.getPointIndexFromId(id))    
-        return sum
     
     # Gets the new averaged value of the centroid of the given cluster
     def getNewCentroid(self, clusterVectorSize, sumOfClusterVectorEntries):
@@ -110,7 +101,7 @@ class KMeansClusteringEuclidean:
         for clusterIndex in range(0, self.amountOfClusters):
             clusterVector = self.getClusterVector(clusterIndex)
             clusterVectorSize = self.getClusterVectorSize(clusterVector)
-            sumOfClusterVectorEntries = self.getSumOfClusterVectorEntries(clusterVector)
+            sumOfClusterVectorEntries = self.calculateSumOfClusterVectorEntries(clusterVector)
             self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)
     
     #########################################################################################################
@@ -133,6 +124,16 @@ class KMeansClusteringEuclidean:
             self.clusterDictionary[clusterIndex] = []
     
 
+    #########################################################################################################
+    # Calculation functions
+    #########################################################################################################
+
+    # Calculate the sum of all points in the given clusterVector
+    def calculateSumOfClusterVectorEntries(self, clusterVector):
+        sum = np.zeros(self.amountOfColumns - 1)
+        for id in clusterVector:
+            sum += self.getPointFromPointIndex(self.getPointIndexFromId(id))    
+        return sum
                 
 
 # Sets the first centroids by means of the maxima of the data columns
