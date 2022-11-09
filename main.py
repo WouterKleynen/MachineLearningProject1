@@ -11,13 +11,13 @@ k_MeansClusteringEuclidean = KMeansClusteringEuclidean(dataSetFilePath, K)
 
 # Set the start Centroids and fill each cluster with it's closest data points for the first run of the algorithm.
 k_MeansClusteringEuclidean = firstRun(k_MeansClusteringEuclidean)
-startLossFunctionValue = k_MeansClusteringEuclidean.getLossFunctionValue()
+startLossFunctionValue = k_MeansClusteringEuclidean.calculateLossFunctionValue()
 previousLossFuncitonvalue = startLossFunctionValue
 
 for i in range(50):
     print(previousLossFuncitonvalue)
     improveLossFunction(k_MeansClusteringEuclidean)
-    newLossFunctionValue = k_MeansClusteringEuclidean.getLossFunctionValue()
+    newLossFunctionValue = k_MeansClusteringEuclidean.calculateLossFunctionValue()
     if (previousLossFuncitonvalue - newLossFunctionValue < 10):
         print(f"Final lost function value = {newLossFunctionValue}")
         break
