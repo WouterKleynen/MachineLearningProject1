@@ -24,22 +24,16 @@ class KMeansClusteringEuclidean:
     # Getter functions
     #########################################################################################################
     
-
-        
-    # Gets the Matrix where Row i stores the distance of point i to each cluster indexed by the column index.
-    def getDistanceOfPointsToCentroids(self):
-        for rowIndex in range (0, self.amountOfRows):
-            for centroidIndex in range(self.amountOfClusters):
-                self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
-    
-    # Gets the index of the cluster which is closest to the point at rowIndex of the data.
-    def getIndexClosestCluster(self, rowIndex):
-        return np.argmin(self.centroidToPointsDistancesMatrix[rowIndex])
-    
     # Gets maxima of each column and store these values in columnsMaximaVector
     def getMaximaOfColumns(self):
         for columnIndex in range(self.amountOfColumns-1):
             self.columnsMaximaVector[columnIndex] = max(self.dataWithoutIDMatrix[:,columnIndex])
+    
+    
+    
+    # Gets the index of the cluster which is closest to the point at rowIndex of the data.
+    def getIndexClosestCluster(self, rowIndex):
+        return np.argmin(self.centroidToPointsDistancesMatrix[rowIndex])
     
     # Gets the cluster vector given the corresponding clusterIndex from the clusterDictionary by its index. 
     def getClusterVector(self, clusterIndex):
@@ -120,6 +114,16 @@ class KMeansClusteringEuclidean:
             self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)
     
     #########################################################################################################
+    # constructing functions
+    #########################################################################################################
+
+    # Construct the Matrix where Row i stores the distance of point i to each cluster indexed by the column index.
+    def constructDistanceOfPointsToCentroidsMatrix(self):
+        for rowIndex in range (0, self.amountOfRows):
+            for centroidIndex in range(self.amountOfClusters):
+                self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
+    
+    #########################################################################################################
     # General functions
     #########################################################################################################
 
@@ -141,7 +145,7 @@ def firstRun(k_MeansClusteringEuclidean):
 
 # Is called in every loop to decrease the Loss function
 def improveLossFunction(k_MeansClusteringEuclidean):
-    k_MeansClusteringEuclidean.getDistanceOfPointsToCentroids()
+    k_MeansClusteringEuclidean.constructDistanceOfPointsToCentroidsMatrix()
     k_MeansClusteringEuclidean.setClusterDictionary()
     k_MeansClusteringEuclidean.setCentroids()
     return k_MeansClusteringEuclidean
