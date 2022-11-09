@@ -53,12 +53,9 @@ class KMeansClusteringEuclidean:
     def getCentroidVector(self, clusterIndex):
         return self.centroidsMatrix[clusterIndex, :]
      
-
-    
     #########################################################################################################
     # Setter functions
     #########################################################################################################
-
     
     # Sets centroids at the start of the algorithm as evenly spaced accross all columns.
     # Returns the Matrix where row i consists of the start Centroid values for Cluster i. 
@@ -70,7 +67,7 @@ class KMeansClusteringEuclidean:
     
     # Sets each cluster key of the clusterDictionary with all points that are closest to that cluster.
     def setClusterDictionary(self):
-        self.constructEmptyClusterDictionary() # empty the old cluster vectors
+        self.emptyClusterDictionary() # empty the old cluster vectors
         for rowIndex in range(self.amountOfRows):
             id = self.idVector[rowIndex]
             closestClusterIndex = self.getIndexClosestCluster(rowIndex)
@@ -88,22 +85,12 @@ class KMeansClusteringEuclidean:
             sumOfClusterVectorEntries = self.calculateSumOfClusterVectorEntries(clusterVector)
             self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)
     
-    #########################################################################################################
-    # constructing functions
-    #########################################################################################################
-
-    # Construct the Matrix where Row i stores the distance of point i to each cluster indexed by the column index.
-    def constructDistanceOfPointsToCentroidsMatrix(self):
+    # Sets the Matrix where Row i stores the distance of point i to each cluster indexed by the column index.
+    def setDistanceOfPointsToCentroidsMatrix(self):
         for rowIndex in range (0, self.amountOfRows):
             for centroidIndex in range(self.amountOfClusters):
                 self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
     
-    # create empty dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry        
-    def constructEmptyClusterDictionary(self):
-        for clusterIndex in range(0, self.amountOfClusters):
-            self.clusterDictionary[clusterIndex] = []
-    
-
     #########################################################################################################
     # Calculation functions
     #########################################################################################################
@@ -132,27 +119,32 @@ class KMeansClusteringEuclidean:
                 point = self.getPointFromPointIndex(self.getPointIndexFromId(id))    
                 loss += getEuclideanDistance(centroidVector, point)
         return loss
+    
+    #########################################################################################################
+    # General functions
+    #########################################################################################################
 
-# Sets the first centroids by means of the maxima of the data columns
-def firstRun(k_MeansClusteringEuclidean):
-    k_MeansClusteringEuclidean.getMaximaOfColumns()
-    k_MeansClusteringEuclidean.setClusterDictionary()
-    k_MeansClusteringEuclidean.setStartCentroids()
-    return k_MeansClusteringEuclidean
+    # Empties the dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry        
+    def emptyClusterDictionary(self):
+        for clusterIndex in range(0, self.amountOfClusters):
+            self.clusterDictionary[clusterIndex] = []
+    
+    #########################################################################################################
+    #  Functions used in main.py
+    #########################################################################################################
 
+    # Sets the first centroids by means of the maxima of the data columns
+    def firstIteration(self):
+        self.getMaximaOfColumns()
+        self.setClusterDictionary()
+        self.setStartCentroids()
 
-# Is called in every loop to decrease the Loss function
-def improveLossFunction(k_MeansClusteringEuclidean):
-    k_MeansClusteringEuclidean.constructDistanceOfPointsToCentroidsMatrix()
-    k_MeansClusteringEuclidean.setClusterDictionary()
-    k_MeansClusteringEuclidean.setCentroids()
-    return k_MeansClusteringEuclidean
+    # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
+    def improveLossFunctionValue(self):
+        self.setDistanceOfPointsToCentroidsMatrix()
+        self.setClusterDictionary()
+        self.setCentroids()
 
-# K = 10
-# dataSetFilePath = 'Dataset/EastWestAirlinesCluster.csv'
-# classInstance = K_MeansClusteringEuclidean(dataSetFilePath, K)
-# classInstance.getMaximaOfColumns()
-# classInstance.clearClusterDictionary() # not necessary for first run
 
 
 

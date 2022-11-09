@@ -9,14 +9,22 @@ dataSetFilePath = 'Dataset/EastWestAirlinesCluster.csv'
 # Create an instance of the KMeansClusteringEuclidean class.
 k_MeansClusteringEuclidean = KMeansClusteringEuclidean(dataSetFilePath, K)
 
-# Set the start Centroids and fill each cluster with it's closest data points for the first run of the algorithm.
-k_MeansClusteringEuclidean = firstRun(k_MeansClusteringEuclidean)
+# Set the start Centroids and fill each cluster with its closest data points for the first run of the algorithm.
+k_MeansClusteringEuclidean.firstIteration()
+
+# Calculate the start loss function value after the first iteration
 startLossFunctionValue = k_MeansClusteringEuclidean.calculateLossFunctionValue()
+
+# set previousLossFuncitonvalue to startLossFunctionValue so they can be compared in the for loop
 previousLossFuncitonvalue = startLossFunctionValue
 
-for i in range(50):
+
+# loop from 0 to a very higher number so the centroids can be updated in each loop until the stopping criterium is reached
+for i in range(10_000_000):
     print(previousLossFuncitonvalue)
-    improveLossFunction(k_MeansClusteringEuclidean)
+    # Update the centroids by using the improveLossFunction() function
+    k_MeansClusteringEuclidean.improveLossFunctionValue()
+    # Determine the value of the loss function after the new centroid update
     newLossFunctionValue = k_MeansClusteringEuclidean.calculateLossFunctionValue()
     if (previousLossFuncitonvalue - newLossFunctionValue < 10):
         print(f"Final lost function value = {newLossFunctionValue}")
