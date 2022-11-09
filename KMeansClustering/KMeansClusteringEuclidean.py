@@ -57,6 +57,12 @@ class KMeansClusteringEuclidean:
     # Setter functions
     #########################################################################################################
     
+    # Sets the Matrix where Row i stores the distance of point i to each cluster indexed by the column index.
+    def setDistanceOfPointsToCentroidsMatrix(self):
+        for rowIndex in range (0, self.amountOfRows):
+            for centroidIndex in range(self.amountOfClusters):
+                self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
+    
     # Sets centroids at the start of the algorithm as evenly spaced accross all columns.
     # Returns the Matrix where row i consists of the start Centroid values for Cluster i. 
     def setStartCentroids(self):
@@ -77,19 +83,13 @@ class KMeansClusteringEuclidean:
     def setCentroidOfCluster(self, clusterIndex, clusterVectorSize, sumOfClusterVectorEntries):
         self.centroidsMatrix[clusterIndex, :] = self.calculateNewCentroid(clusterVectorSize, sumOfClusterVectorEntries)
     
-    # Sets the Centroids of all clusters by calculatin the new cluster poits average
+    # Sets the Centroids of all clusters by calculatin the new cluster points average
     def setCentroids(self):
         for clusterIndex in range(0, self.amountOfClusters):
             clusterVector = self.getClusterVector(clusterIndex)
             clusterVectorSize = self.getClusterVectorSize(clusterVector)
             sumOfClusterVectorEntries = self.calculateSumOfClusterVectorEntries(clusterVector)
             self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)
-    
-    # Sets the Matrix where Row i stores the distance of point i to each cluster indexed by the column index.
-    def setDistanceOfPointsToCentroidsMatrix(self):
-        for rowIndex in range (0, self.amountOfRows):
-            for centroidIndex in range(self.amountOfClusters):
-                self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
     
     #########################################################################################################
     # Calculation functions
