@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from Question1.Tools import *
+from Tools import getEuclideanDistance
 
 # Throughout the code we denote point i by the row vector at position i of the dataFile, not ID i. 
 # Each variable of Vector or Matrix type is denoted as such at the end of the variable name.
