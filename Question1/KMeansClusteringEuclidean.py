@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from KMeansClustering.Tools import *
+from Question1.Tools import *
 
 # Throughout the code we denote point i by the row vector at position i of the dataFile, not ID i. 
 # Each variable of Vector or Matrix type is denoted as such at the end of the variable name.
@@ -29,8 +29,8 @@ class KMeansClusteringEuclidean:
         for columnIndex in range(self.amountOfColumns-1):
             self.columnsMaximaVector[columnIndex] = max(self.dataWithoutIDMatrix[:,columnIndex])
     
-    # Gets the index of the cluster which is closest to the point at rowIndex of the data.
-    def getIndexClosestCluster(self, rowIndex):
+    # Gets the index of the centroid which is closest to the point at rowIndex of the data.
+    def getIndexClosestCentroid(self, rowIndex):
         return np.argmin(self.centroidToPointsDistancesMatrix[rowIndex])
     
     # Gets the cluster vector given the corresponding clusterIndex from the clusterDictionary by its index. 
@@ -76,7 +76,7 @@ class KMeansClusteringEuclidean:
         self.emptyClusterDictionary() # empty the old cluster vectors
         for rowIndex in range(self.amountOfRows):
             id = self.idVector[rowIndex]
-            closestClusterIndex = self.getIndexClosestCluster(rowIndex)
+            closestClusterIndex = self.getIndexClosestCentroid(rowIndex)
             self.clusterDictionary[closestClusterIndex].append(id)
 
     # set the clusterIndex-th row of centroidsMatrix to the new centroid of that cluster        
@@ -102,10 +102,10 @@ class KMeansClusteringEuclidean:
             sum += self.getPointFromPointIndex(self.getPointIndexFromId(id))    
         return sum
                 
-    # Calculate the new averaged value of the centroid of the given cluster
+    # Calculate the new averaged value of the centroid of the given cluster. If a cluster has no points then return a vector with only 0 as an entry
     def calculateNewCentroid(self, clusterVectorSize, sumOfClusterVectorEntries):
         if (clusterVectorSize == 0): 
-            return 0 
+            return np.zeros(1)
         else:
             return sumOfClusterVectorEntries / clusterVectorSize
         
