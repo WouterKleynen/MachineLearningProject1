@@ -18,10 +18,8 @@ class K_MeansClusteringEuclidean:
         self.centroidsMatrix                 = np.zeros((self.amountOfClusters, self.amountOfColumns-1))
         self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, len(self.centroidsMatrix)))
         self.clusterDictionary               = {}
-        # create dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry
-        for clusterIndex in range(0, self.amountOfClusters):
-            self.clusterDictionary[clusterIndex] = []
-        
+    
+    # create empty dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry        
     def clearClusterDictionary(self):
         for clusterIndex in range(0, self.amountOfClusters):
             self.clusterDictionary[clusterIndex] = []
@@ -134,3 +132,12 @@ def improveLossFunction(k_MeansClusteringEuclidean):
     k_MeansClusteringEuclidean.setClusterDictionary()
     k_MeansClusteringEuclidean.updateCentroids()
     return k_MeansClusteringEuclidean
+
+# K = 10
+# dataSetFilePath = 'Dataset/EastWestAirlinesCluster.csv'
+# classInstance = K_MeansClusteringEuclidean(dataSetFilePath, K)
+# classInstance.getMaximaOfColumns()
+# classInstance.clearClusterDictionary() # not necessary for first run
+
+
+
