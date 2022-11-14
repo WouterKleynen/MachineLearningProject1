@@ -14,11 +14,10 @@ def improveUntilTresholdReachedWithCSV(K, treshold, printIntermediateLossFunctio
     startLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
     # set previousLossFuncitonvalue to startLossFunctionValue so they can be compared in the for loop
     previousLossFunctionvalue = startLossFunctionValue
-    currentAlgorithmIterationValues.fillClusterCSV()
-    # # loop from 0 untill the iteration that the treshold is reached: when previousLossFunctionvalue == None
-    # while (previousLossFunctionvalue != None):
-    #     # update each previous loss function value with a new improved one
-    #     previousLossFunctionvalue = runNewIterationWithCSV(previousLossFunctionvalue, currentAlgorithmIterationValues, K, treshold, printIntermediateLossFunctionValues)
+    # loop from 0 untill the iteration that the treshold is reached: when previousLossFunctionvalue == None
+    while (previousLossFunctionvalue != None):
+        # update each previous loss function value with a new improved one
+        previousLossFunctionvalue = runNewIterationWithCSV(previousLossFunctionvalue, currentAlgorithmIterationValues, K, treshold, printIntermediateLossFunctionValues)
 
 # Is called in every iteration to decrease the Loss Function. If the intermediate loss function values need to be printed, set printIntermediateLossFunctionValues to true
 def runNewIterationWithCSV(previousLossFunctionvalue, currentAlgorithmIterationValues, K, threshold, printIntermediateLossFunctionValues = False):
