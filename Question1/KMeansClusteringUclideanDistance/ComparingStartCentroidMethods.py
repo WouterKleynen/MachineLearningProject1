@@ -51,36 +51,43 @@ def runNewIterationWithFixedEnd(previousLossFunctionvalue, currentAlgorithmItera
     print(f"current loss fuction value = {previousLossFunctionvalue}")
     currentAlgorithmIterationValues.improveLossFunctionValue()
     newLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
-    if ( currentRunNumber > 40):
+    if (currentRunNumber == 40):
         return None
     return newLossFunctionValue
 
-KList = []
-for i in range(0, 40):
-    KList.append(i)
-
 K = 10 
-for i in range(10):
-    improveKPlusplusCentroidStartForFourtySteps(K)
+
+AmountOfIterationsList = []
+for i in range(0, 40):
+    AmountOfIterationsList.append(i)
 
 for i in range(10):
     improveRandomCentroidStartForFourtySteps(K)
 
+print(randomCentroidsList)
+
 for dataSetOf40Points in randomCentroidsList:
-    plt.plot(KList, dataSetOf40Points, color='black', linestyle='dashed', linewidth = 3,
-        marker='o', markerfacecolor='red', markersize=12)
+    plt.plot(AmountOfIterationsList, dataSetOf40Points, color='black', linestyle='dashed', linewidth = 1,
+        marker='o', markerfacecolor='red', markersize=2)
 
 
-for dataSetOf40Points in KPlusPlusList:
-    plt.plot(KList, dataSetOf40Points, color='black', linestyle='dashed', linewidth = 3,
-        marker='o', markerfacecolor='blue', markersize=12)
+
+# for dataSetOf40Points in randomCentroidsList:
+#     plt.plot(AmountOfIterationsList, dataSetOf40Points, color='black', linestyle='dashed', linewidth = 1,
+#         marker='o', markerfacecolor='red', markersize=2)
+
+
+# for i in range(10):
+#     improveKPlusplusCentroidStartForFourtySteps(K)
+
+
+# for dataSetOf40Points in KPlusPlusList:
+#     plt.plot(AmountOfIterationsList, dataSetOf40Points, color='black', linestyle='dashed', linewidth = 3,
+#         marker='o', markerfacecolor='blue', markersize=12)
     
     
 # # function to show the plot
 plt.show()
-
-print(randomCentroidsList)
-print(KPlusPlusList)
 
 
 # plt.plot(xAxisValyes, lossFunctionValuesForK, color='black', linestyle='dashed', linewidth = 3,
