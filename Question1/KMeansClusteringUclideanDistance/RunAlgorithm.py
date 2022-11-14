@@ -32,7 +32,7 @@ def runFirstIteration(K):
 # Is called in every iteration to decrease the Loss Function. If the intermediate loss function values need to be printed, set printIntermediateLossFunctionValues to true
 def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, K, threshold, printIntermediateLossFunctionValues = False):
     if printIntermediateLossFunctionValues == True:
-        print(previousLossFunctionvalue)
+        print(f"current loss fuction value = {previousLossFunctionvalue}")
     # Update the centroids by using the improveLossFunction() function
     currentAlgorithmIterationValues.improveLossFunctionValue()
     # Determine the value of the loss function after the new centroid update
@@ -46,9 +46,6 @@ def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, 
     return newLossFunctionValue
 
 def improveUntilTresholdReached(K, treshold, printIntermediateLossFunctionValues=False):
-    # Create a CSV file for this specific K value that will contain the eventual clusters. First with emptry entries
-    cities = pd.DataFrame(columns=['ID#','Balance','Qual_miles', 'cc1_miles', 'cc2_miles', 'cc3_miles', 'Bonus_miles', 'Bonus_trans', 'Flight_miles_12mo', 'Flight_trans_12', 'Days_since_enroll','Award?'])
-    cities.to_csv('Dataset\EuclideanClusteredData\EuclideanClusteredData.csv', index=False)
     # Update to first Iteration (this differs from other iteration since it has to construct start centroids)
     currentAlgorithmIterationValues = runFirstIteration(K)
     # Calculate the start loss function value after the first iteration
@@ -60,4 +57,3 @@ def improveUntilTresholdReached(K, treshold, printIntermediateLossFunctionValues
         # update each previous loss function value with a new improved one
         previousLossFunctionvalue = runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, K, treshold, printIntermediateLossFunctionValues)
 
-# improveUntilTresholdReached(10, 1.000_01, True)

@@ -45,11 +45,19 @@ class KMeansClusteringEuclidean:
     def getPointIndexFromId(self, id):
         return np.where(self.idVector == id)[0][0]
     
-    # Gets the corresponding point (row) in dataWithoutIDMatrix given the Point Index value. 
+    # Gets the corresponding point (row) of dataWithoutIDMatrix given the Point Index value. 
     def getPointFromPointIndex(self, pointIndex):
         return self.dataWithoutIDMatrix[pointIndex, :]
     
-    # Get the clusterIndex-th row of the centroidsMatrix to get the centroid belonging to the cluster of that index 
+    # Gets the corresponding point (row) of dataWithoutIDMatrix given the Point ID value. 
+    def getPointFromID(self, id):
+        return self.getPointFromPointIndex(self.getPointIndexFromId(id))
+    
+    def getPointFromIDWithID(self, id):
+        pointIndex = np.where(self.idVector == id)[0][0]
+        return self.data[pointIndex, :]
+        
+    # Gets the clusterIndex-th row of the centroidsMatrix to get the centroid belonging to the cluster of that index 
     def getCentroidVector(self, clusterIndex):
         return self.centroidsMatrix[clusterIndex, :]
      
@@ -99,7 +107,7 @@ class KMeansClusteringEuclidean:
     def calculateSumOfClusterVectorEntries(self, clusterVector):
         sum = np.zeros(self.amountOfColumns - 1)
         for id in clusterVector:
-            sum += self.getPointFromPointIndex(self.getPointIndexFromId(id))    
+            sum += self.getPointFromID(id)    
         return sum
                 
     # Calculate the new averaged value of the centroid of the given cluster. If a cluster has no points then return a vector with only 0 as an entry
@@ -116,7 +124,7 @@ class KMeansClusteringEuclidean:
             clusterVector = self.getClusterVector(clusterIndex)
             centroidVector = self.getCentroidVector(clusterIndex)
             for id in clusterVector:
-                point = self.getPointFromPointIndex(self.getPointIndexFromId(id))    
+                point = self.getPointFromID(id)
                 loss += getEuclideanDistance(centroidVector, point)
         return loss
     
@@ -128,7 +136,17 @@ class KMeansClusteringEuclidean:
     def emptyClusterDictionary(self):
         for clusterIndex in range(0, self.amountOfClusters):
             self.clusterDictionary[clusterIndex] = []
-    
+
+    # Fill each Clusters CSV file with the points belonging to it. 
+    def fillClusterCSV(self):
+        for clusterIndexKey in self.clusterDictionary:
+            clusterIDVector = self.clusterDictionary[clusterIndexKey]
+            for pointID in clusterIDVector:
+                dataPoint = self.getPointFromIDWithID(pointID)
+                dataFrame = pd.DataFrame(dataPoint)
+                dataFrame.T.to_csv(f'Dataset\EuclideanClusteredData\Cluster{clusterIndexKey}.csv', mode='a', index=False, header=False)
+            
+      
     #########################################################################################################
     #  Functions used in Question1.py
     #########################################################################################################
@@ -144,6 +162,7 @@ class KMeansClusteringEuclidean:
         self.setDistanceOfPointsToCentroidsMatrix()
         self.setClusterDictionary()
         self.setCentroids()
+
 
 
 
