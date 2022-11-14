@@ -13,7 +13,7 @@ def startFirstIterationRandom(K):
 def improveRandomCentroidStartForFourtySteps(K):
     print("\n")
     randomCentroidsListForK = []
-    currentRunNumber = 1
+    currentRunNumber = 0
     currentAlgorithmIterationValues = startFirstIterationRandom(K)
     startLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
     lossFunctionvalue = startLossFunctionValue
@@ -36,7 +36,7 @@ def startFirstIterationKplusplus(K):
 def improveKPlusplusCentroidStartForFourtySteps(K):
     print("\n")
     KPlusPlusCentroidsListForK = []
-    currentRunNumber = 1
+    currentRunNumber = 0
     currentAlgorithmIterationValues = startFirstIterationKplusplus(K)
     startLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
     lossFunctionvalue = startLossFunctionValue
@@ -51,46 +51,51 @@ def runNewIterationWithFixedEnd(previousLossFunctionvalue, currentAlgorithmItera
     print(f"current loss fuction value = {previousLossFunctionvalue}")
     currentAlgorithmIterationValues.improveLossFunctionValue()
     newLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
-    if (currentRunNumber == 41):
+    if (currentRunNumber == 39):
         return None
     return newLossFunctionValue
 
-K = 10 
+for K in range(1, 31):
 
-AmountOfIterationsList = []
-for i in range(0, 41):
-    AmountOfIterationsList.append(i)
+    AmountOfIterationsList = []
+    for i in range(0, 40):
+        AmountOfIterationsList.append(i)
 
-for i in range(10):
-    improveRandomCentroidStartForFourtySteps(K)
+    for i in range(10):
+        improveRandomCentroidStartForFourtySteps(K)
 
-print(randomCentroidsList)
+    for index in range(0, len(randomCentroidsList) - 1):
+        plt.plot(AmountOfIterationsList, randomCentroidsList[index], color='blue', linestyle='dashed', linewidth = 1,
+            marker='o', markerfacecolor='blue', markersize=2)
 
-for dataSetOf40Points in randomCentroidsList:
-    plt.plot(AmountOfIterationsList, dataSetOf40Points, color='blue', linestyle='dashed', linewidth = 1,
-        marker='o', markerfacecolor='blue', markersize=2, label="Start centroids determined at random")
-
-
-for i in range(10):
-    improveKPlusplusCentroidStartForFourtySteps(K)
+    plt.plot(AmountOfIterationsList, randomCentroidsList[len(randomCentroidsList) - 1], color='blue', linestyle='dashed', linewidth = 1,
+            marker='o', markerfacecolor='blue', markersize=2, label="Start centroids are determined at random")
 
 
-for dataSetOf40Points in KPlusPlusList:
-    plt.plot(AmountOfIterationsList, dataSetOf40Points, color='red', linestyle='dashed', linewidth = 1,
-        marker='o', markerfacecolor='red', markersize=2, label="Start centroids determined by using K++")
+    for i in range(10):
+        improveKPlusplusCentroidStartForFourtySteps(K)
 
- 
-    
 
-plt.legend(loc="upper right")
+    for index in range(0, len(KPlusPlusList) - 1):
+        plt.plot(AmountOfIterationsList, KPlusPlusList[index], color='red', linestyle='dashed', linewidth = 1,
+            marker='o', markerfacecolor='red', markersize=2)
 
-# naming the x axis
-plt.xlabel('Value of the loss function')
-# naming the y axis
-plt.ylabel('Number of iterations')
+    plt.plot(AmountOfIterationsList, KPlusPlusList[len(KPlusPlusList) - 1], color='red', linestyle='dashed', linewidth = 1,
+            marker='o', markerfacecolor='red', markersize=2, label="Start centroids are determined by using K++")
+        
 
-# giving a title to my graph
-plt.title('Value of the loss function after each given number of iterations')
+    plt.legend(loc="upper right")
 
-# # function to show the plot
-plt.show()
+    # naming the x axis
+    plt.xlabel('Number of iterations')
+    # naming the y axis
+    plt.ylabel('Value of the loss function')
+
+
+    # giving a title to my graph
+    plt.title('Value of the loss function after each given number of iterations given K = {K}')
+
+    plt.savefig(f'k={K}.png')
+
+    # # # function to show the plot
+    # plt.show()
