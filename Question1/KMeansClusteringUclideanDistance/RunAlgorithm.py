@@ -2,24 +2,10 @@
 import pandas as pd
 # import from K_MeansClusteringEuclidean.py the class KMeansClusteringEuclidean
 from AlgorithmClass import KMeansClusteringEuclidean
+from Tools import createCSVClusterFiles
 
 # Set data File path to that of the assignment data sheet.
 dataSetFilePath = 'Dataset/InputData.csv'
-#########################################################################################################
-#  Functions used in main.py
-#########################################################################################################
-
-# # Sets the first centroids by means of the maxima of the data columns
-# def firstIterationSteps(self):
-#     self.getMaximaOfColumns()
-#     self.setClusterDictionary()
-#     self.setStartCentroids()
-
-# # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
-# def improveLossFunctionValue(self):
-#     self.setDistanceOfPointsToCentroidsMatrix()
-#     self.setClusterDictionary()
-#     self.setCentroids()
 
 # The first iteration differs from other iteration since it has to construct start centroids
 def runFirstIteration(K):
@@ -31,6 +17,8 @@ def runFirstIteration(K):
 
 # Is called in every iteration to decrease the Loss Function. If the intermediate loss function values need to be printed, set printIntermediateLossFunctionValues to true
 def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, K, threshold, printIntermediateLossFunctionValues = False):
+    # Create CSV file for each cluster
+    createCSVClusterFiles(K)
     if printIntermediateLossFunctionValues == True:
         print(f"current loss fuction value = {previousLossFunctionvalue}")
     # Update the centroids by using the improveLossFunction() function
@@ -39,6 +27,8 @@ def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, 
     newLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
     # Since newLossFunctionValue <= previousLossFuncitonvalue we get a decreasing number, we stop when they're very close i.e. their fraction is very small
     if (previousLossFunctionvalue/newLossFunctionValue < threshold):
+        # Fill each cluster's CSV file with its datapoints
+        currentAlgorithmIterationValues.fillClusterCSV()
         print(f"Final loss function value for K = {K} is {newLossFunctionValue}")
         # Return None when the ratio is below the Treshold
         return None
