@@ -57,3 +57,5 @@ def improveUntilTresholdReached(K, treshold, printIntermediateLossFunctionValues
         # update each previous loss function value with a new improved one
         lossFunctionvalue = runNewIteration(lossFunctionvalue, currentAlgorithmIterationValues, K, treshold, printIntermediateLossFunctionValues)
     return lossFunctionvalue
+
+improveUntilTresholdReached(10, 1.000001, True)

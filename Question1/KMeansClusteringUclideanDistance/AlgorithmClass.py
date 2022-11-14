@@ -24,7 +24,7 @@ class KMeansClusteringEuclidean:
     # Getter functions
     #########################################################################################################
     
-    # Gets maxima of each column and store these values in columnsMaximaVector
+    # Gets maxima of each column and stores these values in columnsMaximaVector
     def getMaximaOfColumns(self):
         for columnIndex in range(self.amountOfColumns-1):
             self.columnsMaximaVector[columnIndex] = max(self.dataWithoutIDMatrix[:,columnIndex])
@@ -78,6 +78,10 @@ class KMeansClusteringEuclidean:
             for columnIndex in range(0, self.amountOfColumns - 1):
                 # Here we use clusterIndex + 1, otherwise the first cluster (0-th index) would cause mulitplication by 0 and thus the startCentroid would be the 0 vector. 
                 self.centroidsMatrix[clusterIndex, columnIndex] = int(self.columnsMaximaVector[columnIndex] * (clusterIndex + 1) / (self.amountOfClusters)) 
+                
+    def setRandomStartCentroids(self):
+        min_, max_ = np.min(self.dataWithoutIDMatrix, axis=0), np.max(self.dataWithoutIDMatrix, axis=0)
+        self.centroidsMatrix = np.array([np.random.uniform(min_, max_) for _ in range(self.amountOfClusters)])
     
     # Sets each cluster key of the clusterDictionary with all points that are closest to that cluster.
     def setClusterDictionary(self):
@@ -153,9 +157,10 @@ class KMeansClusteringEuclidean:
 
     # Sets the first centroids by means of the maxima of the data columns
     def firstIteration(self):
-        self.getMaximaOfColumns()
+        self.setRandomStartCentroids()
+        self.setDistanceOfPointsToCentroidsMatrix()
         self.setClusterDictionary()
-        self.setStartCentroids()
+        self.setCentroids()
 
     # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
     def improveLossFunctionValue(self):
