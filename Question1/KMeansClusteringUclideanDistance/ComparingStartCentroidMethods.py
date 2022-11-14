@@ -51,14 +51,14 @@ def runNewIterationWithFixedEnd(previousLossFunctionvalue, currentAlgorithmItera
     print(f"current loss fuction value = {previousLossFunctionvalue}")
     currentAlgorithmIterationValues.improveLossFunctionValue()
     newLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
-    if (currentRunNumber == 40):
+    if (currentRunNumber == 41):
         return None
     return newLossFunctionValue
 
 K = 10 
 
 AmountOfIterationsList = []
-for i in range(0, 40):
+for i in range(0, 41):
     AmountOfIterationsList.append(i)
 
 for i in range(10):
@@ -67,39 +67,30 @@ for i in range(10):
 print(randomCentroidsList)
 
 for dataSetOf40Points in randomCentroidsList:
-    plt.plot(AmountOfIterationsList, dataSetOf40Points, color='black', linestyle='dashed', linewidth = 1,
-        marker='o', markerfacecolor='red', markersize=2)
+    plt.plot(AmountOfIterationsList, dataSetOf40Points, color='blue', linestyle='dashed', linewidth = 1,
+        marker='o', markerfacecolor='blue', markersize=2, label="Start centroids determined at random")
 
 
-
-# for dataSetOf40Points in randomCentroidsList:
-#     plt.plot(AmountOfIterationsList, dataSetOf40Points, color='black', linestyle='dashed', linewidth = 1,
-#         marker='o', markerfacecolor='red', markersize=2)
+for i in range(10):
+    improveKPlusplusCentroidStartForFourtySteps(K)
 
 
-# for i in range(10):
-#     improveKPlusplusCentroidStartForFourtySteps(K)
+for dataSetOf40Points in KPlusPlusList:
+    plt.plot(AmountOfIterationsList, dataSetOf40Points, color='red', linestyle='dashed', linewidth = 1,
+        marker='o', markerfacecolor='red', markersize=2, label="Start centroids determined by using K++")
 
-
-# for dataSetOf40Points in KPlusPlusList:
-#     plt.plot(AmountOfIterationsList, dataSetOf40Points, color='black', linestyle='dashed', linewidth = 3,
-#         marker='o', markerfacecolor='blue', markersize=12)
+ 
     
-    
+
+plt.legend(loc="upper right")
+
+# naming the x axis
+plt.xlabel('Value of the loss function')
+# naming the y axis
+plt.ylabel('Number of iterations')
+
+# giving a title to my graph
+plt.title('Value of the loss function after each given number of iterations')
+
 # # function to show the plot
 plt.show()
-
-
-# plt.plot(xAxisValyes, lossFunctionValuesForK, color='black', linestyle='dashed', linewidth = 3,
-#         marker='o', markerfacecolor='red', markersize=12)
-
-# # naming the x axis
-# plt.xlabel('Number of clusters (K)')
-# # naming the y axis
-# plt.ylabel('Loss Function value')
-
-# # giving a title to my graph
-# plt.title('Loss Function values for each Number of Clusters')
-
-# # function to show the plot
-# plt.show()
