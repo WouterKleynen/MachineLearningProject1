@@ -48,4 +48,8 @@ def improveUntilTresholdReached(K, treshold, printIntermediateLossFunctionValues
         lossFunctionvalue = runNewIteration(lossFunctionvalue, currentAlgorithmIterationValues, K, treshold, printIntermediateLossFunctionValues)
     return lossFunctionvalue
 
-improveUntilTresholdReached(10, 1.000001, True)
+# K = 10
+# currentAlgorithmIterationValues = KMeansClusteringEuclidean(dataSetFilePath, K)
+# currentAlgorithmIterationValues.kMeansPlusPlusMethod()
+
+improveUntilTresholdReached(10, 1.00000001, True)
