@@ -9,17 +9,17 @@ dataSetFilePath = 'Dataset/InputData.csv'
 #  Functions used in main.py
 #########################################################################################################
 
-# Sets the first centroids by means of the maxima of the data columns
-def firstIterationSteps(self):
-    self.getMaximaOfColumns()
-    self.setClusterDictionary()
-    self.setStartCentroids()
+# # Sets the first centroids by means of the maxima of the data columns
+# def firstIterationSteps(self):
+#     self.getMaximaOfColumns()
+#     self.setClusterDictionary()
+#     self.setStartCentroids()
 
-# Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
-def improveLossFunctionValue(self):
-    self.setDistanceOfPointsToCentroidsMatrix()
-    self.setClusterDictionary()
-    self.setCentroids()
+# # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
+# def improveLossFunctionValue(self):
+#     self.setDistanceOfPointsToCentroidsMatrix()
+#     self.setClusterDictionary()
+#     self.setCentroids()
 
 # The first iteration differs from other iteration since it has to construct start centroids
 def runFirstIteration(K):
@@ -50,10 +50,10 @@ def improveUntilTresholdReached(K, treshold, printIntermediateLossFunctionValues
     currentAlgorithmIterationValues = runFirstIteration(K)
     # Calculate the start loss function value after the first iteration
     startLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
-    # set previousLossFuncitonvalue to startLossFunctionValue so they can be compared in the for loop
-    previousLossFunctionvalue = startLossFunctionValue
+    # set lossFunctionvalue to startLossFunctionValue so they can be compared in the for loop
+    lossFunctionvalue = startLossFunctionValue
     # loop from 0 untill the iteration that the treshold is reached: when previousLossFunctionvalue == None
-    while (previousLossFunctionvalue != None):
+    while (lossFunctionvalue != None):
         # update each previous loss function value with a new improved one
-        previousLossFunctionvalue = runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, K, treshold, printIntermediateLossFunctionValues)
-
+        lossFunctionvalue = runNewIteration(lossFunctionvalue, currentAlgorithmIterationValues, K, treshold, printIntermediateLossFunctionValues)
+    return lossFunctionvalue
