@@ -83,22 +83,7 @@ class KMeansClusteringEuclidean:
     # Picks Random Centroids first the first iteration from the data set         
     def setRandomStartCentroids(self):
         min_, max_ = np.min(self.dataWithoutIDMatrix, axis=0), np.max(self.dataWithoutIDMatrix, axis=0)
-        self.centroidsMatrix = np.array([np.random.uniform(min_, max_) for _ in range(self.amountOfClusters)])
-    
-    # def kMeansPlusPlusMethod(self):
-    # # Picks Centroids, by means of the "k-means++" method, where a random point is picked as a starting point,
-    # # the other points are initialized with probabilities proportional to their distances to this first point. 
-    #     min_, max_ = np.min(self.dataWithoutIDMatrix, axis=0), np.max(self.dataWithoutIDMatrix, axis=0)
-    #     centroids = np.array([np.random.uniform(min_, max_)])
-    #     for _ in range(self.amountOfClusters):
-    #         # Calculate distances from points to the centroids
-    #         distsances = np.sum([getEuclideanDistance(centroid, self.dataWithoutIDMatrix) for centroid in centroids], axis=0)
-    #         # Normalize the distances
-    #         distsances /= np.sum(distsances)
-    #         # Choose remaining points based on their distances
-    #         newCentoird, = np.random.choice(range(self.amountOfColumns), size=1, p=distsances)
-    #         centroids += np.array([self.dataWithoutIDMatrix[newCentoird]])
-    #     print(self.centroids)    
+        self.centroidsMatrix = np.array([np.random.uniform(min_, max_) for _ in range(self.amountOfClusters)]) 
         
     def kMeansPlusPlusMethod(self):
         C = [self.dataWithoutIDMatrix[0]]
@@ -113,28 +98,6 @@ class KMeansClusteringEuclidean:
                     break
             C.append(self.dataWithoutIDMatrix[i])
         self.centroidsMatrix = np.array(C)
-        
-        # def get_kmeans_pp_centroids(X1, K):
-        #     min_, max_ = np.min(self.dataWithoutIDMatrix, axis=0), np.max(self.dataWithoutIDMatrix, axis=0)
-        #     centroids = np.array([np.random.uniform(min_, max_)])            
-        #     i = 1
-        #     for i in range(0,K):
-        #         max_dist = [0,0]
-        #         #go through the centroids
-        #         for centroid in centroids:
-        #             #calculate distance of every centroid with every other data point 
-        #             d = np.sqrt((X1["Height"] - row["Height"])**2 +(X1["Weight"] - row["Weight"])**2)
-        #             distance = getEuclideanDistance(centroid, )
-        #             #check which centroid has a max distance with another point
-        #             if max(d) > max(max_dist):
-        #                 max_dist = d
-
-        #         X1 = pd.concat([X1, max_dist], axis = 1)
-        #         idx = X1.iloc[:,i+1].idxmax()
-        #         max_coor = pd.DataFrame(X1.iloc[idx][["Height", "Weight"]]).T
-        #         centroids = pd.concat([centroids,max_coor])
-        #         X1 = X1.drop(idx)
-        #     return centroids
     
     # Sets each cluster key of the clusterDictionary with all points that are closest to that cluster.
     def setClusterDictionary(self):
@@ -217,6 +180,19 @@ class KMeansClusteringEuclidean:
 
     # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
     def improveLossFunctionValue(self):
+        self.setDistanceOfPointsToCentroidsMatrix()
+        self.setClusterDictionary()
+        self.setCentroids()
+        
+        
+    def runFirstIterationKPlusPlus(self):
+        self.kMeansPlusPlusMethod()
+        self.setDistanceOfPointsToCentroidsMatrix()
+        self.setClusterDictionary()
+        self.setCentroids()
+        
+    def runFirstIterationRandom(self):
+        self.setRandomStartCentroids()
         self.setDistanceOfPointsToCentroidsMatrix()
         self.setClusterDictionary()
         self.setCentroids()
