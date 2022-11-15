@@ -93,7 +93,6 @@ class KMeansClusteringEuclidean:
 
     def setCentroidOfCluster(self, clusterIndex, clusterVectorSize, sumOfClusterVectorEntries):         # Calculate new centroid based on the points in the cluster and set this new centroid in centroidsMatrix at the clusterIndex row.
         self.centroidsMatrix[clusterIndex, :] = self.calculateNewCentroid(clusterVectorSize, sumOfClusterVectorEntries)
-
     
     def setCentroids(self):                                                         # Sets the Centroids of all clusters by calculatin the new cluster points average
         for clusterIndex in range(0, self.amountOfClusters):                        
@@ -101,8 +100,6 @@ class KMeansClusteringEuclidean:
             clusterVectorSize = self.getClusterVectorSize(clusterVector)            
             sumOfClusterVectorEntries = self.calculateSumOfClusterVectorEntries(clusterVector)
             self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)  # calculate and set the new centroid
-    
-
     
     #########################################################################################################
     # Calculation functions
