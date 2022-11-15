@@ -20,11 +20,15 @@ def standardizeData(data):
         standardizedMatrix[:, i-1] = standardize(data[:, i])                                        
     pd.DataFrame(standardizedMatrix).to_csv("Dataset\standardizedData.csv",index=False, header=False)
 
-def runFirstIteration(K):
+def runFirstIteration(dataSetFilePath, K):
     currentAlgorithmIterationValues = KMeansClustering(dataSetFilePath, K)                         # Create an instance of the KMeansClusteringEuclidean class.
     currentAlgorithmIterationValues.firstIteration()                                                # Set the start Centroids and fill each cluster with its closest data points for the first run of the algorithm.
+    return currentAlgorithmIterationValues
+
 
 dataSetFilePath = 'Dataset/InputData.csv'                                                           # Set data File path to that of the assignment data sheet.
 data = pd.read_csv(dataSetFilePath).to_numpy()
 dataWithoutIDMatrix = data[:, 1:]
-standardizeData(data)
+standardizedData = standardizeData(data)
+stadardizedPath = "Dataset/standardizedData.csv"
+runFirstIteration(stadardizedPath, 10)
