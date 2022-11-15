@@ -5,7 +5,6 @@ from Tools import createCSVClusterFiles
 # This file contains the functions that are used to iteratively call the KMeansClusteringEuclidean() class functions
 # to run the K Means Euclidean Clustering algorithm until the given the treshold is reached
 
-
 dataSetFilePath = 'Dataset/InputData.csv'                                                           # Set data File path to that of the assignment data sheet.
 
 # Is called to run the first iteration. The first iteration differs from other iteration since it has to construct start centroids.
