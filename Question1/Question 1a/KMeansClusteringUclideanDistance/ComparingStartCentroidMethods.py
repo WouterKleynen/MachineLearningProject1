@@ -48,16 +48,26 @@ def improveKPlusplusCentroidStartForFourtySteps(K):
     return lossFunctionvalue
 
 def runNewIterationWithFixedEnd(previousLossFunctionvalue, currentAlgorithmIterationValues, currentRunNumber):
-    print(f"current loss fuction value = {previousLossFunctionvalue}")
+    # print(f"current loss fuction value = {previousLossFunctionvalue}")
     currentAlgorithmIterationValues.improveLossFunctionValue()
     newLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
     if (currentRunNumber == 39):
+        finalLoss.append(newLossFunctionValue)
         return None
     return newLossFunctionValue
 
-for K in range(1, 31):
+finalLoss = []
 
+for K in range(2, 41):
+    plt.clf()
+    randomCentroidsList = []
+    KPlusPlusList = []
+
+    finalLoss.append("RANDOM")
+    finalLoss.append(f"K = {K}")
+    
     AmountOfIterationsList = []
+    
     for i in range(0, 40):
         AmountOfIterationsList.append(i)
 
@@ -71,6 +81,7 @@ for K in range(1, 31):
     plt.plot(AmountOfIterationsList, randomCentroidsList[len(randomCentroidsList) - 1], color='blue', linestyle='dashed', linewidth = 1,
             marker='o', markerfacecolor='blue', markersize=2, label="Start centroids are determined at random")
 
+    finalLoss.append("SWITCHED TO K++")
 
     for i in range(10):
         improveKPlusplusCentroidStartForFourtySteps(K)
@@ -93,9 +104,13 @@ for K in range(1, 31):
 
 
     # giving a title to my graph
-    plt.title('Value of the loss function after each given number of iterations given K = {K}')
+    plt.title('Loss function value after each given number of iterations where K = {K}')
 
     plt.savefig(f'k={K}.png')
+    plt.close()
+
 
     # # # function to show the plot
     # plt.show()
+    
+print(finalLoss)

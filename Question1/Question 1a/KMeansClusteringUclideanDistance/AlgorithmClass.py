@@ -184,7 +184,6 @@ class KMeansClusteringEuclidean:
         self.setClusterDictionary()
         self.setCentroids()
         
-        
     def runFirstIterationKPlusPlus(self):
         self.kMeansPlusPlusMethod()
         self.setDistanceOfPointsToCentroidsMatrix()
