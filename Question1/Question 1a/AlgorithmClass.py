@@ -48,6 +48,13 @@ class KMeansClusteringEuclidean:
         
     def getCentroidVector(self, clusterIndex):                                      # Gets the centroid belonging to cluster index.  
         return self.centroidsMatrix[clusterIndex, :]
+    
+    def getClusterVectorSizesVector(self):
+        clusterVectorSizeVector = []
+        for clusterIndex in range(0, self.amountOfClusters):
+            clusterVector = self.getClusterVector(clusterIndex)                     # Gets the cluster vector i.e. the vector beloning to the cluster index that contains all the ID's of the points that are in that cluster.
+            clusterVectorSize = self.getClusterVectorSize(clusterVector)            
+            clusterVectorSizeVector.append(clusterVectorSize())
      
     #########################################################################################################
     # Setter functions
@@ -93,6 +100,8 @@ class KMeansClusteringEuclidean:
             clusterVectorSize = self.getClusterVectorSize(clusterVector)            
             sumOfClusterVectorEntries = self.calculateSumOfClusterVectorEntries(clusterVector)
             self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)  # calculate and set the new centroid
+    
+
     
     #########################################################################################################
     # Calculation functions

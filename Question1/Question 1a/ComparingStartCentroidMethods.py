@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 dataSetFilePath = 'Dataset/InputData.csv'
 
 randomCentroidsList = [] 
+randomCentroidsFinalLossList = []
 
 # First iteration which uses random start centroids
 def startFirstIterationRandom(K):
@@ -24,14 +25,24 @@ def improveRandomCentroidStartForFourtySteps(K):
     startLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
     lossFunctionvalue = startLossFunctionValue
     while (lossFunctionvalue != None):
-        lossFunctionvalue = runNewIterationWithFixedEnd(currentAlgorithmIterationValues, currentRunNumber)
+        lossFunctionvalue = runNewIterationWithFixedEndRandom(currentAlgorithmIterationValues, currentRunNumber)
         randomCentroidsListForK.append(lossFunctionvalue)
         currentRunNumber += 1
     randomCentroidsList.append(randomCentroidsListForK)
     return lossFunctionvalue
 
+# Changes w.r.t normal runNewIteration is removing the treshold and use a hardcoded amount of iterations instead and removing redundant variables
+def runNewIterationWithFixedEndRandom(currentAlgorithmIterationValues, currentRunNumber):
+    currentAlgorithmIterationValues.improveLossFunctionValue()
+    newLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
+    if (currentRunNumber == 39):
+        randomCentroidsFinalLossList.append(newLossFunctionValue)
+        return None
+    return newLossFunctionValue
+
 
 KPlusPlusList = []
+KPlusPlusFinalLossList = []
 
 # First iteration which uses K++ start centroids
 def startFirstIterationKplusplus(K):
@@ -42,41 +53,35 @@ def startFirstIterationKplusplus(K):
 
 # Minor changes w.r.t improveUntilTresholdReached() consisting of appending to list for plotting and removing redundant variables 
 def improveKPlusplusCentroidStartForFourtySteps(K):
-    print("\n")
     KPlusPlusCentroidsListForK = []
     currentRunNumber = 0
     currentAlgorithmIterationValues = startFirstIterationKplusplus(K)
     startLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
     lossFunctionvalue = startLossFunctionValue
     while (lossFunctionvalue != None):
-        lossFunctionvalue = runNewIterationWithFixedEnd(currentAlgorithmIterationValues, currentRunNumber)
+        lossFunctionvalue = runNewIterationWithFixedEndKlusPlus(currentAlgorithmIterationValues, currentRunNumber)
         KPlusPlusCentroidsListForK.append(lossFunctionvalue)
         currentRunNumber += 1
     KPlusPlusList.append(KPlusPlusCentroidsListForK)
     return lossFunctionvalue
 
 # Changes w.r.t normal runNewIteration is removing the treshold and use a hardcoded amount of iterations instead and removing redundant variables
-def runNewIterationWithFixedEnd(currentAlgorithmIterationValues, currentRunNumber):
+def runNewIterationWithFixedEndKlusPlus(currentAlgorithmIterationValues, currentRunNumber):
     currentAlgorithmIterationValues.improveLossFunctionValue()
     newLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
     if (currentRunNumber == 39):
-        finalLoss.append(newLossFunctionValue)
+        KPlusPlusFinalLossList.append(newLossFunctionValue)
         return None
     return newLossFunctionValue
-
-finalLoss = []
 
 # Iterate from K=2 to K=41
 for K in range(2, 41):
     plt.clf()
-    
-    
+    KPlusPlusFinalLossList = []
+    randomCentroidsFinalLossList = []
+
     randomCentroidsList = [] # Clear the plot list values after each plot
     KPlusPlusList = []
-
-    finalLoss.append("RANDOM")
-    finalLoss.append(f"K = {K}")
-    
     AmountOfIterationsList = []
     
     for i in range(0, 40):
@@ -93,11 +98,8 @@ for K in range(2, 41):
     plt.plot(AmountOfIterationsList, randomCentroidsList[len(randomCentroidsList) - 1], color='blue', linestyle='dashed', linewidth = 1,
             marker='o', markerfacecolor='blue', markersize=2, label="Start centroids are determined at random")
 
-    finalLoss.append("SWITCHED TO K++")
-
     for i in range(10):
         improveKPlusplusCentroidStartForFourtySteps(K) # run 10 iterations of the K means Euclidean algorithm with K++ start centroids
-
 
     for index in range(0, len(KPlusPlusList) - 1): # Create Plots
         plt.plot(AmountOfIterationsList, KPlusPlusList[index], color='red', linestyle='dashed', linewidth = 1,
@@ -106,14 +108,24 @@ for K in range(2, 41):
     # Last plot seperate, because this one includes a label. If it was in the loop the label would be added len(randomCentroidsList) - 1 times
     plt.plot(AmountOfIterationsList, KPlusPlusList[len(KPlusPlusList) - 1], color='red', linestyle='dashed', linewidth = 1,
             marker='o', markerfacecolor='red', markersize=2, label="Start centroids are determined by using K++")
-        
-
+    
+    # Calculate the average of the end loss values
+    print(f"K = {K}, final Loss Random = {randomCentroidsFinalLossList}")
+    randomAverageLossTotal = 0
+    for lossValue in randomCentroidsFinalLossList:
+        randomAverageLossTotal += lossValue
+    print(f"K = {K}, final Loss Random = {randomAverageLossTotal/float(len(randomCentroidsFinalLossList))}")
+    
+    print(f"K = {K}, final Loss K++ = {randomCentroidsFinalLossList}")
+    kPlusPlusAverageLossTotal = 0
+    for lossValue in KPlusPlusFinalLossList:
+        kPlusPlusAverageLossTotal += lossValue
+    print(f"K = {K}, final Loss K++ = {kPlusPlusAverageLossTotal/float(len(randomCentroidsFinalLossList))}")
+    
     plt.legend(loc="upper right")
-
     plt.xlabel('Number of iterations')
     plt.ylabel('Value of the loss function')
     plt.title(f'Loss function value after each given number of iterations where K = {K}')
     plt.savefig(f'k={K}.png')
     plt.close()
     
-print(finalLoss)

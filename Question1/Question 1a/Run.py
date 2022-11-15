@@ -23,6 +23,7 @@ def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, 
     newLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()             # Determine the value of the loss function after the new centroid update
     if (previousLossFunctionvalue/newLossFunctionValue < threshold):                                # Since newLossFunctionValue <= previousLossFuncitonvalue we get a decreasing number, we stop when they're very close i.e. their fraction is very small
         currentAlgorithmIterationValues.fillClusterCSV()                                            # Fill each cluster's CSV file with its datapoints
+        print(currentAlgorithmIterationValues.getClusterVectorSizesVector())
         print(f"Final loss function value for K = {K} is {newLossFunctionValue}")
         return None                                                                                 # Return None when the ratio is below the Treshold
 
