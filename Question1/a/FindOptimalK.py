@@ -11,7 +11,7 @@ def runFirstIteration(K):
     currentAlgorithmIterationValues.firstIteration()                                                # Set the start Centroids and fill each cluster with its closest data points for the first run of the algorithm.
     return currentAlgorithmIterationValues
 
-def improveUntilTresholdReachedForOptimalK(K, treshold, printIntermediateLossFunctionValues=False):
+def improveUntilTresholdReachedForOptimalK(K, printIntermediateLossFunctionValues=False):
     # Update to first Iteration (this differs from other iteration since it has to construct start centroids)
     currentAlgorithmIterationValues = runFirstIteration(K)
     # Calculate the start loss function value after the first iteration
@@ -21,19 +21,17 @@ def improveUntilTresholdReachedForOptimalK(K, treshold, printIntermediateLossFun
     # loop from 0 untill the iteration that the treshold is reached: when previousLossFunctionvalue == None
     while (previousLossFunctionvalue != None):
         # update each previous loss function value with a new improved one
-        previousLossFunctionvalue = runNewIterationForOptimalK(previousLossFunctionvalue, currentAlgorithmIterationValues, K, treshold, printIntermediateLossFunctionValues)
+        previousLossFunctionvalue = runNewIterationForOptimalK(previousLossFunctionvalue, currentAlgorithmIterationValues, K)
 
 
 # Is called in every iteration to decrease the Loss Function. If the intermediate loss function values need to be printed, set printIntermediateLossFunctionValues to true
-def runNewIterationForOptimalK(previousLossFunctionvalue, currentAlgorithmIterationValues, K, threshold, printIntermediateLossFunctionValues = False):
-    if printIntermediateLossFunctionValues == True:
-        print(f"current loss fuction value = {previousLossFunctionvalue}")
+def runNewIterationForOptimalK(previousLossFunctionvalue, currentAlgorithmIterationValues, K):
     # Update the centroids by using the improveLossFunction() function
     currentAlgorithmIterationValues.improveLossFunctionValue()
     # Determine the value of the loss function after the new centroid update
     newLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
     # Since newLossFunctionValue <= previousLossFuncitonvalue we get a decreasing number, we stop when they're very close i.e. their fraction is very small
-    if (previousLossFunctionvalue/newLossFunctionValue < threshold):
+    if (previousLossFunctionvalue == newLossFunctionValue):
         print(f"Final loss function value for K = {K} is {newLossFunctionValue}")
         lossFunctionValuesForK.append(newLossFunctionValue)
         # Return None when the ratio is below the Treshold
@@ -43,7 +41,7 @@ def runNewIterationForOptimalK(previousLossFunctionvalue, currentAlgorithmIterat
 
 
 xAxisValyes = []
-for K in range(1, 10):
+for K in range(1, 40):
     xAxisValyes.append(K)
     improveUntilTresholdReachedForOptimalK(K, 1.000_01)
 

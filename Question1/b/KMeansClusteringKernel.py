@@ -124,7 +124,7 @@ class KMeansClusteringKernel:
         self.centroidsMatrix = np.array(C)
         print(self.centroidsMatrix)
 
-    def setClusterDictionaryFirstRun(self):                                                # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
+    def setClusterDictionaryFirstRun(self):                                        # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
         self.emptyClusterDictionary()                                              # empty the old cluster vectors.
         for rowIndex in range(self.amountOfRows):                                  # iterate over all the points.
             id = self.idVector[rowIndex]                                           # Get the ID belonging to each point.
@@ -137,16 +137,6 @@ class KMeansClusteringKernel:
             id = self.idVector[rowIndex]                                           # Get the ID belonging to each point.
             closestClusterIndex = self.getIndexMinimumCluster(rowIndex)            # Get the index of closest centroid by finding the minimum of row i of centroidToPointsDistancesMatrix.
             self.clusterDictionary[closestClusterIndex].append(id)
-    
-    def calculateLossFunctionValue(self):                                           # Calculate the sum of all the distances of the data points to the centers of the clusters they belong to.        
-        loss = 0
-        for clusterIndex in range(0, self.amountOfClusters):
-            clusterVector = self.getClusterVector(clusterIndex)
-            centroidVector = self.getCentroidVector(clusterIndex)
-            for id in clusterVector:
-                point = self.getPointFromID(id)
-                loss += getEuclideanDistance(centroidVector, point)
-        return loss
     
     #########################################################################################################
     # General functions

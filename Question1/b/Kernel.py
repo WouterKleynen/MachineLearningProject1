@@ -47,7 +47,7 @@ dataSetFilePath     = 'Dataset/InputData.csv'
 data                = pd.read_csv(dataSetFilePath).to_numpy()
 standardizedData    = standardizeData(data)
 dataWithoutIDMatrix = standardizedData[:, 1:]
-# stadardizedPath = "Dataset/standardizedData.csv"
+stadardizedPath = "Dataset/standardizedData.csv"
 testPath = "Dataset/testing.csv"
 algorithmvalues = runFirstIterationKernel(testPath, 10, 10)
 
