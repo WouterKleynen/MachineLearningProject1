@@ -19,7 +19,6 @@ class KMeansClusteringEuclidean:
         self.centroidsMatrix                 = np.zeros((self.amountOfClusters, self.amountOfColumns - 1))      # Column i is centroid of cluster i. 
         self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, self.amountOfClusters))           # Column i consits of the distances of all points to cluster i.
         self.clusterDictionary               = {}                                                             # Each entry consists of a key that's the cluster index and a value that's a vector containing all the ID's of the points that belong to that cluster
-        print(len(self.centroidsMatrix[0]))
     #########################################################################################################
     # Getter functions
     #########################################################################################################
@@ -64,7 +63,7 @@ class KMeansClusteringEuclidean:
         
     def kMeansPlusPlusMethod(self):                                                 # More advanced K++ method to set the start centroids
         C = [self.dataWithoutIDMatrix[0]]
-        for _ in range(0, self.amountOfClusters):
+        for _ in range(1, self.amountOfClusters):
             D2 = scipy.array([min([scipy.inner(c-x,c-x) for c in C]) for x in self.dataWithoutIDMatrix])
             probs = D2/D2.sum()
             cumprobs = probs.cumsum()
