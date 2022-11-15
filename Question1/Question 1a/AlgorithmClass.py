@@ -16,15 +16,14 @@ class KMeansClusteringEuclidean:
         self.amountOfColumns                 = len(self.data[0])                                              # Since we will remove the ID's we usually work with 1 column less.
         self.idVector                        = self.data[:, 0]                                                # Only ID's are extracted.
         self.dataWithoutIDMatrix             = self.data[:, 1:]                                               # ID's are removed.
-        self.centroidsMatrix                 = np.zeros((self.amountOfClusters, self.amountOfColumns - 1))      # Column i is centroid of cluster i. 
-        self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, self.amountOfClusters))           # Column i consits of the distances of all points to cluster i.
+        self.centroidsMatrix                 = np.zeros((self.amountOfClusters, self.amountOfColumns - 1))    # Row i is centroid of cluster i. 
+        self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, self.amountOfClusters))           # Row i consits of the distances point i to all clusters.
         self.clusterDictionary               = {}                                                             # Each entry consists of a key that's the cluster index and a value that's a vector containing all the ID's of the points that belong to that cluster
-        print(len(self.centroidsMatrix[0]))
     #########################################################################################################
     # Getter functions
     #########################################################################################################
     
-    def getIndexClosestCentroid(self, rowIndex):                                    # Gets the index of the centroid which is closest to the point, where the point is at the rowIndex of the data.
+    def getIndexClosestCentroid(self, rowIndex):                                    # Given row index i, it gets the index of the minimum of row i of centroidToPointsDistancesMatrix, meaning the index of the cluster thats closest to point i. 
         return np.argmin(self.centroidToPointsDistancesMatrix[rowIndex])
     
     def getClusterVector(self, clusterIndex):                                       # Gets the vector containing all the ID's of the points that belong to cluster clusterIndex
@@ -63,8 +62,8 @@ class KMeansClusteringEuclidean:
         self.centroidsMatrix = np.array([np.random.uniform(min_, max_) for _ in range(self.amountOfClusters)]) 
         
     def kMeansPlusPlusMethod(self):                                                 # More advanced K++ method to set the start centroids
-        C = [self.dataWithoutIDMatrix[0]]
-        for _ in range(0, self.amountOfClusters):
+        C = [self.dataWithoutIDMatrix[0]] # column vector of length 11
+        for _ in range(1, self.amountOfClusters):
             D2 = scipy.array([min([scipy.inner(c-x,c-x) for c in C]) for x in self.dataWithoutIDMatrix])
             probs = D2/D2.sum()
             cumprobs = probs.cumsum()

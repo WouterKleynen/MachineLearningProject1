@@ -25,14 +25,12 @@ def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, 
         currentAlgorithmIterationValues.fillClusterCSV()                                            # Fill each cluster's CSV file with its datapoints
         print(f"Final loss function value for K = {K} is {newLossFunctionValue}")
         return None                                                                                 # Return None when the ratio is below the Treshold
-    return newLossFunctionValue                                                                     # update the loss function value to be able to compare the new value to the old value
 
 # Runs the K Means Euclidean Clustering algorithm for a given K unt
 def improveUntilTresholdReached(K, treshold, printIntermediateLossFunctionValues=False):
     currentAlgorithmIterationValues = runFirstIteration(K)                                          # Update to first Iteration (this differs from other iteration since it has to construct start centroids)
     startLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()           # Calculate the start loss function value after the first iteration
     lossFunctionvalue = startLossFunctionValue                                                      # set lossFunctionvalue to startLossFunctionValue so they can be compared in the for loop
-    # print(len(currentAlgorithmIterationValues.centroidsMatrix[0]))
     while (lossFunctionvalue != None):                                                              # loop from 0 untill the iteration that the treshold is reached: when previousLossFunctionvalue == None
         lossFunctionvalue = runNewIteration(lossFunctionvalue, currentAlgorithmIterationValues, K, treshold, printIntermediateLossFunctionValues) # update each previous loss function value with a new improved one
     return lossFunctionvalue
