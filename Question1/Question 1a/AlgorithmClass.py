@@ -16,9 +16,10 @@ class KMeansClusteringEuclidean:
         self.amountOfColumns                 = len(self.data[0])                                              # Since we will remove the ID's we usually work with 1 column less.
         self.idVector                        = self.data[:, 0]                                                # Only ID's are extracted.
         self.dataWithoutIDMatrix             = self.data[:, 1:]                                               # ID's are removed.
-        self.centroidsMatrix                 = np.zeros((self.amountOfClusters, self.amountOfColumns - 1))    # Row i is centroid of cluster i. 
-        self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, self.amountOfClusters))           # Row i consits of the distances point i to all clusters.
-        self.clusterDictionary               = {}                                                             # Each entry consists of a key that's the cluster index and a value that's a vector containing all the ID's of the points that belong to that cluster
+        self.centroidsMatrix                 = np.zeros((self.amountOfClusters, self.amountOfColumns - 1))    # Row i is the centroid of cluster i. 
+        self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, self.amountOfClusters))           # Row i consists of the distances of point i to each cluster.
+        self.clusterDictionary               = {}                                                             # Each entry consists of a key that's the cluster index and a value that's a vector containing all the ID's of the points that belong to that cluster.
+        
     #########################################################################################################
     # Getter functions
     #########################################################################################################
@@ -62,7 +63,7 @@ class KMeansClusteringEuclidean:
         self.centroidsMatrix = np.array([np.random.uniform(min_, max_) for _ in range(self.amountOfClusters)]) 
         
     def kMeansPlusPlusMethod(self):                                                 # More advanced K++ method to set the start centroids
-        C = [self.dataWithoutIDMatrix[0]] # column vector of length 11
+        C = [self.dataWithoutIDMatrix[0]]                                           # Start column vector of length 11
         for _ in range(1, self.amountOfClusters):
             D2 = scipy.array([min([scipy.inner(c-x,c-x) for c in C]) for x in self.dataWithoutIDMatrix])
             probs = D2/D2.sum()
@@ -76,45 +77,40 @@ class KMeansClusteringEuclidean:
         self.centroidsMatrix = np.array(C)
     
     def setClusterDictionary(self):                                                # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
-        self.emptyClusterDictionary() # empty the old cluster vectors
-        for rowIndex in range(self.amountOfRows):
-            id = self.idVector[rowIndex]
-            closestClusterIndex = self.getIndexClosestCentroid(rowIndex)
+        self.emptyClusterDictionary()                                              # empty the old cluster vectors.
+        for rowIndex in range(self.amountOfRows):                                  # iterate over all the points.
+            id = self.idVector[rowIndex]                                           # Get the ID belonging to each point.
+            closestClusterIndex = self.getIndexClosestCentroid(rowIndex)           # Get the index of closest centroid by finding the minimum of row i of centroidToPointsDistancesMatrix.
             self.clusterDictionary[closestClusterIndex].append(id)
 
-    def setCentroidOfCluster(self, clusterIndex, clusterVectorSize, sumOfClusterVectorEntries):         # Calculate new centroid based on the points in the cluster and set this new centroid in centroidsMatrix at the clusterIndex row
+    def setCentroidOfCluster(self, clusterIndex, clusterVectorSize, sumOfClusterVectorEntries):         # Calculate new centroid based on the points in the cluster and set this new centroid in centroidsMatrix at the clusterIndex row.
         self.centroidsMatrix[clusterIndex, :] = self.calculateNewCentroid(clusterVectorSize, sumOfClusterVectorEntries)
-       #print(len(self.centroidsMatrix[0]))
 
     
-    # Sets the Centroids of all clusters by calculatin the new cluster points average
-    def setCentroids(self):
-        for clusterIndex in range(0, self.amountOfClusters):
-            clusterVector = self.getClusterVector(clusterIndex)
-            clusterVectorSize = self.getClusterVectorSize(clusterVector)
+    def setCentroids(self):                                                         # Sets the Centroids of all clusters by calculatin the new cluster points average
+        for clusterIndex in range(0, self.amountOfClusters):                        
+            clusterVector = self.getClusterVector(clusterIndex)                     # Gets the cluster vector i.e. the vector beloning to the cluster index that contains all the ID's of the points that are in that cluster.
+            clusterVectorSize = self.getClusterVectorSize(clusterVector)            
             sumOfClusterVectorEntries = self.calculateSumOfClusterVectorEntries(clusterVector)
-            self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)
+            self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)  # calculate and set the new centroid
     
     #########################################################################################################
     # Calculation functions
     #########################################################################################################
 
-    # Calculate the sum of all points in the given clusterVector
-    def calculateSumOfClusterVectorEntries(self, clusterVector):
+    def calculateSumOfClusterVectorEntries(self, clusterVector):                    # Calculate the sum of all points in the given clusterVector
         sum = np.zeros(self.amountOfColumns - 1)
         for id in clusterVector:
             sum += self.getPointFromID(id)    
         return sum
                 
-    # Calculate the new averaged value of the centroid of the given cluster. If a cluster has no points then return a vector with only 0 as an entry
-    def calculateNewCentroid(self, clusterVectorSize, sumOfClusterVectorEntries):
-        if (clusterVectorSize == 0): 
+    def calculateNewCentroid(self, clusterVectorSize, sumOfClusterVectorEntries):   # Calculate the new averaged value of the centroid of the given cluster. 
+        if (clusterVectorSize == 0):                                                # If a cluster has no ID's then return a vector with only 0 as an entry
             return np.zeros(1)
         else:
             return sumOfClusterVectorEntries / clusterVectorSize
         
-    # Calculate the sum of distances of the data points to the centers of the clusters they belong to
-    def calculateLossFunctionValue(self):
+    def calculateLossFunctionValue(self):                                           # Calculate the sum of all the distances of the data points to the centers of the clusters they belong to.        
         loss = 0
         for clusterIndex in range(0, self.amountOfClusters):
             clusterVector = self.getClusterVector(clusterIndex)
@@ -128,13 +124,11 @@ class KMeansClusteringEuclidean:
     # General functions
     #########################################################################################################
 
-    # Empties the dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry        
-    def emptyClusterDictionary(self):
+    def emptyClusterDictionary(self):                                                # Empties the dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry        
         for clusterIndex in range(0, self.amountOfClusters):
             self.clusterDictionary[clusterIndex] = []
 
-    # Fill each Clusters CSV file with the points belonging to it. 
-    def fillClusterCSV(self):
+    def fillClusterCSV(self):                                                         # Fill each Clusters CSV file with the points belonging to it. 
         for clusterIndexKey in self.clusterDictionary:
             clusterIDVector = self.clusterDictionary[clusterIndexKey]
             for pointID in clusterIDVector:
@@ -146,12 +140,11 @@ class KMeansClusteringEuclidean:
     #  Composite funcitions
     #########################################################################################################
 
-    # Sets the first centroids by means of the maxima of the data columns
-    def firstIteration(self):
-        self.kMeansPlusPlusMethod()
-        self.setDistanceOfPointsToCentroidsMatrix()
-        self.setClusterDictionary()
-        self.setCentroids()
+    def firstIteration(self):                                   # Only called for first iteration, sets the first centroids by means of the maxima of the data columns.
+        self.kMeansPlusPlusMethod()                             # Set start centroids by K++    
+        self.setDistanceOfPointsToCentroidsMatrix()             # Get distance points to centroids matrix
+        self.setClusterDictionary()                             # Set cluster dictionary
+        self.setCentroids()                                     # Set new centroids
         
     def runFirstIterationKPlusPlus(self):
         self.kMeansPlusPlusMethod()
@@ -165,8 +158,7 @@ class KMeansClusteringEuclidean:
         self.setClusterDictionary()
         self.setCentroids()
 
-    # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
-    def improveLossFunctionValue(self):
+    def improveLossFunctionValue(self):                           # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
         self.setDistanceOfPointsToCentroidsMatrix()
         self.setClusterDictionary()
         self.setCentroids()

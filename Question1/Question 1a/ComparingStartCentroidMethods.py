@@ -24,7 +24,7 @@ def improveRandomCentroidStartForFourtySteps(K):
     startLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
     lossFunctionvalue = startLossFunctionValue
     while (lossFunctionvalue != None):
-        lossFunctionvalue = runNewIterationWithFixedEnd(lossFunctionvalue, currentAlgorithmIterationValues, currentRunNumber)
+        lossFunctionvalue = runNewIterationWithFixedEnd(currentAlgorithmIterationValues, currentRunNumber)
         randomCentroidsListForK.append(lossFunctionvalue)
         currentRunNumber += 1
     randomCentroidsList.append(randomCentroidsListForK)
@@ -49,7 +49,7 @@ def improveKPlusplusCentroidStartForFourtySteps(K):
     startLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
     lossFunctionvalue = startLossFunctionValue
     while (lossFunctionvalue != None):
-        lossFunctionvalue = runNewIterationWithFixedEnd(lossFunctionvalue, currentAlgorithmIterationValues, currentRunNumber)
+        lossFunctionvalue = runNewIterationWithFixedEnd(currentAlgorithmIterationValues, currentRunNumber)
         KPlusPlusCentroidsListForK.append(lossFunctionvalue)
         currentRunNumber += 1
     KPlusPlusList.append(KPlusPlusCentroidsListForK)
