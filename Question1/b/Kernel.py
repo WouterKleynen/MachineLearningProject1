@@ -14,11 +14,12 @@ def standardize(column):
     return Z
 
 def standardizeData(data):
-    standardizedMatrix = np.zeros((data.shape[0], data.shape[1] - 1))
+    standardizedMatrix = np.zeros((data.shape[0], data.shape[1]))
     numberOfColumns = data.shape[1]
     for i in range(0, numberOfColumns):
-        standardizedMatrix[:, i-1] = standardize(data[:, i])                                        
+        standardizedMatrix[:, i] = standardize(data[:, i])                                        
     pd.DataFrame(standardizedMatrix).to_csv("Dataset\standardizedData.csv",index=False, header=False)
+    return standardizedMatrix
 
 def runFirstIteration(dataSetFilePath, K):
     currentAlgorithmIterationValues = KMeansClustering(dataSetFilePath, K)                         # Create an instance of the KMeansClusteringEuclidean class.
@@ -28,7 +29,9 @@ def runFirstIteration(dataSetFilePath, K):
 
 dataSetFilePath = 'Dataset/InputData.csv'                                                           # Set data File path to that of the assignment data sheet.
 data = pd.read_csv(dataSetFilePath).to_numpy()
-dataWithoutIDMatrix = data[:, 1:]
+print(data)
 standardizedData = standardizeData(data)
+dataWithoutIDMatrix = standardizedData[:, 1:]
 stadardizedPath = "Dataset/standardizedData.csv"
-runFirstIteration(stadardizedPath, 10)
+testPath = "Dataset/testing.csv"
+runFirstIteration(testPath, 10)
