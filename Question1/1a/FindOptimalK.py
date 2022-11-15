@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from AlgorithmClass import KMeansClusteringEuclidean
+from KMeansClusteringEuclidean import *
 
 lossFunctionValuesForK =  []
 

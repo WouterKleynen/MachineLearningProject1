@@ -1,5 +1,5 @@
 import pandas as pd
-from AlgorithmClass import KMeansClusteringEuclidean
+from KMeansClusteringEuclidean import *
 from Tools import createCSVClusterFiles
 
 # This file contains the functions that are used to iteratively call the KMeansClusteringEuclidean() class functions
