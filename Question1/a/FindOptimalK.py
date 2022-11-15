@@ -51,16 +51,16 @@ print(xAxisValyes)
 print(lossFunctionValuesForK)
 # plotting the points 
 
-plt.plot(xAxisValyes, lossFunctionValuesForK, color='black', linestyle='dashed', linewidth = 3,
-         marker='o', markerfacecolor='red', markersize=12)
+plt.plot(x, y, color='black', linestyle='dashed', linewidth = 2,
+         marker='o', markerfacecolor='red', markersize=6)
   
 # naming the x axis
 plt.xlabel('Number of clusters (K)')
 # naming the y axis
-plt.ylabel('Loss Function value')
+plt.ylabel('Final loss function value')
   
 # giving a title to my graph
-plt.title('Loss Function values for each Number of Clusters')
+plt.title('Final loss function value for each number of clusters')
   
 # function to show the plot
 plt.show()
