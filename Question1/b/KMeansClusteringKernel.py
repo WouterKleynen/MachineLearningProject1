@@ -20,11 +20,15 @@ class KMeansClusteringKernel:
         self.dataWithoutIDMatrix             = self.data[:, 1:]                                               # ID's are removed.
         self.startCentroidsMatrix            = np.zeros((self.amountOfClusters, self.amountOfColumns - 1))    # Row i is the centroid of cluster i. 
         self.kDistanceMatrix                 = np.zeros((self.amountOfRows, self.amountOfClusters))           # Row i consists of the distances of point i to each cluster.
+        self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, self.amountOfClusters))           # Row i consists of the distances of point i to each cluster.
         self.clusterDictionary               = {}                                                             # Each entry consists of a key that's the cluster index and a value that's a vector containing all the ID's of the points that belong to that cluster.
         
     #########################################################################################################
     # Getter functions
     #########################################################################################################
+    
+    def getIndexClosestCentroid(self, rowIndex):                                    # Given row index i, it gets the index of the minimum of row i of centroidToPointsDistancesMatrix, meaning the index of the cluster thats closest to point i. 
+        return np.argmin(self.centroidToPointsDistancesMatrix[rowIndex])
     
     def getIndexMinimumCluster(self, rowIndex):                                    # Given row index i, it gets the index of the minimum of row i of kDistanceMatrix
         return np.argmin(self.kDistanceMatrix[rowIndex])
@@ -94,6 +98,12 @@ class KMeansClusteringKernel:
     # Setter functions
     #########################################################################################################
     
+    
+    def setDistanceOfPointsToCentroidsMatrix(self):                                 # Sets the centroidToPointsDistancesMatrix (N x K) entries, where row i stores the distance of point i to each cluster. Or similarly where column j stores the distance of all points to cluster j.
+        for rowIndex in range (0, self.amountOfRows):
+            for centroidIndex in range(self.amountOfClusters):
+                self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
+    
     def setKAccentValues(self):                                 
         for rowIndex in range (0, self.amountOfRows):
             for clusterIndex in range(self.amountOfClusters):
@@ -112,9 +122,16 @@ class KMeansClusteringKernel:
                     break
             C.append(self.dataWithoutIDMatrix[i])
         self.centroidsMatrix = np.array(C)
-    
-    def setClusterDictionary(self):   
-                                                                                   # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
+        print(self.centroidsMatrix)
+
+    def setClusterDictionaryFirstRun(self):                                                # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
+        self.emptyClusterDictionary()                                              # empty the old cluster vectors.
+        for rowIndex in range(self.amountOfRows):                                  # iterate over all the points.
+            id = self.idVector[rowIndex]                                           # Get the ID belonging to each point.
+            closestClusterIndex = self.getIndexClosestCentroid(rowIndex)           # Get the index of closest centroid by finding the minimum of row i of centroidToPointsDistancesMatrix.
+            self.clusterDictionary[closestClusterIndex].append(id)
+
+    def setClusterDictionary(self):                                                # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
         self.emptyClusterDictionary()                                              # empty the old cluster vectors.
         for rowIndex in range(self.amountOfRows):                                  # iterate over all the points.
             id = self.idVector[rowIndex]                                           # Get the ID belonging to each point.
@@ -157,8 +174,13 @@ class KMeansClusteringKernel:
         self.setClusterDictionary()                             # Set cluster dictionary
         self.setKAccentValues()                                 # Get distance points to centroids matrix
         
+    def firstIteration(self):                                   # Only called for first iteration, sets the first centroids by means of the maxima of the data columns.
+        self.kMeansPlusPlusMethod()                             # Set start centroids by K++    
+        self.setDistanceOfPointsToCentroidsMatrix()             # Get distance points to centroids matrix
+        self.setClusterDictionaryFirstRun()                     # Set cluster dictionary
+        
     def improveLossFunctionValueKernel(self):                   # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
-        self.setKAccentValues()
         self.setClusterDictionary()
+        self.setKAccentValues()
 
 
