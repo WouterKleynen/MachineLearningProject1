@@ -16,8 +16,8 @@ class KMeansClusteringEuclidean:
         self.amountOfColumns                 = len(self.data[0])                                              # Since we will remove the ID's we usually work with 1 column less
         self.idVector                        = self.data[:, 0]                                                # Only ID's are extracted
         self.dataWithoutIDMatrix             = self.data[:, 1:]                                               # ID's are removed
-        self.centroidsMatrix                 = np.zeros((self.amountOfClusters, self.amountOfColumns-1))      # Consists of the centroids vector where column i is centroid i. 
-        self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, len(self.centroidsMatrix)))       # Column i consits of the distances of all points to cluster i
+        self.centroidsMatrix                 = np.zeros((self.amountOfColumns-1, self.amountOfClusters))      # Consists of the centroids vector where row i is centroid i. 
+        self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, self.amountOfClusters))           # Column i consits of the distances of all points to cluster i
         self.clusterDictionary               = {}                                                             # Each entry consists of a key that's the cluster index and a value that's a vector containing all the ID's of the points that belong to that cluster
     
     #########################################################################################################

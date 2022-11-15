@@ -5,6 +5,7 @@ from Tools import createCSVClusterFiles
 # This file contains the functions that are used to iteratively call the KMeansClusteringEuclidean() class functions
 # to run the K Means Euclidean Clustering algorithm until the given the treshold is reached
 
+
 dataSetFilePath = 'Dataset/InputData.csv'                                                           # Set data File path to that of the assignment data sheet.
 
 # Is called to run the first iteration. The first iteration differs from other iteration since it has to construct start centroids.
@@ -26,7 +27,7 @@ def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, 
         return None                                                                                 # Return None when the ratio is below the Treshold
     return newLossFunctionValue                                                                     # update the loss function value to be able to compare the new value to the old value
 
-# Runs the K Means Euclidean Clustering algorithm for a given K until the treshold is reached.
+# Runs the K Means Euclidean Clustering algorithm for a given K unt
 def improveUntilTresholdReached(K, treshold, printIntermediateLossFunctionValues=False):
     currentAlgorithmIterationValues = runFirstIteration(K)                                          # Update to first Iteration (this differs from other iteration since it has to construct start centroids)
     startLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()           # Calculate the start loss function value after the first iteration
