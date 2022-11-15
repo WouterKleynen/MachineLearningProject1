@@ -13,13 +13,13 @@ class KMeansClusteringEuclidean:
         self.data                            = pd.read_csv(dataFilePath).to_numpy()
         self.amountOfClusters                = K
         self.amountOfRows                    = len(self.data)
-        self.amountOfColumns                 = len(self.data[0])                                              # Since we will remove the ID's we usually work with 1 column less
-        self.idVector                        = self.data[:, 0]                                                # Only ID's are extracted
-        self.dataWithoutIDMatrix             = self.data[:, 1:]                                               # ID's are removed
-        self.centroidsMatrix                 = np.zeros((self.amountOfColumns-1, self.amountOfClusters))      # Consists of the centroids vector where row i is centroid i. 
-        self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, self.amountOfClusters))           # Column i consits of the distances of all points to cluster i
+        self.amountOfColumns                 = len(self.data[0])                                              # Since we will remove the ID's we usually work with 1 column less.
+        self.idVector                        = self.data[:, 0]                                                # Only ID's are extracted.
+        self.dataWithoutIDMatrix             = self.data[:, 1:]                                               # ID's are removed.
+        self.centroidsMatrix                 = np.zeros((self.amountOfClusters, self.amountOfColumns - 1))      # Column i is centroid of cluster i. 
+        self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, self.amountOfClusters))           # Column i consits of the distances of all points to cluster i.
         self.clusterDictionary               = {}                                                             # Each entry consists of a key that's the cluster index and a value that's a vector containing all the ID's of the points that belong to that cluster
-    
+        print(len(self.centroidsMatrix[0]))
     #########################################################################################################
     # Getter functions
     #########################################################################################################
@@ -85,6 +85,8 @@ class KMeansClusteringEuclidean:
 
     def setCentroidOfCluster(self, clusterIndex, clusterVectorSize, sumOfClusterVectorEntries):         # Calculate new centroid based on the points in the cluster and set this new centroid in centroidsMatrix at the clusterIndex row
         self.centroidsMatrix[clusterIndex, :] = self.calculateNewCentroid(clusterVectorSize, sumOfClusterVectorEntries)
+       #print(len(self.centroidsMatrix[0]))
+
     
     # Sets the Centroids of all clusters by calculatin the new cluster points average
     def setCentroids(self):

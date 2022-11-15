@@ -32,6 +32,7 @@ def improveUntilTresholdReached(K, treshold, printIntermediateLossFunctionValues
     currentAlgorithmIterationValues = runFirstIteration(K)                                          # Update to first Iteration (this differs from other iteration since it has to construct start centroids)
     startLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()           # Calculate the start loss function value after the first iteration
     lossFunctionvalue = startLossFunctionValue                                                      # set lossFunctionvalue to startLossFunctionValue so they can be compared in the for loop
+    # print(len(currentAlgorithmIterationValues.centroidsMatrix[0]))
     while (lossFunctionvalue != None):                                                              # loop from 0 untill the iteration that the treshold is reached: when previousLossFunctionvalue == None
         lossFunctionvalue = runNewIteration(lossFunctionvalue, currentAlgorithmIterationValues, K, treshold, printIntermediateLossFunctionValues) # update each previous loss function value with a new improved one
     return lossFunctionvalue
