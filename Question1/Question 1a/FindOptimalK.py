@@ -1,10 +1,15 @@
 import matplotlib.pyplot as plt
-from RunAlgorithm import runFirstIteration
-
-# lossFunctionValuePerKList = [260193326.7624317, 198061130.83388263, 155563638.1885101, 125341947.04330947, 121258416.71073835, 101505029.84715219, 100801930.51575494, 89733070.97581671, 89195408.9602358]
-# xAxisValyes               = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+from AlgorithmClass import KMeansClusteringEuclidean
 
 lossFunctionValuesForK =  []
+
+dataSetFilePath = 'Dataset/InputData.csv'                                                           # Set data File path to that of the assignment data sheet.
+
+# Is called to run the first iteration. The first iteration differs from other iteration since it has to construct start centroids.
+def runFirstIteration(K):
+    currentAlgorithmIterationValues = KMeansClusteringEuclidean(dataSetFilePath, K)                 # Create an instance of the KMeansClusteringEuclidean class.
+    currentAlgorithmIterationValues.firstIteration()                                                # Set the start Centroids and fill each cluster with its closest data points for the first run of the algorithm.
+    return currentAlgorithmIterationValues
 
 def improveUntilTresholdReachedForOptimalK(K, treshold, printIntermediateLossFunctionValues=False):
     # Update to first Iteration (this differs from other iteration since it has to construct start centroids)
