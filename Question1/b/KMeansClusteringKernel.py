@@ -113,7 +113,8 @@ class KMeansClusteringKernel:
             C.append(self.dataWithoutIDMatrix[i])
         self.centroidsMatrix = np.array(C)
     
-    def setClusterDictionary(self):                                                # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
+    def setClusterDictionary(self):   
+                                                                                   # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
         self.emptyClusterDictionary()                                              # empty the old cluster vectors.
         for rowIndex in range(self.amountOfRows):                                  # iterate over all the points.
             id = self.idVector[rowIndex]                                           # Get the ID belonging to each point.
@@ -139,6 +140,7 @@ class KMeansClusteringKernel:
             self.clusterDictionary[clusterIndex] = []
 
     def fillClusterCSV(self):                                                         # Fill each Clusters CSV file with the points belonging to it. 
+        print(self.clusterDictionary)
         for clusterIndexKey in self.clusterDictionary:
             clusterIDVector = self.clusterDictionary[clusterIndexKey]
             for pointID in clusterIDVector:
