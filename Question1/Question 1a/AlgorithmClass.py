@@ -53,8 +53,9 @@ class KMeansClusteringEuclidean:
         clusterVectorSizeVector = []
         for clusterIndex in range(0, self.amountOfClusters):
             clusterVector = self.getClusterVector(clusterIndex)                     # Gets the cluster vector i.e. the vector beloning to the cluster index that contains all the ID's of the points that are in that cluster.
-            clusterVectorSize = self.getClusterVectorSize(clusterVector)            
-            clusterVectorSizeVector.append(clusterVectorSize())
+            clusterVectorSize = self.getClusterVectorSize(clusterVector)
+            clusterVectorSizeVector.append(clusterVectorSize)
+        return clusterVectorSizeVector
      
     #########################################################################################################
     # Setter functions

@@ -26,6 +26,7 @@ def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, 
         print(currentAlgorithmIterationValues.getClusterVectorSizesVector())
         print(f"Final loss function value for K = {K} is {newLossFunctionValue}")
         return None                                                                                 # Return None when the ratio is below the Treshold
+    return newLossFunctionValue
 
 # Runs the K Means Euclidean Clustering algorithm for a given K unt
 def improveUntilTresholdReached(K, treshold, printIntermediateLossFunctionValues=False):
