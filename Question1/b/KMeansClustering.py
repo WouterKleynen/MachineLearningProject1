@@ -7,7 +7,7 @@ import math
 # Throughout the code we denote point i by the row vector at position i of the dataFile, not ID i. 
 # Each variable of Vector or Matrix type is denoted as such at the end of the variable name.
 
-class KMeansClusteringEuclidean:
+class KMeansClustering:
     
     # Setup for the start parameters
     def __init__(self, dataFilePath, K):

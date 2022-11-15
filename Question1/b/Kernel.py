@@ -1,24 +1,30 @@
 import math
 import numpy as np
-from KMeansClusteringEuclidean import *
+from KMeansClustering import *
 
-dataSetFilePath = 'Dataset/testing.csv'                                                           # Set data File path to that of the assignment data sheet.
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+
+def standardize(column):
+    mu = np.average(column)
+    sigma = np.std(column)
+    Z = (column - mu)/sigma
+    return Z
+
+def standardizeData(data):
+    standardizedMatrix = np.zeros((data.shape[0], data.shape[1] - 1))
+    numberOfColumns = data.shape[1]
+    for i in range(0, numberOfColumns):
+        standardizedMatrix[:, i-1] = standardize(data[:, i])                                        
+    pd.DataFrame(standardizedMatrix).to_csv("Dataset\standardizedData.csv",index=False, header=False)
 
 def runFirstIteration(K):
-    currentAlgorithmIterationValues = KMeansClusteringEuclidean(dataSetFilePath, K)                 # Create an instance of the KMeansClusteringEuclidean class.
+    currentAlgorithmIterationValues = KMeansClustering(dataSetFilePath, K)                         # Create an instance of the KMeansClusteringEuclidean class.
     currentAlgorithmIterationValues.firstIteration()                                                # Set the start Centroids and fill each cluster with its closest data points for the first run of the algorithm.
-    return currentAlgorithmIterationValues
 
-    
-K = 10
-values = runFirstIteration(K)
-sigma = 1000 
-point1 = np.array([28143,0,1,1,1,174,1,0,0,7000,0])
-point2 = np.array([97752,0,4,1,1,43300,26,2077,4,6935,1])
-
-# print(getGaussianDistance(point1, point2, sigma))
-# print(getGaussianDistance(point1, point2, sigma))
-
-
-# print(values.clusterDictionary)
-print(values.sumOfGaussianDistanceWithAllPoints(1, sigma))
+dataSetFilePath = 'Dataset/InputData.csv'                                                           # Set data File path to that of the assignment data sheet.
+data = pd.read_csv(dataSetFilePath).to_numpy()
+dataWithoutIDMatrix = data[:, 1:]
+standardizeData(data)
