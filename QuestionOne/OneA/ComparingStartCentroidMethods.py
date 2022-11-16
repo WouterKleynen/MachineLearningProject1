@@ -1,4 +1,4 @@
-from KMeansClusteringEuclidean import *
+from EuclideanKMeansClustering import *
 import matplotlib.pyplot as plt
 
 # This file contains functions to asses which start centroid method works best for our data: K++ or random. 
@@ -13,8 +13,8 @@ randomCentroidsFinalLossList = []
 
 # First iteration which uses random start centroids
 def startFirstIterationRandom(K):
-    currentAlgorithmIterationValues = KMeansClusteringEuclidean(dataSetFilePath, K)
-    currentAlgorithmIterationValues.runFirstIterationRandom()
+    currentAlgorithmIterationValues = EuclideanKMeansClustering(dataSetFilePath, K)
+    currentAlgorithmIterationValues.firstIterationRandom()
     return currentAlgorithmIterationValues
 
 # Minor changes w.r.t improveUntilTresholdReached() consisting of appending to list for plotting and removing redundant variables 
@@ -45,7 +45,7 @@ KPlusPlusFinalLossList = []
 
 # First iteration which uses K++ start centroids
 def startFirstIterationKplusplus(K):
-    currentAlgorithmIterationValues = KMeansClusteringEuclidean(dataSetFilePath, K)
+    currentAlgorithmIterationValues = EuclideanKMeansClustering(dataSetFilePath, K)
     currentAlgorithmIterationValues.runFirstIterationKPlusPlus()
     return currentAlgorithmIterationValues
 

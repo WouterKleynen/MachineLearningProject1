@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from KMeansClusteringEuclidean import *
+from EuclideanKMeansClustering import EuclideanKMeansClustering
 
 lossFunctionValuesForK =  []
 
@@ -7,7 +7,7 @@ dataSetFilePath = 'Dataset/InputData.csv'                                       
 
 # Is called to run the first iteration. The first iteration differs from other iteration since it has to construct start centroids.
 def runFirstIteration(K):
-    currentAlgorithmIterationValues = KMeansClusteringEuclidean(dataSetFilePath, K)                 # Create an instance of the KMeansClusteringEuclidean class.
+    currentAlgorithmIterationValues = EuclideanKMeansClustering(dataSetFilePath, K)                 # Create an instance of the KMeansClusteringEuclidean class.
     currentAlgorithmIterationValues.firstIteration()                                                # Set the start Centroids and fill each cluster with its closest data points for the first run of the algorithm.
     return currentAlgorithmIterationValues
 
