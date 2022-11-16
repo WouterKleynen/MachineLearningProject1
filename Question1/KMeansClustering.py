@@ -1,24 +1,21 @@
 import pandas as pd
 import numpy as np
-from Tools import getEuclideanDistance, getGaussianDistance, getGaussianDistanceWithItself
 import scipy
-import math
 
 # Throughout the code we denote point i by the row vector at position i of the dataFile, not ID i. 
 # Each variable of Vector or Matrix type is denoted as such at the end of the variable name.
 
-class KMeansClusteringKernel:
+class KMeansClustering:
     
     # Setup for the start parameters
-    def __init__(self, dataFilePath, K, sigma):
-        self.sigma                           = sigma
+    def __init__(self, dataFilePath, K):
         self.data                            = pd.read_csv(dataFilePath).to_numpy()
         self.amountOfClusters                = K
         self.amountOfRows                    = len(self.data)
         self.amountOfColumns                 = len(self.data[0])                                              # Since we will remove the ID's we usually work with 1 column less.
         self.idVector                        = self.data[:, 0]                                                # Only ID's are extracted.
         self.dataWithoutIDMatrix             = self.data[:, 1:]                                               # ID's are removed.
-        self.kDistanceMatrix                 = np.zeros((self.amountOfRows, self.amountOfClusters))           # Row i consists of the distances of point i to each cluster.
+        self.centroidsMatrix                 = np.zeros((self.amountOfClusters, self.amountOfColumns - 1))    # Row i is the centroid of cluster i. 
         self.centroidToPointsDistancesMatrix = np.zeros((self.amountOfRows, self.amountOfClusters))           # Row i consists of the distances of point i to each cluster.
         self.clusterDictionary               = {}                                                             # Each entry consists of a key that's the cluster index and a value that's a vector containing all the ID's of the points that belong to that cluster.
         
@@ -28,9 +25,6 @@ class KMeansClusteringKernel:
     
     def getIndexClosestCentroid(self, rowIndex):                                    # Given row index i, it gets the index of the minimum of row i of centroidToPointsDistancesMatrix, meaning the index of the cluster thats closest to point i. 
         return np.argmin(self.centroidToPointsDistancesMatrix[rowIndex])
-    
-    def getIndexMinimumCluster(self, rowIndex):                                    # Given row index i, it gets the index of the minimum of row i of kDistanceMatrix
-        return np.argmin(self.kDistanceMatrix[rowIndex])
     
     def getClusterVector(self, clusterIndex):                                       # Gets the vector containing all the ID's of the points that belong to cluster clusterIndex
         return self.clusterDictionary[clusterIndex]
@@ -61,79 +55,16 @@ class KMeansClusteringKernel:
             clusterVectorSize = self.getClusterVectorSize(clusterVector)
             clusterVectorSizeVector.append(clusterVectorSize)
         return clusterVectorSizeVector
-
-    def sumOfGaussianDistanceWithPoint(self, point, clusterIndex):
-        totalSum = 0
-        clusterVector = self.getClusterVector(clusterIndex)
-        for ID in clusterVector:
-            pointInCluster = self.getPointFromID(ID)           
-            totalSum       += getGaussianDistance(point, pointInCluster, self.sigma)
-        return totalSum
-    
-    def sumOfGaussianDistanceWithAllPoints(self, clusterIndex):
-        totalSum = 0
-        clusterVector = self.getClusterVector(clusterIndex)
-        for ID in clusterVector:
-            pointInCluster = self.getPointFromID(ID)
-            for IDAgain in clusterVector:
-                pointInclusterAgain = self.getPointFromID(IDAgain)
-                totalSum            += getGaussianDistance(pointInCluster, pointInclusterAgain, self.sigma)
-        return totalSum
-
-    def sumOfGaussianDistanceWithAllPointsVector(self):
-        sumOfGaussianDistanceWithAllPointsVector = []
-        for clusterIndex in range(0, self.amountOfClusters):
-            value = self.sumOfGaussianDistanceWithAllPoints(clusterIndex)
-            sumOfGaussianDistanceWithAllPointsVector.append(value)
-        return sumOfGaussianDistanceWithAllPointsVector
-    
-    def getKAccentValueNew(self, point, clusterIndex, sumOfGaussianDistanceWithAllPoints, clusterSize):
-        if clusterSize == 0:
-            return None
-        firstTerm       = 1
-        sumOfGaussianDistanceWithPoint     = self.sumOfGaussianDistanceWithPoint(point, clusterIndex)
-        secondTerm = (- 2.0 / clusterSize) * sumOfGaussianDistanceWithPoint
-        thirdTerm = (1.0 / clusterSize**2) * sumOfGaussianDistanceWithAllPoints
-        value = firstTerm + secondTerm + thirdTerm
-        return value
-            
-    
-    def getKAccentValue(self, point, clusterIndex):
-        firstTerm       = getGaussianDistanceWithItself(point, self.sigma)
-        clusterVector   = self.getClusterVector(clusterIndex)
-        clusterSize     = self.getClusterVectorSize(clusterVector)
-        if clusterSize == 0:
-            return None
-        sumOfGaussianDistanceWithPoint     = self.sumOfGaussianDistanceWithPoint(point, clusterIndex)
-        sumOfGaussianDistanceWithAllPoints = self.sumOfGaussianDistanceWithAllPoints(clusterIndex)
-        if (sumOfGaussianDistanceWithAllPoints == 1.0):
-            print("YES!!")
-        secondTerm = (- 2.0 / clusterSize) * sumOfGaussianDistanceWithPoint
-        thirdTerm = (1.0 / clusterSize**2) * sumOfGaussianDistanceWithAllPoints
-        value = firstTerm + secondTerm + thirdTerm
-        return value
-
+     
     #########################################################################################################
     # Setter functions
     #########################################################################################################
-
+    
     def setDistanceOfPointsToCentroidsMatrix(self):                                 # Sets the centroidToPointsDistancesMatrix (N x K) entries, where row i stores the distance of point i to each cluster. Or similarly where column j stores the distance of all points to cluster j.
         for rowIndex in range (0, self.amountOfRows):
             for centroidIndex in range(self.amountOfClusters):
                 self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
     
-    def setKAccentValuesNew(self):
-        clusterVectorSizes = self.getClusterVectorSizesVector()
-        K3Vector           = self.sumOfGaussianDistanceWithAllPointsVector()
-        for rowIndex in range (0, self.amountOfRows):
-            for clusterIndex in range(self.amountOfClusters):
-                self.kDistanceMatrix[rowIndex, clusterIndex] = self.getKAccentValueNew(self.dataWithoutIDMatrix[rowIndex], clusterIndex, K3Vector[clusterIndex], clusterVectorSizes[clusterIndex])
-
-    def setKAccentValues(self):                                 
-        for rowIndex in range (0, self.amountOfRows):
-            for clusterIndex in range(self.amountOfClusters):
-                self.kDistanceMatrix[rowIndex, clusterIndex] = self.getKAccentValue(self.dataWithoutIDMatrix[rowIndex], clusterIndex)
-
     def kMeansPlusPlusMethod(self):                                                 # More advanced K++ method to set the start centroids
         C = [self.dataWithoutIDMatrix[0]]                                           # Start column vector of length 11
         for _ in range(1, self.amountOfClusters):
@@ -147,48 +78,38 @@ class KMeansClusteringKernel:
                     break
             C.append(self.dataWithoutIDMatrix[i])
         self.centroidsMatrix = np.array(C)
-
-    def setClusterDictionaryFirstRun(self):                                        # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
-        self.emptyClusterDictionary()                                              # empty the old cluster vectors.
-        for rowIndex in range(self.amountOfRows):                                  # iterate over all the points.
-            id = self.idVector[rowIndex]                                           # Get the ID belonging to each point.
-            closestClusterIndex = self.getIndexClosestCentroid(rowIndex)           # Get the index of closest centroid by finding the minimum of row i of centroidToPointsDistancesMatrix.
-            self.clusterDictionary[closestClusterIndex].append(id)
-
+    
     def setClusterDictionary(self):                                                # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
         self.emptyClusterDictionary()                                              # empty the old cluster vectors.
         for rowIndex in range(self.amountOfRows):                                  # iterate over all the points.
             id = self.idVector[rowIndex]                                           # Get the ID belonging to each point.
-            closestClusterIndex = self.getIndexMinimumCluster(rowIndex)            # Get the index of closest centroid by finding the minimum of row i of centroidToPointsDistancesMatrix.
+            closestClusterIndex = self.getIndexClosestCentroid(rowIndex)           # Get the index of closest centroid by finding the minimum of row i of centroidToPointsDistancesMatrix.
             self.clusterDictionary[closestClusterIndex].append(id)
     
     #########################################################################################################
     # General functions
     #########################################################################################################
 
-    def emptyClusterDictionary(self):                                               # Empties the dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry        
+    def emptyClusterDictionary(self):                                                # Empties the dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry        
         for clusterIndex in range(0, self.amountOfClusters):
             self.clusterDictionary[clusterIndex] = []
 
-    def fillClusterCSV(self):                                                       # Fill each Clusters CSV file with the points belonging to it. 
+    def fillClusterCSV(self):                                                         # Fill each Clusters CSV file with the points belonging to it. 
         for clusterIndexKey in self.clusterDictionary:
             clusterIDVector = self.clusterDictionary[clusterIndexKey]
             for pointID in clusterIDVector:
                 dataPoint = self.getPointFromIDWithID(pointID)
                 dataFrame = pd.DataFrame(dataPoint)
-                dataFrame.T.to_csv(f'Dataset\KernelClusteredData\Cluster{clusterIndexKey}.csv', mode='a', index=False, header=False)
-            
-    #########################################################################################################
-    #  Composite funcitions
-    #########################################################################################################
+                dataFrame.T.to_csv(f'Dataset\EuclideanClusteredData\Cluster{clusterIndexKey}.csv', mode='a', index=False, header=False)
         
-    def firstIteration(self):                                   # Only called for first iteration, sets the first centroids by means of the maxima of the data columns.
-        self.kMeansPlusPlusMethod()                             # Set start centroids by K++    
-        self.setDistanceOfPointsToCentroidsMatrix()             # Get distance points to centroids matrix
-        self.setClusterDictionaryFirstRun()                     # Set cluster dictionary
-        
-    def improveLossFunctionValueKernel(self):                   # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
-        self.setKAccentValuesNew()
-        self.setClusterDictionary()
+# Gets Euclidean distance of 2 vectors 
+def getEuclideanDistance(a,b):
+    return np.linalg.norm(a-b)
+
+# Create a CSV file for this specific K value that will contain the eventual clusters. First emptry.
+def createCSVClusterFiles(K):
+    for clusterIndex in range (0,K):
+        euclideanClusteredCSVFile = pd.DataFrame(columns=['ID#','Balance','Qual_miles', 'cc1_miles', 'cc2_miles', 'cc3_miles', 'Bonus_miles', 'Bonus_trans', 'Flight_miles_12mo', 'Flight_trans_12', 'Days_since_enroll','Award?'])
+        euclideanClusteredCSVFile.to_csv(f'Dataset\EuclideanClusteredData\Cluster{clusterIndex}.csv', index=False) # No index used
 
 
