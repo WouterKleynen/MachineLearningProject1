@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from KMeansClusteringEuclidean import *
+from EuclideanKMeansClustering import EuclideanKMeansClustering
 
 lossFunctionValuesForK =  []
 
@@ -7,11 +7,11 @@ dataSetFilePath = 'Dataset/InputData.csv'                                       
 
 # Is called to run the first iteration. The first iteration differs from other iteration since it has to construct start centroids.
 def runFirstIteration(K):
-    currentAlgorithmIterationValues = KMeansClusteringEuclidean(dataSetFilePath, K)                 # Create an instance of the KMeansClusteringEuclidean class.
+    currentAlgorithmIterationValues = EuclideanKMeansClustering(dataSetFilePath, K)                 # Create an instance of the KMeansClusteringEuclidean class.
     currentAlgorithmIterationValues.firstIteration()                                                # Set the start Centroids and fill each cluster with its closest data points for the first run of the algorithm.
     return currentAlgorithmIterationValues
 
-def improveUntilTresholdReachedForOptimalK(K, printIntermediateLossFunctionValues=False):
+def improveUntilTresholdReachedForOptimalK(K):
     # Update to first Iteration (this differs from other iteration since it has to construct start centroids)
     currentAlgorithmIterationValues = runFirstIteration(K)
     # Calculate the start loss function value after the first iteration
@@ -41,26 +41,20 @@ def runNewIterationForOptimalK(previousLossFunctionvalue, currentAlgorithmIterat
 
 
 xAxisValyes = []
-for K in range(1, 40):
+for K in range(1, 8):
     xAxisValyes.append(K)
-    improveUntilTresholdReachedForOptimalK(K, 1.000_01)
+    improveUntilTresholdReachedForOptimalK(K)
 
-# An idea to look at relative improvements and for which K we still get meaning full data
+plt.plot(xAxisValyes, lossFunctionValuesForK, color='black', linestyle='dashed', linewidth = 2,
+        marker='o', markerfacecolor='red', markersize=6)
 
-print(xAxisValyes)
-print(lossFunctionValuesForK)
-# plotting the points 
-
-plt.plot(xAxisValyes, lossFunctionValuesForK, color='black', linestyle='dashed', linewidth = 3,
-         marker='o', markerfacecolor='red', markersize=12)
-  
 # naming the x axis
 plt.xlabel('Number of clusters (K)')
 # naming the y axis
-plt.ylabel('Loss Function value')
-  
+plt.ylabel('Final loss function value')
+
 # giving a title to my graph
-plt.title('Loss Function values for each Number of Clusters')
-  
+plt.title('Final loss function value for each number of clusters')
+
 # function to show the plot
 plt.show()

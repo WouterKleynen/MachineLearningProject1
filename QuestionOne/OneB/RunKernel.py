@@ -51,4 +51,4 @@ stadardizedPath = "Dataset/standardizedData.csv"
 testPath = "Dataset/testing.csv"
 algorithmvalues = runFirstIterationKernel(testPath, 10, 10)
 
-improveUntilUnchanged(testPath, 10, 10)
+improveUntilUnchanged(stadardizedPath, 10, 10)
