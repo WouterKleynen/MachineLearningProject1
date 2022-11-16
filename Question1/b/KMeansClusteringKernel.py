@@ -80,6 +80,24 @@ class KMeansClusteringKernel:
                 pointInclusterAgain = self.getPointFromID(IDAgain)
                 totalSum            += getGaussianDistance(pointInCluster, pointInclusterAgain, self.sigma)
         return totalSum
+
+    def sumOfGaussianDistanceWithAllPointsVector(self):
+        sumOfGaussianDistanceWithAllPointsVector = []
+        for clusterIndex in range(0, self.amountOfClusters):
+            value = self.sumOfGaussianDistanceWithAllPoints(clusterIndex)
+            sumOfGaussianDistanceWithAllPointsVector.append(value)
+        return sumOfGaussianDistanceWithAllPointsVector
+    
+    def getKAccentValueNew(self, point, clusterIndex, sumOfGaussianDistanceWithAllPoints, clusterSize):
+        if clusterSize == 0:
+            return None
+        firstTerm       = 1
+        sumOfGaussianDistanceWithPoint     = self.sumOfGaussianDistanceWithPoint(point, clusterIndex)
+        secondTerm = (- 2.0 / clusterSize) * sumOfGaussianDistanceWithPoint
+        thirdTerm = (1.0 / clusterSize**2) * sumOfGaussianDistanceWithAllPoints
+        value = firstTerm + secondTerm + thirdTerm
+        return value
+            
     
     def getKAccentValue(self, point, clusterIndex):
         firstTerm       = getGaussianDistanceWithItself(point, self.sigma)
@@ -89,6 +107,8 @@ class KMeansClusteringKernel:
             return None
         sumOfGaussianDistanceWithPoint     = self.sumOfGaussianDistanceWithPoint(point, clusterIndex)
         sumOfGaussianDistanceWithAllPoints = self.sumOfGaussianDistanceWithAllPoints(clusterIndex)
+        if (sumOfGaussianDistanceWithAllPoints == 1.0):
+            print("YES!!")
         secondTerm = (- 2.0 / clusterSize) * sumOfGaussianDistanceWithPoint
         thirdTerm = (1.0 / clusterSize**2) * sumOfGaussianDistanceWithAllPoints
         value = firstTerm + secondTerm + thirdTerm
@@ -97,13 +117,19 @@ class KMeansClusteringKernel:
     #########################################################################################################
     # Setter functions
     #########################################################################################################
-    
-    
+
     def setDistanceOfPointsToCentroidsMatrix(self):                                 # Sets the centroidToPointsDistancesMatrix (N x K) entries, where row i stores the distance of point i to each cluster. Or similarly where column j stores the distance of all points to cluster j.
         for rowIndex in range (0, self.amountOfRows):
             for centroidIndex in range(self.amountOfClusters):
                 self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
     
+    def setKAccentValuesNew(self):
+        clusterVectorSizes = self.getClusterVectorSizesVector()
+        K3Vector           = self.sumOfGaussianDistanceWithAllPointsVector()
+        for rowIndex in range (0, self.amountOfRows):
+            for clusterIndex in range(self.amountOfClusters):
+                self.kDistanceMatrix[rowIndex, clusterIndex] = self.getKAccentValueNew(self.dataWithoutIDMatrix[rowIndex], clusterIndex, K3Vector[clusterIndex], clusterVectorSizes[clusterIndex])
+
     def setKAccentValues(self):                                 
         for rowIndex in range (0, self.amountOfRows):
             for clusterIndex in range(self.amountOfClusters):
@@ -122,7 +148,6 @@ class KMeansClusteringKernel:
                     break
             C.append(self.dataWithoutIDMatrix[i])
         self.centroidsMatrix = np.array(C)
-        print(self.centroidsMatrix)
 
     def setClusterDictionaryFirstRun(self):                                        # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
         self.emptyClusterDictionary()                                              # empty the old cluster vectors.
@@ -142,12 +167,11 @@ class KMeansClusteringKernel:
     # General functions
     #########################################################################################################
 
-    def emptyClusterDictionary(self):                                                # Empties the dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry        
+    def emptyClusterDictionary(self):                                               # Empties the dictionary that contains clusterIndeces as keys and all points that are closest to that cluster as its entry        
         for clusterIndex in range(0, self.amountOfClusters):
             self.clusterDictionary[clusterIndex] = []
 
-    def fillClusterCSV(self):                                                         # Fill each Clusters CSV file with the points belonging to it. 
-        print(self.clusterDictionary)
+    def fillClusterCSV(self):                                                       # Fill each Clusters CSV file with the points belonging to it. 
         for clusterIndexKey in self.clusterDictionary:
             clusterIDVector = self.clusterDictionary[clusterIndexKey]
             for pointID in clusterIDVector:
@@ -159,10 +183,10 @@ class KMeansClusteringKernel:
     #  Composite funcitions
     #########################################################################################################
 
-    def firstIteration(self):                                   # Only called for first iteration, sets the first centroids by means of the maxima of the data columns.
-        self.kMeansPlusPlusMethod()                             # Set start centroids by K++    
-        self.setClusterDictionary()                             # Set cluster dictionary
-        self.setKAccentValues()                                 # Get distance points to centroids matrix
+    # def firstIteration(self):                                   # Only called for first iteration, sets the first centroids by means of the maxima of the data columns.
+    #     self.kMeansPlusPlusMethod()                             # Set start centroids by K++    
+    #     self.setClusterDictionary()                             # Set cluster dictionary
+    #     self.setKAccentValues()                                 # Get distance points to centroids matrix
         
     def firstIteration(self):                                   # Only called for first iteration, sets the first centroids by means of the maxima of the data columns.
         self.kMeansPlusPlusMethod()                             # Set start centroids by K++    
@@ -170,7 +194,7 @@ class KMeansClusteringKernel:
         self.setClusterDictionaryFirstRun()                     # Set cluster dictionary
         
     def improveLossFunctionValueKernel(self):                   # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
-        self.setKAccentValues()
+        self.setKAccentValuesNew()
         self.setClusterDictionary()
 
 
