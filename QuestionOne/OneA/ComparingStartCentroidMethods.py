@@ -43,10 +43,10 @@ def runNewIterationWithFixedEndRandom(currentAlgorithmIterationValues, currentRu
 KPlusPlusList = []
 KPlusPlusFinalLossList = []
 
-# First iteration which uses K++ start centroids
+# First iteration which uses K++ start centroids, K++ is default
 def startFirstIterationKplusplus(K):
     currentAlgorithmIterationValues = EuclideanKMeansClustering(dataSetFilePath, K)
-    currentAlgorithmIterationValues.runFirstIterationKPlusPlus()
+    currentAlgorithmIterationValues.firstIteration()
     return currentAlgorithmIterationValues
 
 # Minor changes w.r.t improveUntilTresholdReached() consisting of appending to list for plotting and removing redundant variables 

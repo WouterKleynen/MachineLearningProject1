@@ -58,13 +58,11 @@ class EuclideanKMeansClustering(KMeansClustering):
         self.setClusterDictionary()                             # Set cluster dictionary
         self.setCentroids()                                     # Set new centroids
 
-
     def firstIterationRandom(self):                             # Only called for first iteration, sets the first centroids by means of the maxima of the data columns.
         self.setRandomStartCentroids()                          # Set start centroids by K++    
         self.setDistanceOfPointsToCentroidsMatrix()             # Get distance points to centroids matrix
         self.setClusterDictionary()                             # Set cluster dictionary
         self.setCentroids()                                     # Set new centroids
-
 
     def improveLossFunctionValue(self):                           # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
         self.setDistanceOfPointsToCentroidsMatrix()
