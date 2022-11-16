@@ -1,4 +1,4 @@
-from EuclideanKMeansClustering import *
+from EuclideanKMeansClustering import EuclideanKMeansClustering
 import matplotlib.pyplot as plt
 
 # This file contains functions to asses which start centroid method works best for our data: K++ or random. 
