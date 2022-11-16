@@ -11,7 +11,7 @@ def runFirstIteration(K):
     currentAlgorithmIterationValues.firstIteration()                                                # Set the start Centroids and fill each cluster with its closest data points for the first run of the algorithm.
     return currentAlgorithmIterationValues
 
-def improveUntilTresholdReachedForOptimalK(K, printIntermediateLossFunctionValues=False):
+def improveUntilTresholdReachedForOptimalK(K):
     # Update to first Iteration (this differs from other iteration since it has to construct start centroids)
     currentAlgorithmIterationValues = runFirstIteration(K)
     # Calculate the start loss function value after the first iteration
@@ -41,26 +41,20 @@ def runNewIterationForOptimalK(previousLossFunctionvalue, currentAlgorithmIterat
 
 
 xAxisValyes = []
-for K in range(1, 40):
+for K in range(1, 8):
     xAxisValyes.append(K)
-    improveUntilTresholdReachedForOptimalK(K, 1.000_01)
+    improveUntilTresholdReachedForOptimalK(K)
 
-# An idea to look at relative improvements and for which K we still get meaning full data
+plt.plot(xAxisValyes, lossFunctionValuesForK, color='black', linestyle='dashed', linewidth = 2,
+        marker='o', markerfacecolor='red', markersize=6)
 
-print(xAxisValyes)
-print(lossFunctionValuesForK)
-# plotting the points 
-
-plt.plot(x, y, color='black', linestyle='dashed', linewidth = 2,
-         marker='o', markerfacecolor='red', markersize=6)
-  
 # naming the x axis
 plt.xlabel('Number of clusters (K)')
 # naming the y axis
 plt.ylabel('Final loss function value')
-  
+
 # giving a title to my graph
 plt.title('Final loss function value for each number of clusters')
-  
+
 # function to show the plot
 plt.show()
