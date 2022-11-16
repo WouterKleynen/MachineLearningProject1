@@ -40,7 +40,6 @@ def runNewIterationWithFixedEndRandom(currentAlgorithmIterationValues, currentRu
         return None
     return newLossFunctionValue
 
-
 KPlusPlusList = []
 KPlusPlusFinalLossList = []
 
@@ -49,7 +48,6 @@ def startFirstIterationKplusplus(K):
     currentAlgorithmIterationValues = KMeansClusteringEuclidean(dataSetFilePath, K)
     currentAlgorithmIterationValues.runFirstIterationKPlusPlus()
     return currentAlgorithmIterationValues
-
 
 # Minor changes w.r.t improveUntilTresholdReached() consisting of appending to list for plotting and removing redundant variables 
 def improveKPlusplusCentroidStartForFourtySteps(K):
@@ -74,6 +72,11 @@ def runNewIterationWithFixedEndKlusPlus(currentAlgorithmIterationValues, current
         return None
     return newLossFunctionValue
 
+AmountOfIterationsList = []
+
+for i in range(0, 40):
+    AmountOfIterationsList.append(i)
+    
 # Iterate from K=2 to K=41
 for K in range(2, 41):
     plt.clf()
@@ -82,10 +85,6 @@ for K in range(2, 41):
 
     randomCentroidsList = [] # Clear the plot list values after each plot
     KPlusPlusList = []
-    AmountOfIterationsList = []
-    
-    for i in range(0, 40):
-        AmountOfIterationsList.append(i)
 
     for i in range(10):
         improveRandomCentroidStartForFourtySteps(K) # run 10 iterations of the K means Euclidean algorithm with random start centroids
@@ -110,17 +109,17 @@ for K in range(2, 41):
             marker='o', markerfacecolor='red', markersize=2, label="Start centroids are determined by using K++")
     
     # Calculate the average of the end loss values
-    print(f"K = {K}, final Loss Random = {randomCentroidsFinalLossList}")
+    print(f"K = {K}, final Loss Random Values = {randomCentroidsFinalLossList}")
     randomAverageLossTotal = 0
     for lossValue in randomCentroidsFinalLossList:
         randomAverageLossTotal += lossValue
-    print(f"K = {K}, final Loss Random = {randomAverageLossTotal/float(len(randomCentroidsFinalLossList))}")
+    print(f"K = {K}, final Loss Random Average = {randomAverageLossTotal/float(len(randomCentroidsFinalLossList))}")
     
-    print(f"K = {K}, final Loss K++ = {randomCentroidsFinalLossList}")
+    print(f"K = {K}, final Loss K++ Values = {randomCentroidsFinalLossList}")
     kPlusPlusAverageLossTotal = 0
     for lossValue in KPlusPlusFinalLossList:
         kPlusPlusAverageLossTotal += lossValue
-    print(f"K = {K}, final Loss K++ = {kPlusPlusAverageLossTotal/float(len(randomCentroidsFinalLossList))}")
+    print(f"K = {K}, final Loss K++ Average = {kPlusPlusAverageLossTotal/float(len(randomCentroidsFinalLossList))}")
     
     plt.legend(loc="upper right")
     plt.xlabel('Number of iterations')
