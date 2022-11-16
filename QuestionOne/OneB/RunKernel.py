@@ -1,5 +1,5 @@
 import numpy as np
-from NEW import KernelKMeansClustering
+from KernelKMeansClustering import KernelKMeansClustering
 from Tools import createCSVClusterFilesKernel
 import matplotlib.pyplot as plt
 import numpy as np
