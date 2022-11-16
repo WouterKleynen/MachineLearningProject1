@@ -1,6 +1,5 @@
-import math
 import numpy as np
-from KMeansClusteringKernel import *
+from NEW import KernelKMeansClustering
 from Tools import createCSVClusterFilesKernel
 import matplotlib.pyplot as plt
 import numpy as np
@@ -21,7 +20,7 @@ def standardizeData(data):
     return standardizedMatrix
 
 def runFirstIterationKernel(dataSetFilePath, K, sigma):
-    algorithmValues = KMeansClusteringKernel(dataSetFilePath, K, sigma)                              
+    algorithmValues = KernelKMeansClustering(dataSetFilePath, K, sigma)                              
     algorithmValues.firstIteration()                                                                 
     return algorithmValues
 
@@ -49,6 +48,5 @@ standardizedData    = standardizeData(data)
 dataWithoutIDMatrix = standardizedData[:, 1:]
 stadardizedPath = "Dataset/standardizedData.csv"
 testPath = "Dataset/testing.csv"
-algorithmvalues = runFirstIterationKernel(testPath, 10, 10)
 
-improveUntilUnchanged(stadardizedPath, 10, 10)
+improveUntilUnchanged(testPath, 10, 10)

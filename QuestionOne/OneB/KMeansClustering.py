@@ -1,9 +1,7 @@
 import pandas as pd
 import numpy as np
 import scipy
-from setuptools import setup, find_packages
- 
-setup(name = "KMeansClustering", packages = find_packages())
+
 
 # Throughout the code we denote point i by the row vector at position i of the dataFile, not ID i. 
 # Each variable of Vector or Matrix type is denoted as such at the end of the variable name.
@@ -68,6 +66,11 @@ class KMeansClustering:
             for centroidIndex in range(self.amountOfClusters):
                 self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = self.getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
     
+    # Picks Random Centroids first the first iteration from the data set         
+    def setRandomStartCentroids(self):
+        min_, max_ = np.min(self.dataWithoutIDMatrix, axis=0), np.max(self.dataWithoutIDMatrix, axis=0)
+        self.centroidsMatrix = np.array([np.random.uniform(min_, max_) for _ in range(self.amountOfClusters)]) 
+        
     def kMeansPlusPlusMethod(self):                                                 # More advanced K++ method to set the start centroids
         C = [self.dataWithoutIDMatrix[0]]                                           # Start column vector of length 11
         for _ in range(1, self.amountOfClusters):
@@ -105,14 +108,14 @@ class KMeansClustering:
                 dataFrame = pd.DataFrame(dataPoint)
                 dataFrame.T.to_csv(f'Dataset\EuclideanClusteredData\Cluster{clusterIndexKey}.csv', mode='a', index=False, header=False)
         
-# Gets Euclidean distance of 2 vectors 
-def getEuclideanDistance(a,b):
-    return np.linalg.norm(a-b)
+    # Gets Euclidean distance of 2 vectors 
+    def getEuclideanDistance(self,a,b):
+        return np.linalg.norm(a-b)
 
-# Create a CSV file for this specific K value that will contain the eventual clusters. First emptry.
-def createCSVClusterFiles(K):
-    for clusterIndex in range (0,K):
-        euclideanClusteredCSVFile = pd.DataFrame(columns=['ID#','Balance','Qual_miles', 'cc1_miles', 'cc2_miles', 'cc3_miles', 'Bonus_miles', 'Bonus_trans', 'Flight_miles_12mo', 'Flight_trans_12', 'Days_since_enroll','Award?'])
-        euclideanClusteredCSVFile.to_csv(f'Dataset\EuclideanClusteredData\Cluster{clusterIndex}.csv', index=False) # No index used
+    # Create a CSV file for this specific K value that will contain the eventual clusters. First emptry.
+    def createCSVClusterFiles(self, K):
+        for clusterIndex in range (0,K):
+            euclideanClusteredCSVFile = pd.DataFrame(columns=['ID#','Balance','Qual_miles', 'cc1_miles', 'cc2_miles', 'cc3_miles', 'Bonus_miles', 'Bonus_trans', 'Flight_miles_12mo', 'Flight_trans_12', 'Days_since_enroll','Award?'])
+            euclideanClusteredCSVFile.to_csv(f'Dataset\EuclideanClusteredData\Cluster{clusterIndex}.csv', index=False) # No index used
 
 
