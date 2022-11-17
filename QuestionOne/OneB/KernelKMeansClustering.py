@@ -13,6 +13,7 @@ class KernelKMeansClustering(KMeansClustering):
         super(KernelKMeansClustering, self).__init__(dataFilePath, K)
         self.kernel                          = kernel
         self.originalData                    = self.dataWithoutIDMatrix
+        self.standardizedData                = self.dataWithoutIDMatrix
         self.kDistanceMatrix                 = np.zeros((self.amountOfRows, self.amountOfClusters))           # Row i consists of the distances of point i to each cluster.
     
     #########################################################################################################
@@ -32,6 +33,7 @@ class KernelKMeansClustering(KMeansClustering):
             standardizedMatrix[:, columnIndex] = self.standardize(columnIndex)
         standardizedMatrix = standardizedMatrix[:, 1:]                                       
         pd.DataFrame(standardizedMatrix).to_csv("Dataset\standardizedData.csv",index=False, header=False)
+        self.standardizedData    = standardizedMatrix
         self.dataWithoutIDMatrix = standardizedMatrix
     
     #########################################################################################################
@@ -119,6 +121,7 @@ class KernelKMeansClustering(KMeansClustering):
             for id in clusterVector:
                 point = self.getPointFromID(id)
                 loss += self.getEuclideanDistance(centroidVector, point)
+        self.dataWithoutIDMatrix = self.standardizedData
         return loss
             
     #########################################################################################################
@@ -134,3 +137,5 @@ class KernelKMeansClustering(KMeansClustering):
     def improveLossFunctionValueKernel(self):                   # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
         self.setKAccentValues()
         self.setClusterDictionary()
+        
+        
