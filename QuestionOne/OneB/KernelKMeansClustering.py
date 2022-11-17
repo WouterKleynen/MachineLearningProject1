@@ -137,5 +137,6 @@ class KernelKMeansClustering(KMeansClustering):
     def improveLossFunctionValueKernel(self):                   # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
         self.setKAccentValues()
         self.setClusterDictionary()
+        self.setCentroids()
         
         

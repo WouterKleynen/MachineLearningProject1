@@ -9,25 +9,22 @@ def runFirstIterationKernel(dataSetFilePath, K, sigma):
     return algorithmValues
 
 def runNewIterationKernel(algorithmValues, K):
-    oldClusterVectorSizesVector = algorithmValues.getClusterVectorSizesVector()
-    print(oldClusterVectorSizesVector)                       
+    previousLossFunctionValue = algorithmValues.calculateLossFunctionValue()
     createCSVClusterFilesKernel(K)                                                                  
+    print(f"current loss fuction value = {previousLossFunctionValue}")
     algorithmValues.improveLossFunctionValueKernel()                                                
-    newClusterVectorSizesVector = algorithmValues.getClusterVectorSizesVector()
-    print(algorithmValues.calculateLossFunctionValue())
-    if (newClusterVectorSizesVector  == oldClusterVectorSizesVector): 
-        algorithmValues.setCentroids()
+    newLossFunctionValue = algorithmValues.calculateLossFunctionValue()
+    if (newLossFunctionValue  == previousLossFunctionValue): 
         print(algorithmValues.calculateLossFunctionValue())                               
         algorithmValues.fillClusterCSV()                                                            
         return None           
-    return newClusterVectorSizesVector
+    return newLossFunctionValue
 
 def improveUntilUnchanged(dataSetFilePath, K, sigma):
     algorithmValues                 = runFirstIterationKernel(dataSetFilePath, K, sigma)                                          
     newClusterVectorSizesVector     = algorithmValues.getClusterVectorSizesVector()        
     while (newClusterVectorSizesVector != None):                                                              
         newClusterVectorSizesVector = runNewIterationKernel(algorithmValues, K) 
-        
     return newClusterVectorSizesVector
 
 # Gets Euclidean distance of 2 vectors 
