@@ -12,7 +12,9 @@ def runFirstIteration(dataSetFilePath, K):
 
 # Is called in every iteration to decrease the Loss Function. If the intermediate loss function values need to be printed, set printIntermediateLossFunctionValues to true
 def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, K):
-    currentAlgorithmIterationValues.createCSVClusterFiles(K)                                                                        # Create CSV file for each cluster
+    currentAlgorithmIterationValues.createCSVClusterFiles(K) 
+    print(currentAlgorithmIterationValues.getClusterVectorSizesVector())                                                                  
+    # Create CSV file for each cluster
     print(f"current loss fuction value = {previousLossFunctionvalue}")
     currentAlgorithmIterationValues.improveLossFunctionValue()                                      # Update the centroids by using the improveLossFunction() function
     newLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()             # Determine the value of the loss function after the new centroid update
@@ -31,6 +33,7 @@ def improveUntilTresholdReached(dataSetFilePath, K):
         lossFunctionvalue = runNewIteration(lossFunctionvalue, currentAlgorithmIterationValues, K)  # update each previous loss function value with a new improved one
     return lossFunctionvalue
 
-dataSetFilePath = 'Dataset/InputData.csv'                                                           # Set data File path to that of the assignment data sheet.
+dataSetFilePath = 'Dataset/InputData.csv'   # Set data File path to that of the assignment data sheet.
+testData = "Dataset/subsetOfInputData.csv"
 
-improveUntilTresholdReached(dataSetFilePath, 10)
+improveUntilTresholdReached(testData, 10)
