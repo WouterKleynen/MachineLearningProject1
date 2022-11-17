@@ -20,8 +20,8 @@ def runNewIterationKernel(algorithmValues, K):
         return None           
     return newLossFunctionValue
 
-def improveUntilUnchanged(dataSetFilePath, K, sigma):
-    algorithmValues                 = runFirstIterationKernel(dataSetFilePath, K, sigma)                                          
+def improveUntilUnchanged(dataSetFilePath, K, kernel):
+    algorithmValues                 = runFirstIterationKernel(dataSetFilePath, K, kernel)                                          
     newClusterVectorSizesVector     = algorithmValues.getClusterVectorSizesVector()        
     while (newClusterVectorSizesVector != None):                                                              
         newClusterVectorSizesVector = runNewIterationKernel(algorithmValues, K) 
