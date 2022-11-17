@@ -1,6 +1,7 @@
 from KernelKMeansClustering import KernelKMeansClustering
 from Tools import createCSVClusterFilesKernel
 import numpy as np
+import pandas as pd
 import math
 
 def runFirstIterationKernel(dataSetFilePath, K, sigma):
@@ -10,15 +11,26 @@ def runFirstIterationKernel(dataSetFilePath, K, sigma):
 
 def runNewIterationKernel(algorithmValues, K):
     previousLossFunctionValue = algorithmValues.calculateLossFunctionValue()
-    createCSVClusterFilesKernel(K)                                                                  
+    createCSVClusterFilesKernel(K)
+    print(algorithmValues.getClusterVectorSizesVector())                                                                  
     print(f"current loss fuction value = {previousLossFunctionValue}")
     algorithmValues.improveLossFunctionValueKernel()                                                
     newLossFunctionValue = algorithmValues.calculateLossFunctionValue()
     if (newLossFunctionValue  == previousLossFunctionValue): 
-        print(algorithmValues.calculateLossFunctionValue())                               
+        print(algorithmValues.calculateLossFunctionValue())       
+        print(algorithmValues.getClusterVectorSizesVector())                                                                                          
         algorithmValues.fillClusterCSV()                                                            
         return None           
     return newLossFunctionValue
+
+
+def sigmaOfStandardizedData(matrix):
+    return np.std(matrix)
+
+path = 'Dataset/standardizedData.csv'
+matrix = pd.read_csv(path).to_numpy()
+print(sigmaOfStandardizedData(matrix))
+
 
 def improveUntilUnchanged(dataSetFilePath, K, kernel):
     algorithmValues                 = runFirstIterationKernel(dataSetFilePath, K, kernel)                                          
@@ -31,11 +43,14 @@ def improveUntilUnchanged(dataSetFilePath, K, kernel):
 def getEuclideanDistance(a,b):
     return np.linalg.norm(a-b)
 
-sigma = 10
+sigma = 1.7
 # Gets Gaussian distance of 2 vectors given a sigma
 def gaussianKernel(point1, point2):
-    return math.exp(-(getEuclideanDistance(point1, point2)/(2 * sigma**2))**2)
+    return np.exp(-(getEuclideanDistance(point1, point2)/(2 * sigma**2))**2)
 
 kernel = gaussianKernel
 dataSetFilePath     = 'Dataset/subsetOfInputData.csv'                                                       
+
 improveUntilUnchanged(dataSetFilePath, 10, kernel)
+313583010.58404094
+86253120.90261358

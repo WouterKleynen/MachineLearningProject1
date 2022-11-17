@@ -122,6 +122,7 @@ class KMeansClustering:
         loss = 0
         for clusterIndex in range(0, self.amountOfClusters):
             clusterVector = self.getClusterVector(clusterIndex)
+            print(clusterVector)
             centroidVector = self.getCentroidVector(clusterIndex)
             for id in clusterVector:
                 point = self.getPointFromID(id)
@@ -153,5 +154,3 @@ class KMeansClustering:
         for clusterIndex in range (0,K):
             euclideanClusteredCSVFile = pd.DataFrame(columns=['ID#','Balance','Qual_miles', 'cc1_miles', 'cc2_miles', 'cc3_miles', 'Bonus_miles', 'Bonus_trans', 'Flight_miles_12mo', 'Flight_trans_12', 'Days_since_enroll','Award?'])
             euclideanClusteredCSVFile.to_csv(f'Dataset\EuclideanClusteredData\Cluster{clusterIndex}.csv', index=False) # No index used
-
-
