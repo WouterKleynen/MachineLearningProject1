@@ -1,5 +1,6 @@
 from NEW import NEW
 import numpy as np
+from Tools import createCSVClusterFilesKernel
 
 # Gets Euclidean distance of 2 vectors 
 def getEuclideanDistance(a,b):
@@ -16,15 +17,33 @@ dataSetFilePath     = 'Dataset/subsetOfInputData.csv'
 K = 10
 algorithmValues = NEW(dataSetFilePath, K, kernel)                              
 algorithmValues.firstIteration()
-print(algorithmValues.clusterDictionary)
-print(algorithmValues.getClusterVectorSizesVector())
 algorithmValues.standardizeData()
-algorithmValues.setKAccentValues()
-algorithmValues.setKernelClusterDictionary()
-print(algorithmValues.clusterDictionary)
-print(algorithmValues.getClusterVectorSizesVector())
-# # algorithmValues.setKAccentValues()
-# # algorithmValues.setKernelClusterDictionary()
+
+for runIndex in range(5):
+    print(algorithmValues.getClusterVectorSizesVector())
+    print(algorithmValues.calculateLossFunctionValue())
+    #print(algorithmValues.centroidsMatrix)
+    
+    algorithmValues.setKAccentValues()
+    algorithmValues.setKernelClusterDictionary()
+    algorithmValues.setKernelCentroids
+
+# def runFirstIterationKernel(dataSetFilePath, K, kernel):
+#     algorithmValues = NEW(dataSetFilePath, K, kernel)                              
+#     algorithmValues.firstIteration()                                                                 
+#     return algorithmValues
 
 
-
+# def runNewIterationKernel(algorithmValues, K):
+#     previousLossFunctionValue = algorithmValues.calculateLossFunctionValue()
+#     createCSVClusterFilesKernel(K)
+#     print(algorithmValues.getClusterVectorSizesVector())                                                                  
+#     print(f"current loss fuction value = {previousLossFunctionValue}")
+#     algorithmValues.improveLossFunctionValueKernel()                                                
+#     newLossFunctionValue = algorithmValues.calculateLossFunctionValue()
+#     if (newLossFunctionValue  == previousLossFunctionValue): 
+#         print(algorithmValues.calculateLossFunctionValue())       
+#         print(algorithmValues.getClusterVectorSizesVector())                                                                                          
+#         algorithmValues.fillClusterCSV()                                                            
+#         return None           
+#     return newLossFunctionValue

@@ -28,8 +28,14 @@ class NEW(KMeansClustering):
     def getStandardizedPointFromPointIndex(self, pointIndex):                                   # Gets the row of standardizedDataWithoutID belonging to the given point index value. 
         return self.standardizedDataWithoutID[pointIndex, :]
     
+    def getNonStandardizedPointFromPointIndex(self, pointIndex):                                   # Gets the row of NonStandardizedDataWithoutID belonging to the given point index value. 
+        return self.nonStandardizedDataWithoutID[pointIndex, :]
+    
     def getStandardizedPointFromID(self, id):                                                   # Gets the row of standardizedDataWithoutID belonging to the given ID value. 
         return self.getStandardizedPointFromPointIndex(self.getPointIndexFromId(id))
+    
+    def getNonStandardizedPointFromID(self, id):                                                   # Gets the row of NonStandardizedDataWithoutID belonging to the given ID value. 
+        return self.getNonStandardizedPointFromPointIndex(self.getPointIndexFromId(id))
     
     def standardize(self, columnIndex):                                                                
         mu = np.average(self.data[:, columnIndex])
@@ -126,23 +132,33 @@ class NEW(KMeansClustering):
             closestClusterIndex = self.getIndexMinimumCluster(rowIndex)             # Get the index of the minimum entry of row i that is the, that index is the cluster index of the cluster that point i is put in.
             self.clusterDictionary[closestClusterIndex].append(id)
 
-    def setCentroids(self):                                                         # Sets the Centroids of all clusters by calculatin the new cluster points average
+    def setKernelCentroids(self):                                                         # Sets the Centroids of all clusters by calculatin the new cluster points average
         for clusterIndex in range(0, self.amountOfClusters):                        
             clusterVector = self.getClusterVector(clusterIndex)                     # Gets the cluster vector i.e. the vector beloning to the cluster index that contains all the ID's of the points that are in that cluster.
             clusterVectorSize = self.getClusterVectorSize(clusterVector)            
-            sumOfClusterVectorEntries = self.calculateSumOfClusterVectorEntriesNonStandardized(clusterVector)  # To calculate the sum we need the nonStandardized points to calculate to average This is compared to the non standardized centroid.
+            sumOfClusterVectorEntries = self.calculateSumOfClusterVectorEntries(clusterVector)  # To calculate the sum we need the nonStandardized points to calculate to average This is compared to the non standardized centroid.
             self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)              # calculate and set the new centroid
 
-    # def calculateSumOfClusterVectorEntries(self, clusterVector):                    # Calculate the sum of all points in the given clusterVector
-    #     sum = np.zeros(self.amountOfColumns - 1)
-    #     for ID in clusterVector:
-    #         nonStandardizedPoint = self.getNonStandardizedPointFromID(ID)
-    #         sum += nonStandardizedPoint
-    #     return sum
+    def calculateSumOfClusterVectorEntries(self, clusterVector):                    # Calculate the sum of all points in the given clusterVector
+        sum = np.zeros(self.amountOfColumns - 1)
+        for ID in clusterVector:
+            nonStandardizedPoint = self.getNonStandardizedPointFromID(ID)           # Since the centroids are non standardized this sum has to be too
+            sum += nonStandardizedPoint
+        return sum
     
+    def calculateLossFunctionValue(self):                                           # Calculate the sum of all the distances of the data points to the centers of the clusters they belong to.        
+        loss = 0
+        for clusterIndex in range(0, self.amountOfClusters):
+            clusterVector = self.getClusterVector(clusterIndex)
+            centroidVector = self.getCentroidVector(clusterIndex)
+            for ID in clusterVector:
+                nonStandardizedPoint = self.getNonStandardizedPointFromID(ID)               # point has to be non standardized                                      
+                loss += self.getEuclideanDistance(centroidVector, nonStandardizedPoint)
+        return loss
     
-    
+
     def firstIteration(self):
         self.kMeansPlusPlusMethod()
         self.setDistanceOfPointsToCentroidsMatrix()
         self.setClusterDictionaryFirstRun()
+        
