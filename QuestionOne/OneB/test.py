@@ -19,3 +19,5 @@ algorithmValues.firstIteration()
 print(algorithmValues.clusterDictionary)
 print(algorithmValues.getClusterVectorSizesVector())
 algorithmValues.standardizeData()
+algorithmValues.setKAccentValues()
+

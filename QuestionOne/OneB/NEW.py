@@ -9,15 +9,24 @@ class NEW(KMeansClustering):
     def __init__(self, dataFilePath, K, kernel):
         
         super(NEW, self).__init__(dataFilePath, K)
-        # The inherited self.dataWithoutIDMatrix is set to standardized data in the first step of the firstiteration: self.standardizeData()
+        # The inherited self.dataWithoutIDMatrix is set to standardizedDataWithoutID in the first step of the firstiteration: self.standardizeData()
         
         self.kernel                          = kernel                       # Kernel function that is being used
         self.nonStandardizedData             = self.data                    # Nonstandardized data with ID
         self.nonStandardizedDataWithoutID    = self.dataWithoutIDMatrix     # Nonstandardized data without ID
+        self.nonStandardizedIDVector         = self.data[:, 0]                                                # Only ID's are extracted.
         self.standardizedData                = np.array((self.amountOfRows, self.amountOfColumns))  # Standardized data
         self.standardizedDataWithoutID       = np.array((self.amountOfRows, self.amountOfColumns - 1))  # Standardized data without ID
         self.kAccentMatrix                   = np.zeros((self.amountOfRows, self.amountOfClusters)) # Row i consists of the distances of the kAccent values of point i.
     
+    def getPointIndexFromId(self, id):                                              
+        return np.where(self.nonStandardizedIDVector == id)[0][0]                   # You want the ID's to remain the same so nonStandardized
+    
+    def getPointFromPointIndex(self, pointIndex):                                   # Gets the row of standardizedDataWithoutID belonging to the given point index value. 
+        return self.standardizedDataWithoutID[pointIndex, :]
+    
+    def getPointFromID(self, id):                                                   # Gets the row of standardizedDataWithoutID belonging to the given ID value. 
+        return self.getPointFromPointIndex(self.getPointIndexFromId(id))
     
     def standardize(self, columnIndex):                                                                
         mu = np.average(self.data[:, columnIndex])
@@ -62,6 +71,57 @@ class NEW(KMeansClustering):
             closestClusterIndex = self.getIndexClosestCentroid(rowIndex)                      # Get the index of closest centroid by finding the minimum of row i of centroidToPointsDistancesMatrix.
             self.clusterDictionary[closestClusterIndex].append(id)
 
+    def setKAccentValues(self):
+        clusterVectorSizes = self.getClusterVectorSizesVector()
+        K3Vector           = self.sumOfKernelOfAllPointsInClusterVector()
+        for rowIndex in range (0, self.amountOfRows):
+            for clusterIndex in range(self.amountOfClusters):
+                point        = self.dataWithoutIDMatrix[rowIndex]
+                K3Value      = K3Vector[clusterIndex]
+                clusterSize  = clusterVectorSizes[clusterIndex]
+                self.kAccentMatrix[rowIndex, clusterIndex] = self.getKAccentValue(point, clusterIndex, K3Value, clusterSize)
+    
+    def sumOfKernelOfAllPointsInClusterVector(self):
+        sumOfKernelOfAllPointsInClusterVector = []
+        for clusterIndex in range(0, self.amountOfClusters):
+            value = self.sumOfKernelOfAllPointsInCluster(clusterIndex)
+            sumOfKernelOfAllPointsInClusterVector.append(value)
+        return sumOfKernelOfAllPointsInClusterVector
+    
+    def sumOfKernelOfAllPointsInCluster(self, clusterIndex):
+        totalSum = 0
+        clusterVector = self.getClusterVector(clusterIndex)
+        for ID in clusterVector:
+            pointInCluster = self.getPointFromID(ID)
+            for IDAgain in clusterVector:
+                pointInclusterAgain = self.getPointFromID(IDAgain)
+                totalSum += self.kernel(pointInCluster, pointInclusterAgain)
+        return totalSum
+    
+    def getKAccentValue(self, point, clusterIndex, sumOfKernelOfAllPointsInCluster, clusterSize):
+        if clusterSize == 0:   # If cluster size is 0 we have an issue. Think about how to fix this!
+            print("TEST!")
+            return None
+        firstTerm                          = self.kernel(point, point)
+        sumOfGaussianDistanceWithPoint     = self.sumOfKernelOfPoint(point, clusterIndex)
+        secondTerm = (- 2.0 / clusterSize) * sumOfGaussianDistanceWithPoint
+        thirdTerm = (1.0 / clusterSize**2) * sumOfKernelOfAllPointsInCluster
+        value = firstTerm + secondTerm + thirdTerm
+        return value
+    
+    def sumOfKernelOfPoint(self, point, clusterIndex):
+        totalSum = 0
+        clusterVector = self.getClusterVector(clusterIndex)
+        for ID in clusterVector:
+            pointInCluster = self.getPointFromID(ID)                            # gets point from nonStandardizedIDVector
+            totalSum      += self.kernel(point, pointInCluster)
+        return totalSum
+    
+
+
+    
+    
+    
     def firstIteration(self):
         self.kMeansPlusPlusMethod()
         self.setDistanceOfPointsToCentroidsMatrix()
