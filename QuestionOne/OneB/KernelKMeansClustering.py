@@ -49,7 +49,7 @@ class KernelKMeansClustering(KMeansClustering):
     #########################################################################################################
     
     def kMeansPlusPlusMethod(self):                                                 
-        C = [self.originalDataWithoudID[0]]                                           # Use the nonStandardized data to get the start centroids
+        C = [self.originalDataWithoudID[0]]                                         # Use the nonStandardized data to get the start centroids
         for _ in range(1, self.amountOfClusters):
             D2 = scipy.array([min([scipy.inner(c-x,c-x) for c in C]) for x in self.dataWithoutIDMatrix])
             probs = D2/D2.sum()
@@ -79,7 +79,9 @@ class KernelKMeansClustering(KMeansClustering):
     def setDistanceOfPointsToCentroidsMatrix(self):                                 # Sets the centroidToPointsDistancesMatrix (N x K) entries, where row i stores the distance of point i to each cluster. Or similarly where column j stores the distance of all points to cluster j.
         for rowIndex in range (0, self.amountOfRows):
             for centroidIndex in range(self.amountOfClusters):
-                self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = self.getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
+                nonStandardizedPoint = self.originalDataWithoudID[rowIndex]         # Since the centroids are non standardized, the points have to be non standardized as well
+                nonStandardizedCentroid = self.centroidsMatrix[centroidIndex]
+                self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = self.getEuclideanDistance(nonStandardizedPoint, nonStandardizedCentroid)
     
     def setKAccentValues(self):
         clusterVectorSizes = self.getClusterVectorSizesVector()
