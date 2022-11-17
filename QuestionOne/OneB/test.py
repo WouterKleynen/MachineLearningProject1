@@ -1,4 +1,4 @@
-from KernelKMeansClustering import KernelKMeansClustering
+from NEW import NEW
 import numpy as np
 
 # Gets Euclidean distance of 2 vectors 
@@ -14,6 +14,9 @@ kernel = gaussianKernel
 dataSetFilePath     = 'Dataset/subsetOfInputData.csv'                                                       
 
 K = 10
-algorithmValues = KernelKMeansClustering(dataSetFilePath, K, sigma)                              
-algorithmValues.firstIteration()
+algorithmValues = NEW(dataSetFilePath, K, kernel)                              
+algorithmValues.kMeansPlusPlusMethod()
+algorithmValues.setDistanceOfPointsToCentroidsMatrix()
+algorithmValues.setClusterDictionaryFirstRun()
+print(algorithmValues.clusterDictionary)
 print(algorithmValues.getClusterVectorSizesVector())

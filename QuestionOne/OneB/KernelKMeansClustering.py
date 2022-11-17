@@ -51,7 +51,7 @@ class KernelKMeansClustering(KMeansClustering):
     def kMeansPlusPlusMethod(self):                                                 
         C = [self.originalDataWithoudID[0]]                                         # Use the nonStandardized data to get the start centroids
         for _ in range(1, self.amountOfClusters):
-            D2 = scipy.array([min([scipy.inner(c-x,c-x) for c in C]) for x in self.dataWithoutIDMatrix])
+            D2 = scipy.array([min([scipy.inner(c-x,c-x) for c in C]) for x in self.originalDataWithoudID])
             probs = D2/D2.sum()
             cumprobs = probs.cumsum()
             r = scipy.rand()
@@ -88,9 +88,9 @@ class KernelKMeansClustering(KMeansClustering):
         K3Vector           = self.sumOfKernelOfAllPointsInClusterVector()
         for rowIndex in range (0, self.amountOfRows):
             for clusterIndex in range(self.amountOfClusters):
-                point = self.dataWithoutIDMatrix[rowIndex]
-                K3Value = K3Vector[clusterIndex]
-                clusterSize = clusterVectorSizes[clusterIndex]
+                point        = self.dataWithoutIDMatrix[rowIndex]
+                K3Value      = K3Vector[clusterIndex]
+                clusterSize  = clusterVectorSizes[clusterIndex]
                 self.kAccentMatrix[rowIndex, clusterIndex] = self.getKAccentValueNew(point, clusterIndex, K3Value, clusterSize)
 
     #########################################################################################################
@@ -123,7 +123,8 @@ class KernelKMeansClustering(KMeansClustering):
         return sumOfKernelOfAllPointsInClusterVector
     
     def getKAccentValueNew(self, point, clusterIndex, sumOfKernelOfAllPointsInCluster, clusterSize):
-        if clusterSize == 0:
+        if clusterSize == 0:   # If cluster size is 0 we have an issue. Think about how to fix this!
+            print("TEST!")
             return None
         firstTerm                          = self.kernel(point, point)
         sumOfGaussianDistanceWithPoint     = self.sumOfKernelOfPoint(point, clusterIndex)
@@ -132,24 +133,35 @@ class KernelKMeansClustering(KMeansClustering):
         value = firstTerm + secondTerm + thirdTerm
         return value
     
+    # def calculateLossFunctionValue(self):                                           # Calculate the sum of all the distances of the data points to the centers of the clusters they belong to.        
+    #     self.dataWithoutIDMatrix = self.originalDataWithoudID
+    #     loss = 0
+    #     for clusterIndex in range(0, self.amountOfClusters):
+    #         clusterVector = self.getClusterVector(clusterIndex)
+    #         centroidVector = self.getCentroidVector(clusterIndex)
+    #         for id in clusterVector:
+    #             point = self.getPointFromID(id)
+    #             loss += self.getEuclideanDistance(centroidVector, point)
+    #     self.dataWithoutIDMatrix = self.standardizedData
+    #     return loss
+    
     def calculateLossFunctionValue(self):                                           # Calculate the sum of all the distances of the data points to the centers of the clusters they belong to.        
-        self.dataWithoutIDMatrix = self.originalDataWithoudID
         loss = 0
         for clusterIndex in range(0, self.amountOfClusters):
             clusterVector = self.getClusterVector(clusterIndex)
             centroidVector = self.getCentroidVector(clusterIndex)
-            for id in clusterVector:
-                point = self.getPointFromID(id)
-                loss += self.getEuclideanDistance(centroidVector, point)
-        self.dataWithoutIDMatrix = self.standardizedData
+            for ID in clusterVector:
+                pointIndex = np.where(self.idVector == ID)[0][0]
+                nonStandardizedPoint = self.originalDataWithoudID[pointIndex, :]    # point has to be non standardized                                      
+                loss += self.getEuclideanDistance(centroidVector, nonStandardizedPoint)
         return loss
     
     def setCentroids(self):                                                         # Sets the Centroids of all clusters by calculatin the new cluster points average
         for clusterIndex in range(0, self.amountOfClusters):                        
             clusterVector = self.getClusterVector(clusterIndex)                     # Gets the cluster vector i.e. the vector beloning to the cluster index that contains all the ID's of the points that are in that cluster.
             clusterVectorSize = self.getClusterVectorSize(clusterVector)            
-            sumOfClusterVectorEntries = self.calculateSumOfClusterVectorEntriesNonStandardized(clusterVector)
-            self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)  # calculate and set the new centroid
+            sumOfClusterVectorEntries = self.calculateSumOfClusterVectorEntriesNonStandardized(clusterVector)  # To calculate the sum we need the nonStandardized points to calculate to average This is compared to the non standardized centroid.
+            self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)              # calculate and set the new centroid
     
     #############################################################################
     # DIFFERENT!
@@ -161,16 +173,6 @@ class KernelKMeansClustering(KMeansClustering):
             sum += nonStandardizedPoint
         return sum
     
-    # def setCentroidsCorrect(self):
-    #     for clusterIndex in range(0, self.amountOfClusters):
-    #          clusterVector = self.getClusterVector(clusterIndex)
-    #          clusterVectorSize = 
-    #          sumOfClusterEntries = self.calculateSumOfOriginalClusterVectorEntries()
-    #          centroidVector = calculateNewCentroid()
-    #          for ID in clusterVector:
-    #              pointIndex = np.where(self.idVector == ID)[0][0]
-    #              point = self.originalData[pointIndex, :]
-            
     #########################################################################################################
     #  Composite funcitions
     #########################################################################################################
@@ -183,5 +185,5 @@ class KernelKMeansClustering(KMeansClustering):
         
     def improveLossFunctionValueKernel(self):                   # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
         self.setKAccentValues()
-        self.setCentroids()
         self.setClusterDictionary()
+        self.setCentroids()
