@@ -16,4 +16,4 @@ dataSetFilePath     = 'Dataset/subsetOfInputData.csv'
 K = 10
 algorithmValues = KernelKMeansClustering(dataSetFilePath, K, sigma)                              
 algorithmValues.firstIteration()
-print(algorithmValues.centroidsMatrix)
+print(algorithmValues.getClusterVectorSizesVector())

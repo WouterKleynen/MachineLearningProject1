@@ -59,7 +59,7 @@ class KernelKMeansClustering(KMeansClustering):
                 if r < p:
                     i = j
                     break
-            C.append(self.originalDataWithoudID[i])                                  # sets row i as centroid i
+            C.append(self.originalDataWithoudID[i])                                # sets row i as centroid i
         self.centroidsMatrix = np.array(C)
     
     def setClusterDictionaryFirstRun(self):                                        # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
