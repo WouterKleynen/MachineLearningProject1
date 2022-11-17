@@ -10,9 +10,6 @@ def getEuclideanDistance(a,b):
 def getGaussianDistance(point1, point2, sigma):
     return math.exp(-(getEuclideanDistance(point1, point2)/(2 * sigma**2))**2)
 
-def getGaussianDistanceWithItself(point, sigma):
-    return getGaussianDistance(point, point, sigma)
-
 # Create a CSV file for this specific K value that will contain the eventual clusters. First emptry.
 def createCSVClusterFilesKernel(K):
     for clusterIndex in range (0,K):

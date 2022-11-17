@@ -8,11 +8,11 @@ class KernelKMeansClustering(KMeansClustering):
     
     
     # Setup for the start parameters
-    def __init__(self, dataFilePath, K, sigma):
+    def __init__(self, dataFilePath, K, kernel):
         
         super(KernelKMeansClustering, self).__init__(dataFilePath, K)
+        self.kernel                          = kernel
         self.originalData                    = self.dataWithoutIDMatrix
-        self.sigma                           = sigma
         self.kDistanceMatrix                 = np.zeros((self.amountOfRows, self.amountOfClusters))           # Row i consists of the distances of point i to each cluster.
     
     #########################################################################################################
@@ -66,7 +66,7 @@ class KernelKMeansClustering(KMeansClustering):
     
     def setKAccentValues(self):
         clusterVectorSizes = self.getClusterVectorSizesVector()
-        K3Vector           = self.sumOfGaussianDistanceWithAllPointsVector()
+        K3Vector           = self.sumOfKernelOfAllPointsInClusterVector()
         for rowIndex in range (0, self.amountOfRows):
             for clusterIndex in range(self.amountOfClusters):
                 self.kDistanceMatrix[rowIndex, clusterIndex] = self.getKAccentValueNew(self.dataWithoutIDMatrix[rowIndex], clusterIndex, K3Vector[clusterIndex], clusterVectorSizes[clusterIndex])
@@ -75,38 +75,38 @@ class KernelKMeansClustering(KMeansClustering):
     # Calculation functions
     #########################################################################################################
 
-    def sumOfGaussianDistanceWithPoint(self, point, clusterIndex):
+    def sumOfKernelOfPoint(self, point, clusterIndex):
         totalSum = 0
         clusterVector = self.getClusterVector(clusterIndex)
         for ID in clusterVector:
             pointInCluster = self.getPointFromID(ID)           
-            totalSum       += getGaussianDistance(point, pointInCluster, self.sigma)
+            totalSum       += self.kernel(point, pointInCluster)
         return totalSum
     
-    def sumOfGaussianDistanceWithAllPoints(self, clusterIndex):
+    def sumOfKernelOfAllPointsInCluster(self, clusterIndex):
         totalSum = 0
         clusterVector = self.getClusterVector(clusterIndex)
         for ID in clusterVector:
             pointInCluster = self.getPointFromID(ID)
             for IDAgain in clusterVector:
                 pointInclusterAgain = self.getPointFromID(IDAgain)
-                totalSum            += getGaussianDistance(pointInCluster, pointInclusterAgain, self.sigma)
+                totalSum            += self.kernel(pointInCluster, pointInclusterAgain)
         return totalSum
 
-    def sumOfGaussianDistanceWithAllPointsVector(self):
-        sumOfGaussianDistanceWithAllPointsVector = []
+    def sumOfKernelOfAllPointsInClusterVector(self):
+        sumOfKernelOfAllPointsInClusterVector = []
         for clusterIndex in range(0, self.amountOfClusters):
-            value = self.sumOfGaussianDistanceWithAllPoints(clusterIndex)
-            sumOfGaussianDistanceWithAllPointsVector.append(value)
-        return sumOfGaussianDistanceWithAllPointsVector
+            value = self.sumOfKernelOfAllPointsInCluster(clusterIndex)
+            sumOfKernelOfAllPointsInClusterVector.append(value)
+        return sumOfKernelOfAllPointsInClusterVector
     
-    def getKAccentValueNew(self, point, clusterIndex, sumOfGaussianDistanceWithAllPoints, clusterSize):
+    def getKAccentValueNew(self, point, clusterIndex, sumOfKernelOfAllPointsInCluster, clusterSize):
         if clusterSize == 0:
             return None
-        firstTerm       = 1
-        sumOfGaussianDistanceWithPoint     = self.sumOfGaussianDistanceWithPoint(point, clusterIndex)
+        firstTerm       = self.kernel(point, point)
+        sumOfGaussianDistanceWithPoint     = self.sumOfKernelOfPoint(point, clusterIndex)
         secondTerm = (- 2.0 / clusterSize) * sumOfGaussianDistanceWithPoint
-        thirdTerm = (1.0 / clusterSize**2) * sumOfGaussianDistanceWithAllPoints
+        thirdTerm = (1.0 / clusterSize**2) * sumOfKernelOfAllPointsInCluster
         value = firstTerm + secondTerm + thirdTerm
         return value
     
