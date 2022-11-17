@@ -15,8 +15,7 @@ dataSetFilePath     = 'Dataset/subsetOfInputData.csv'
 
 K = 10
 algorithmValues = NEW(dataSetFilePath, K, kernel)                              
-algorithmValues.kMeansPlusPlusMethod()
-algorithmValues.setDistanceOfPointsToCentroidsMatrix()
-algorithmValues.setClusterDictionaryFirstRun()
+algorithmValues.firstIteration()
 print(algorithmValues.clusterDictionary)
 print(algorithmValues.getClusterVectorSizesVector())
+algorithmValues.standardizeData()

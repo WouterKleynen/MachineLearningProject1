@@ -17,8 +17,23 @@ class NEW(KMeansClustering):
         self.standardizedData                = np.array((self.amountOfRows, self.amountOfColumns))  # Standardized data
         self.standardizedDataWithoutID       = np.array((self.amountOfRows, self.amountOfColumns - 1))  # Standardized data without ID
         self.kAccentMatrix                   = np.zeros((self.amountOfRows, self.amountOfClusters)) # Row i consists of the distances of the kAccent values of point i.
-        
     
+    
+    def standardize(self, columnIndex):                                                                
+        mu = np.average(self.data[:, columnIndex])
+        sigma = np.std(self.data[:, columnIndex])
+        Z = (self.data[:, columnIndex] - mu)/sigma
+        return Z
+    
+    def standardizeData(self):                                                                          
+        standardizedMatrix = np.zeros((self.nonStandardizedData.shape[0], self.nonStandardizedData.shape[1]))
+        numberOfColumns    = self.nonStandardizedData.shape[1]
+        for columnIndex in range(0, numberOfColumns):
+            standardizedMatrix[:, columnIndex] = self.standardize(columnIndex)
+        self.standardizedData          = standardizedMatrix
+        self.standardizedDataWithoutID = standardizedMatrix[:, 1:]                                       
+        pd.DataFrame(self.standardizedDataWithoutID).to_csv("Dataset\standardizedData.csv",index=False, header=False)
+
     def kMeansPlusPlusMethod(self):                                                 
         C = [self.nonStandardizedDataWithoutID[0]]                                         # Use the nonStandardized data to get the start centroids
         for _ in range(1, self.amountOfClusters):
@@ -46,3 +61,8 @@ class NEW(KMeansClustering):
             id = self.idVector[rowIndex]                                                      # Get the ID belonging to each point.
             closestClusterIndex = self.getIndexClosestCentroid(rowIndex)                      # Get the index of closest centroid by finding the minimum of row i of centroidToPointsDistancesMatrix.
             self.clusterDictionary[closestClusterIndex].append(id)
+
+    def firstIteration(self):
+        self.kMeansPlusPlusMethod()
+        self.setDistanceOfPointsToCentroidsMatrix()
+        self.setClusterDictionaryFirstRun()
