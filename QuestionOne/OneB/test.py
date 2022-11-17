@@ -15,35 +15,43 @@ kernel = gaussianKernel
 dataSetFilePath     = 'Dataset/subsetOfInputData.csv'                                                       
 
 K = 10
-algorithmValues = NEW(dataSetFilePath, K, kernel)                              
-algorithmValues.firstIteration()
-algorithmValues.standardizeData()
+# algorithmValues = NEW(dataSetFilePath, K, kernel)                              
+# algorithmValues.firstIteration()
 
-for runIndex in range(5):
-    print(algorithmValues.getClusterVectorSizesVector())
-    print(algorithmValues.calculateLossFunctionValue())
-    #print(algorithmValues.centroidsMatrix)
+# for runIndex in range(5):
+#     print(algorithmValues.getClusterVectorSizesVector())
+#     print(algorithmValues.calculateLossFunctionValue())
+#     print(algorithmValues.centroidsMatrix)
     
-    algorithmValues.setKAccentValues()
-    algorithmValues.setKernelClusterDictionary()
-    algorithmValues.setKernelCentroids
+#     algorithmValues.setKAccentValues()
+#     algorithmValues.setKernelClusterDictionary()
+#     algorithmValues.setKernelCentroids()
 
-# def runFirstIterationKernel(dataSetFilePath, K, kernel):
-#     algorithmValues = NEW(dataSetFilePath, K, kernel)                              
-#     algorithmValues.firstIteration()                                                                 
-#     return algorithmValues
+def runFirstIterationKernel(dataSetFilePath, K, kernel):
+    algorithmValues = NEW(dataSetFilePath, K, kernel)                              
+    algorithmValues.firstIteration()                                                                 
+    return algorithmValues
 
+def runNewIterationKernel(algorithmValues, K):
+    previousLossFunctionValue = algorithmValues.calculateLossFunctionValue()
+    print()
+    createCSVClusterFilesKernel(K)
+    print(algorithmValues.getClusterVectorSizesVector())                                                                  
+    print(f"current loss fuction value = {previousLossFunctionValue}")
+    algorithmValues.improveKernelLossFunctionValue()                                                
+    newLossFunctionValue = algorithmValues.calculateLossFunctionValue()
+    if (previousLossFunctionValue  == newLossFunctionValue): 
+        print(algorithmValues.calculateLossFunctionValue())       
+        print(algorithmValues.getClusterVectorSizesVector())                                                                                          
+        algorithmValues.fillClusterCSV()                                                            
+        return None           
+    return newLossFunctionValue
 
-# def runNewIterationKernel(algorithmValues, K):
-#     previousLossFunctionValue = algorithmValues.calculateLossFunctionValue()
-#     createCSVClusterFilesKernel(K)
-#     print(algorithmValues.getClusterVectorSizesVector())                                                                  
-#     print(f"current loss fuction value = {previousLossFunctionValue}")
-#     algorithmValues.improveLossFunctionValueKernel()                                                
-#     newLossFunctionValue = algorithmValues.calculateLossFunctionValue()
-#     if (newLossFunctionValue  == previousLossFunctionValue): 
-#         print(algorithmValues.calculateLossFunctionValue())       
-#         print(algorithmValues.getClusterVectorSizesVector())                                                                                          
-#         algorithmValues.fillClusterCSV()                                                            
-#         return None           
-#     return newLossFunctionValue
+def improveUntilUnchanged(dataSetFilePath, K, kernel):
+    algorithmValues                 = runFirstIterationKernel(dataSetFilePath, K, kernel)                                          
+    lossvalue                       = algorithmValues.calculateLossFunctionValue()        
+    while (lossvalue != None):                                                              
+        lossvalue = runNewIterationKernel(algorithmValues, K) 
+    return lossvalue
+
+improveUntilUnchanged(dataSetFilePath, K, gaussianKernel)

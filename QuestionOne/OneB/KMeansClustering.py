@@ -93,6 +93,10 @@ class KMeansClustering:
             self.clusterDictionary[closestClusterIndex].append(id)
     
     def setCentroidOfCluster(self, clusterIndex, clusterVectorSize, sumOfClusterVectorEntries):         # Calculate new centroid based on the points in the cluster and set this new centroid in centroidsMatrix at the clusterIndex row.
+        # print(clusterIndex)
+        # print(clusterVectorSize)
+        # print(sumOfClusterVectorEntries)
+        # print("\n")
         self.centroidsMatrix[clusterIndex, :] = self.calculateNewCentroid(clusterVectorSize, sumOfClusterVectorEntries)
     
     def setCentroids(self):                                                         # Sets the Centroids of all clusters by calculatin the new cluster points average
@@ -112,6 +116,7 @@ class KMeansClustering:
             sum += self.getPointFromID(id)    
         return sum
                 
+            
     def calculateNewCentroid(self, clusterVectorSize, sumOfClusterVectorEntries):   # Calculate the new averaged value of the centroid of the given cluster. 
         if (clusterVectorSize == 0):                                                # If a cluster has no ID's then return a vector with only 0 as an entry
             return np.zeros(1)

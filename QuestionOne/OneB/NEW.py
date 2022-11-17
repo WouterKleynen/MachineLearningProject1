@@ -18,6 +18,7 @@ class NEW(KMeansClustering):
         self.standardizedData                = np.array((self.amountOfRows, self.amountOfColumns))  # Standardized data
         self.standardizedDataWithoutID       = np.array((self.amountOfRows, self.amountOfColumns - 1))  # Standardized data without ID
         self.kAccentMatrix                   = np.zeros((self.amountOfRows, self.amountOfClusters)) # Row i consists of the distances of the kAccent values of point i.
+        self.centroidsMatrix                 = np.zeros((self.amountOfClusters, self.amountOfColumns - 1))    # Row i is the centroid of cluster i. 
     
     def getIndexMinimumCluster(self, rowIndex):                                    # Given row index i, it gets the index of the minimum of row i of kAccentMatrix
         return np.argmin(self.kAccentMatrix[rowIndex])
@@ -137,7 +138,17 @@ class NEW(KMeansClustering):
             clusterVector = self.getClusterVector(clusterIndex)                     # Gets the cluster vector i.e. the vector beloning to the cluster index that contains all the ID's of the points that are in that cluster.
             clusterVectorSize = self.getClusterVectorSize(clusterVector)            
             sumOfClusterVectorEntries = self.calculateSumOfClusterVectorEntries(clusterVector)  # To calculate the sum we need the nonStandardized points to calculate to average This is compared to the non standardized centroid.
+            
             self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)              # calculate and set the new centroid
+
+    def setCentroidOfCluster(self, clusterIndex, clusterVectorSize, sumOfClusterVectorEntries):         # Calculate new centroid based on the points in the cluster and set this new centroid in centroidsMatrix at the clusterIndex row.
+        self.centroidsMatrix[clusterIndex, :] = self.calculateNewCentroid(clusterVectorSize, sumOfClusterVectorEntries)
+    
+    def calculateNewCentroid(self, clusterVectorSize, sumOfClusterVectorEntries):   # Calculate the new averaged value of the centroid of the given cluster. 
+        if (clusterVectorSize == 0):                                                # If a cluster has no ID's then return a vector with only 0 as an entry
+            return np.zeros(1)
+        else:
+            return sumOfClusterVectorEntries / clusterVectorSize
 
     def calculateSumOfClusterVectorEntries(self, clusterVector):                    # Calculate the sum of all points in the given clusterVector
         sum = np.zeros(self.amountOfColumns - 1)
@@ -155,10 +166,15 @@ class NEW(KMeansClustering):
                 nonStandardizedPoint = self.getNonStandardizedPointFromID(ID)               # point has to be non standardized                                      
                 loss += self.getEuclideanDistance(centroidVector, nonStandardizedPoint)
         return loss
-    
 
     def firstIteration(self):
         self.kMeansPlusPlusMethod()
         self.setDistanceOfPointsToCentroidsMatrix()
         self.setClusterDictionaryFirstRun()
+        self.standardizeData()
+        
+    def improveKernelLossFunctionValue(self):
+        self.setKAccentValues()
+        self.setKernelClusterDictionary()
+        self.setKernelCentroids()
         
