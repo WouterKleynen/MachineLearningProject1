@@ -82,7 +82,7 @@ class KMeansClustering:
                 if r < p:
                     i = j
                     break
-            C.append(self.dataWithoutIDMatrix[i])
+            C.append(self.dataWithoutIDMatrix[i])                                  # sets row i as centroid i
         self.centroidsMatrix = np.array(C)
     
     def setClusterDictionary(self):                                                # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
