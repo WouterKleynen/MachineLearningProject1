@@ -122,7 +122,6 @@ class KMeansClustering:
         loss = 0
         for clusterIndex in range(0, self.amountOfClusters):
             clusterVector = self.getClusterVector(clusterIndex)
-            print(clusterVector)
             centroidVector = self.getCentroidVector(clusterIndex)
             for id in clusterVector:
                 point = self.getPointFromID(id)
