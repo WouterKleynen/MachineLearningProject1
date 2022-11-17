@@ -11,10 +11,10 @@ class KernelKMeansClustering(KMeansClustering):
     def __init__(self, dataFilePath, K, kernel):
         
         super(KernelKMeansClustering, self).__init__(dataFilePath, K)
-        self.fullOriginalData                = self.data
+        self.fullOriginalData                = self.data                    # Nonstandardized data with ID
         self.kernel                          = kernel
-        self.originalData                    = self.dataWithoutIDMatrix
-        self.standardizedData                = self.dataWithoutIDMatrix
+        self.originalDataWithoudID           = self.dataWithoutIDMatrix     # Nonstandardized data without ID
+        self.standardizedData                = self.dataWithoutIDMatrix     # Nonstandardized data without ID
         self.kDistanceMatrix                 = np.zeros((self.amountOfRows, self.amountOfClusters))           # Row i consists of the distances of point i to each cluster.
     
     #########################################################################################################
@@ -117,7 +117,7 @@ class KernelKMeansClustering(KMeansClustering):
         return value
     
     def calculateLossFunctionValue(self):                                           # Calculate the sum of all the distances of the data points to the centers of the clusters they belong to.        
-        self.dataWithoutIDMatrix = self.originalData
+        self.dataWithoutIDMatrix = self.originalDataWithoudID
         loss = 0
         for clusterIndex in range(0, self.amountOfClusters):
             clusterVector = self.getClusterVector(clusterIndex)
@@ -141,7 +141,7 @@ class KernelKMeansClustering(KMeansClustering):
         sum = np.zeros(self.amountOfColumns - 1)
         for ID in clusterVector:
             pointIndex = np.where(self.idVector == ID)[0][0]
-            nonStandardizedPoint = self.originalData[pointIndex, :]
+            nonStandardizedPoint = self.originalDataWithoudID[pointIndex, :]
             sum += nonStandardizedPoint
         return sum
     
