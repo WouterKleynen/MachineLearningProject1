@@ -1,21 +1,21 @@
 import pandas as pd
 import numpy as np
-import scipy
+from Tools import getGaussianDistance
 from KMeansClustering import KMeansClustering
 
+
 class KernelKMeansClustering(KMeansClustering):
+    
     
     # Setup for the start parameters
     def __init__(self, dataFilePath, K, kernel):
         
         super(KernelKMeansClustering, self).__init__(dataFilePath, K)
-        # The inherited self.dataWithoutIDMatrix is set to standardized data in the first step of the firstiteration: self.standardizeData()
-        
-        self.kernel                          = kernel                       # Kernel function that is being used
         self.fullOriginalData                = self.data                    # Nonstandardized data with ID
+        self.kernel                          = kernel
         self.originalDataWithoudID           = self.dataWithoutIDMatrix     # Nonstandardized data without ID
-        self.standardizedData                = np.array((self.amountOfRows, self.amountOfColumns))  # Standardized data
-        self.kAccentMatrix                   = np.zeros((self.amountOfRows, self.amountOfClusters)) # Row i consists of the distances of the kAccent values of point i.
+        self.standardizedData                = self.dataWithoutIDMatrix     # Nonstandardized data without ID
+        self.kDistanceMatrix                 = np.zeros((self.amountOfRows, self.amountOfClusters))           # Row i consists of the distances of point i to each cluster.
     
     #########################################################################################################
     # Standardizing functions
@@ -41,26 +41,12 @@ class KernelKMeansClustering(KMeansClustering):
     # Getter functions
     #########################################################################################################
     
-    def getIndexMinimumCluster(self, rowIndex):                                    # Given row index i, it gets the index of the minimum of row i of kAccentMatrix
-        return np.argmin(self.kAccentMatrix[rowIndex])
+    def getIndexMinimumCluster(self, rowIndex):                                    # Given row index i, it gets the index of the minimum of row i of kDistanceMatrix
+        return np.argmin(self.kDistanceMatrix[rowIndex])
     
     #########################################################################################################
     # Setter functions
     #########################################################################################################
-    
-    def kMeansPlusPlusMethod(self):                                                 
-        C = [self.originalDataWithoudID[0]]                                           # Use the nonStandardized data to get the start centroids
-        for _ in range(1, self.amountOfClusters):
-            D2 = scipy.array([min([scipy.inner(c-x,c-x) for c in C]) for x in self.dataWithoutIDMatrix])
-            probs = D2/D2.sum()
-            cumprobs = probs.cumsum()
-            r = scipy.rand()
-            for j,p in enumerate(cumprobs):
-                if r < p:
-                    i = j
-                    break
-            C.append(self.originalDataWithoudID[i])                                  # sets row i as centroid i
-        self.centroidsMatrix = np.array(C)
     
     def setClusterDictionaryFirstRun(self):                                        # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
         self.emptyClusterDictionary()                                              # empty the old cluster vectors.
@@ -89,7 +75,7 @@ class KernelKMeansClustering(KMeansClustering):
                 point = self.dataWithoutIDMatrix[rowIndex]
                 K3Value = K3Vector[clusterIndex]
                 clusterSize = clusterVectorSizes[clusterIndex]
-                self.kAccentMatrix[rowIndex, clusterIndex] = self.getKAccentValueNew(point, clusterIndex, K3Value, clusterSize)
+                self.kDistanceMatrix[rowIndex, clusterIndex] = self.getKAccentValueNew(point, clusterIndex, K3Value, clusterSize)
 
     #########################################################################################################
     # Calculation functions
@@ -183,3 +169,5 @@ class KernelKMeansClustering(KMeansClustering):
         self.setKAccentValues()
         self.setCentroids()
         self.setClusterDictionary()
+        
+        

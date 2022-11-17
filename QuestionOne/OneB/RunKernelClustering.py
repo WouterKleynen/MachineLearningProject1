@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import math
 
-def runFirstIterationKernel(dataSetFilePath, K, kernel):
-    algorithmValues = KernelKMeansClustering(dataSetFilePath, K, kernel)                              
+def runFirstIterationKernel(dataSetFilePath, K, sigma):
+    algorithmValues = KernelKMeansClustering(dataSetFilePath, K, sigma)                              
     algorithmValues.firstIteration()                                                                 
     return algorithmValues
 
@@ -52,7 +52,5 @@ kernel = gaussianKernel
 dataSetFilePath     = 'Dataset/subsetOfInputData.csv'                                                       
 
 improveUntilUnchanged(dataSetFilePath, 10, kernel)
-
-
-3315787.509399832
-5906155.188968996
+313583010.58404094
+86253120.90261358
