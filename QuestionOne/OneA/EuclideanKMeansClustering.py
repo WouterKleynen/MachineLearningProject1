@@ -64,7 +64,7 @@ class EuclideanKMeansClustering(KMeansClustering):
         self.setClusterDictionary()                             # Set cluster dictionary
         self.setCentroids()                                     # Set new centroids
 
-    def improveLossFunctionValue(self):                           # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
+    def improveLossFunctionValue(self):                         # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
         self.setDistanceOfPointsToCentroidsMatrix()
         self.setClusterDictionary()
         self.setCentroids()

@@ -11,10 +11,29 @@ class KernelKMeansClustering(KMeansClustering):
     def __init__(self, dataFilePath, K, sigma):
         
         super(KernelKMeansClustering, self).__init__(dataFilePath, K)
-                    
+        self.originalData                    = self.dataWithoutIDMatrix
         self.sigma                           = sigma
         self.kDistanceMatrix                 = np.zeros((self.amountOfRows, self.amountOfClusters))           # Row i consists of the distances of point i to each cluster.
-        
+    
+    #########################################################################################################
+    # Standardizing functions
+    #########################################################################################################
+    
+    def standardize(self, columnIndex):                                                                
+        mu = np.average(self.data[:, columnIndex])
+        sigma = np.std(self.data[:, columnIndex])
+        Z = (self.data[:, columnIndex] - mu)/sigma
+        return Z
+
+    def standardizeData(self):                                                                          
+        standardizedMatrix = np.zeros((self.data.shape[0], self.data.shape[1]))
+        numberOfColumns = self.data.shape[1]
+        for columnIndex in range(0, numberOfColumns):
+            standardizedMatrix[:, columnIndex] = self.standardize(columnIndex)
+        standardizedMatrix = standardizedMatrix[:, 1:]                                       
+        pd.DataFrame(standardizedMatrix).to_csv("Dataset\standardizedData.csv",index=False, header=False)
+        self.dataWithoutIDMatrix = standardizedMatrix
+    
     #########################################################################################################
     # Getter functions
     #########################################################################################################
@@ -90,12 +109,24 @@ class KernelKMeansClustering(KMeansClustering):
         thirdTerm = (1.0 / clusterSize**2) * sumOfGaussianDistanceWithAllPoints
         value = firstTerm + secondTerm + thirdTerm
         return value
+    
+    def calculateLossFunctionValue(self):                                           # Calculate the sum of all the distances of the data points to the centers of the clusters they belong to.        
+        self.dataWithoutIDMatrix = self.originalData
+        loss = 0
+        for clusterIndex in range(0, self.amountOfClusters):
+            clusterVector = self.getClusterVector(clusterIndex)
+            centroidVector = self.getCentroidVector(clusterIndex)
+            for id in clusterVector:
+                point = self.getPointFromID(id)
+                loss += self.getEuclideanDistance(centroidVector, point)
+        return loss
             
     #########################################################################################################
     #  Composite funcitions
     #########################################################################################################
         
     def firstIteration(self):                                   # Only called for first iteration, sets the first centroids by means of the maxima of the data columns.
+        self.standardizeData()
         self.kMeansPlusPlusMethod()                             # Set start centroids by K++    
         self.setDistanceOfPointsToCentroidsMatrix()             # Get distance points to centroids matrix
         self.setClusterDictionaryFirstRun()                     # Set cluster dictionary
@@ -103,4 +134,3 @@ class KernelKMeansClustering(KMeansClustering):
     def improveLossFunctionValueKernel(self):                   # Is called in every loop to decrease the Loss function Value by resetting the centroids in a better wat
         self.setKAccentValues()
         self.setClusterDictionary()
-

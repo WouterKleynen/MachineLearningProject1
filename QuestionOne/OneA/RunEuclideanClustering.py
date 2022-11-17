@@ -31,6 +31,7 @@ def improveUntilTresholdReached(dataSetFilePath, K):
         lossFunctionvalue = runNewIteration(lossFunctionvalue, currentAlgorithmIterationValues, K)  # update each previous loss function value with a new improved one
     return lossFunctionvalue
 
-dataSetFilePath = 'Dataset/InputData.csv'                                                           # Set data File path to that of the assignment data sheet.
+dataSetFilePath = 'Dataset/InputData.csv'   # Set data File path to that of the assignment data sheet.
+testData = "Dataset/subsetOfInputData.csv"
 
-improveUntilTresholdReached(dataSetFilePath, 10)
+improveUntilTresholdReached(testData, 10)

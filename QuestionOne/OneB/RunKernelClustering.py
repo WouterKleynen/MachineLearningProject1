@@ -1,23 +1,5 @@
-import numpy as np
 from KernelKMeansClustering import KernelKMeansClustering
 from Tools import createCSVClusterFilesKernel
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-
-def standardize(column):                                                                
-    mu = np.average(column)
-    sigma = np.std(column)
-    Z = (column - mu)/sigma
-    return Z
-
-def standardizeData(data):                                                                          
-    standardizedMatrix = np.zeros((data.shape[0], data.shape[1]))
-    numberOfColumns = data.shape[1]
-    for i in range(0, numberOfColumns):
-        standardizedMatrix[:, i] = standardize(data[:, i])                                        
-    pd.DataFrame(standardizedMatrix).to_csv("Dataset\standardizedData.csv",index=False, header=False)
-    return standardizedMatrix
 
 def runFirstIterationKernel(dataSetFilePath, K, sigma):
     algorithmValues = KernelKMeansClustering(dataSetFilePath, K, sigma)                              
@@ -30,7 +12,9 @@ def runNewIterationKernel(algorithmValues, K):
     createCSVClusterFilesKernel(K)                                                                  
     algorithmValues.improveLossFunctionValueKernel()                                                
     newClusterVectorSizesVector = algorithmValues.getClusterVectorSizesVector()
-    if (newClusterVectorSizesVector  == oldClusterVectorSizesVector):                                
+    if (newClusterVectorSizesVector  == oldClusterVectorSizesVector): 
+        algorithmValues.setCentroids()
+        print(algorithmValues.calculateLossFunctionValue())                               
         algorithmValues.fillClusterCSV()                                                            
         return None           
     return newClusterVectorSizesVector
@@ -42,11 +26,7 @@ def improveUntilUnchanged(dataSetFilePath, K, sigma):
         newClusterVectorSizesVector = runNewIterationKernel(algorithmValues, K) 
     return newClusterVectorSizesVector
 
-dataSetFilePath     = 'Dataset/InputData.csv'                                                       
-data                = pd.read_csv(dataSetFilePath).to_numpy()
-standardizedData    = standardizeData(data)
-dataWithoutIDMatrix = standardizedData[:, 1:]
-stadardizedPath = "Dataset/standardizedData.csv"
-testPath = "Dataset/testing.csv"
 
-improveUntilUnchanged(testPath, 10, 10)
+
+dataSetFilePath     = 'Dataset/subsetOfInputData.csv'                                                       
+improveUntilUnchanged(dataSetFilePath, 10, 1000)
