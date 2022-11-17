@@ -25,11 +25,11 @@ class NEW(KMeansClustering):
     def getPointIndexFromId(self, id):                                              
         return np.where(self.nonStandardizedIDVector == id)[0][0]                   # You want the ID's to remain the same so nonStandardized
     
-    def getPointFromPointIndex(self, pointIndex):                                   # Gets the row of standardizedDataWithoutID belonging to the given point index value. 
+    def getStandardizedPointFromPointIndex(self, pointIndex):                                   # Gets the row of standardizedDataWithoutID belonging to the given point index value. 
         return self.standardizedDataWithoutID[pointIndex, :]
     
-    def getPointFromID(self, id):                                                   # Gets the row of standardizedDataWithoutID belonging to the given ID value. 
-        return self.getPointFromPointIndex(self.getPointIndexFromId(id))
+    def getStandardizedPointFromID(self, id):                                                   # Gets the row of standardizedDataWithoutID belonging to the given ID value. 
+        return self.getStandardizedPointFromPointIndex(self.getPointIndexFromId(id))
     
     def standardize(self, columnIndex):                                                                
         mu = np.average(self.data[:, columnIndex])
@@ -95,9 +95,9 @@ class NEW(KMeansClustering):
         totalSum = 0
         clusterVector = self.getClusterVector(clusterIndex)
         for ID in clusterVector:
-            pointInCluster = self.getPointFromID(ID)
+            pointInCluster = self.getStandardizedPointFromID(ID)
             for IDAgain in clusterVector:
-                pointInclusterAgain = self.getPointFromID(IDAgain)
+                pointInclusterAgain = self.getStandardizedPointFromID(IDAgain)
                 totalSum += self.kernel(pointInCluster, pointInclusterAgain)
         return totalSum
     
@@ -115,7 +115,7 @@ class NEW(KMeansClustering):
         totalSum = 0
         clusterVector = self.getClusterVector(clusterIndex)
         for ID in clusterVector:
-            pointInCluster = self.getPointFromID(ID)                                # gets point from nonStandardizedIDVector
+            pointInCluster = self.getStandardizedPointFromID(ID)                                # gets point from nonStandardizedIDVector
             totalSum      += self.kernel(point, pointInCluster)
         return totalSum
     
@@ -126,7 +126,19 @@ class NEW(KMeansClustering):
             closestClusterIndex = self.getIndexMinimumCluster(rowIndex)             # Get the index of the minimum entry of row i that is the, that index is the cluster index of the cluster that point i is put in.
             self.clusterDictionary[closestClusterIndex].append(id)
 
+    def setCentroids(self):                                                         # Sets the Centroids of all clusters by calculatin the new cluster points average
+        for clusterIndex in range(0, self.amountOfClusters):                        
+            clusterVector = self.getClusterVector(clusterIndex)                     # Gets the cluster vector i.e. the vector beloning to the cluster index that contains all the ID's of the points that are in that cluster.
+            clusterVectorSize = self.getClusterVectorSize(clusterVector)            
+            sumOfClusterVectorEntries = self.calculateSumOfClusterVectorEntriesNonStandardized(clusterVector)  # To calculate the sum we need the nonStandardized points to calculate to average This is compared to the non standardized centroid.
+            self.setCentroidOfCluster(clusterIndex, clusterVectorSize, sumOfClusterVectorEntries)              # calculate and set the new centroid
 
+    # def calculateSumOfClusterVectorEntries(self, clusterVector):                    # Calculate the sum of all points in the given clusterVector
+    #     sum = np.zeros(self.amountOfColumns - 1)
+    #     for ID in clusterVector:
+    #         nonStandardizedPoint = self.getNonStandardizedPointFromID(ID)
+    #         sum += nonStandardizedPoint
+    #     return sum
     
     
     
