@@ -19,6 +19,9 @@ class NEW(KMeansClustering):
         self.standardizedDataWithoutID       = np.array((self.amountOfRows, self.amountOfColumns - 1))  # Standardized data without ID
         self.kAccentMatrix                   = np.zeros((self.amountOfRows, self.amountOfClusters)) # Row i consists of the distances of the kAccent values of point i.
     
+    def getIndexMinimumCluster(self, rowIndex):                                    # Given row index i, it gets the index of the minimum of row i of kAccentMatrix
+        return np.argmin(self.kAccentMatrix[rowIndex])
+    
     def getPointIndexFromId(self, id):                                              
         return np.where(self.nonStandardizedIDVector == id)[0][0]                   # You want the ID's to remain the same so nonStandardized
     
@@ -73,11 +76,11 @@ class NEW(KMeansClustering):
 
     def setKAccentValues(self):
         clusterVectorSizes = self.getClusterVectorSizesVector()
-        K3Vector           = self.sumOfKernelOfAllPointsInClusterVector()
+        K3Vector           = self.sumOfKernelOfAllPointsInClusterVector()                     # get the third K expression in the formula. This is the same for every cluster point and very expensive in computing so calculate beforehand
         for rowIndex in range (0, self.amountOfRows):
             for clusterIndex in range(self.amountOfClusters):
-                point        = self.dataWithoutIDMatrix[rowIndex]
-                K3Value      = K3Vector[clusterIndex]
+                point        = self.standardizedDataWithoutID[rowIndex]                       # get normalized point
+                K3Value      = K3Vector[clusterIndex]                                   
                 clusterSize  = clusterVectorSizes[clusterIndex]
                 self.kAccentMatrix[rowIndex, clusterIndex] = self.getKAccentValue(point, clusterIndex, K3Value, clusterSize)
     
@@ -100,7 +103,6 @@ class NEW(KMeansClustering):
     
     def getKAccentValue(self, point, clusterIndex, sumOfKernelOfAllPointsInCluster, clusterSize):
         if clusterSize == 0:   # If cluster size is 0 we have an issue. Think about how to fix this!
-            print("TEST!")
             return None
         firstTerm                          = self.kernel(point, point)
         sumOfGaussianDistanceWithPoint     = self.sumOfKernelOfPoint(point, clusterIndex)
@@ -113,10 +115,16 @@ class NEW(KMeansClustering):
         totalSum = 0
         clusterVector = self.getClusterVector(clusterIndex)
         for ID in clusterVector:
-            pointInCluster = self.getPointFromID(ID)                            # gets point from nonStandardizedIDVector
+            pointInCluster = self.getPointFromID(ID)                                # gets point from nonStandardizedIDVector
             totalSum      += self.kernel(point, pointInCluster)
         return totalSum
     
+    def setKernelClusterDictionary(self):                                          
+        self.emptyClusterDictionary()                                               # empty the old cluster vectors.
+        for rowIndex in range(self.amountOfRows):                                   # iterate over all the points.
+            id = self.nonStandardizedIDVector[rowIndex]                             # Get the ID belonging to each point.
+            closestClusterIndex = self.getIndexMinimumCluster(rowIndex)             # Get the index of the minimum entry of row i that is the, that index is the cluster index of the cluster that point i is put in.
+            self.clusterDictionary[closestClusterIndex].append(id)
 
 
     
