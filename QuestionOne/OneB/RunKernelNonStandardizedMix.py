@@ -15,7 +15,6 @@ kernel = gaussianKernel
 dataSetFilePath     = 'Dataset/subsetOfInputData.csv'                                                       
 K = 10
 
-
 def runFirstIterationKernel(dataSetFilePath, K, kernel):
     algorithmValues = KernelNonStandardizedMix(dataSetFilePath, K, kernel)                              
     algorithmValues.firstIteration()                                                                 

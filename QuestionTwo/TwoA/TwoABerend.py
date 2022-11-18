@@ -36,5 +36,7 @@ Laplacian = D - W
 #EValues is a vector with the corresponding eigenvalues (not necessary for this assignment but might be useful later)
 EValues, EVectors = eigh(Laplacian, eigvals= (0,K-1))
 
+
+
 #run K-means with the 10 vectors (columns) of EVectors as the centroids to find the clustering corresponding
 #to the 10 smallest eigenvectors
