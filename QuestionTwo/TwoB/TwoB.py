@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.linalg import eigh
 
 def arnoldi_iteration(A, b, n: int):
     """Computes a basis of the (n + 1)-Krylov subspace of A: the space
@@ -20,8 +21,8 @@ def arnoldi_iteration(A, b, n: int):
      # Normalize the input vector
     Q[:,0] =b/np.linalg.norm(b,2)   # Use it as the first Krylov vector
     for k in range(1,n+1):
-        v = np.dot(A,Q[:,k-1])  # Generate a new candidate vector
-        for j in range(k):  # Subtract the projections on previous vectors
+        v = np.dot(A,Q[:,k-1])      # Generate a new candidate vector
+        for j in range(k):          # Subtract the projections on previous vectors
             h[j,k-1] = np.dot(Q[:,j].T, v)
             v = v - h[j,k-1] * Q[:,j]
         h[k,k-1] = np.linalg.norm(v,2)
@@ -30,3 +31,59 @@ def arnoldi_iteration(A, b, n: int):
         else:  # If that happens, stop iterating.
             return Q, h
     return Q, h
+
+
+def QR_Decomposition(A):
+    n, m = A.shape # get the shape of A
+
+    Q = np.empty((n, n)) # initialize matrix Q
+    u = np.empty((n, n)) # initialize matrix u
+
+    u[:, 0] = A[:, 0]
+    Q[:, 0] = u[:, 0] / np.linalg.norm(u[:, 0])
+
+    for i in range(1, n):
+
+        u[:, i] = A[:, i]
+        for j in range(i):
+            u[:, i] -= (A[:, i] @ Q[:, j]) * Q[:, j] # get each u vector
+
+        Q[:, i] = u[:, i] / np.linalg.norm(u[:, i]) # compute each e vetor
+
+    R = np.zeros((n, m))
+    for i in range(n):
+        for j in range(i, m):
+            R[i, j] = A[:, j] @ Q[:, i]
+
+    return Q, R
+
+
+def QR_eigvals(A, tol=1e-15, maxiter=1000):
+    "Find the eigenvalues of A using QR decomposition."
+
+    A_old = np.copy(A)
+    A_new = np.copy(A)
+
+    diff = np.inf
+    i = 0
+    while (diff > tol) and (i < maxiter):
+        A_old[:, :] = A_new
+        Q, R = QR_Decomposition(A_old)
+
+        A_new[:, :] = R @ Q
+
+        diff = np.abs(A_new - A_old).max()
+        i += 1
+
+    eigvals = np.diag(A_new)
+
+    return eigvals
+
+A = np.array([[-6, 3, 4], [4,5, 6], [7,8, 9]])
+b = [1,2,3]
+Q, h = arnoldi_iteration(A, b, 3)
+h = h[:3, :]
+print(h)
+#print(eigh(h))
+print(QR_eigvals(h))
+[-7.93382333, -0.26847464, 16.20229798]
