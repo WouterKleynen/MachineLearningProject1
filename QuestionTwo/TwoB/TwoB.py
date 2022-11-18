@@ -1,5 +1,6 @@
 import numpy as np
-from scipy.linalg import eigh
+import scipy.linalg 
+import numpy as np
 
 def arnoldi_iteration(A, b, n: int):
     """Computes a basis of the (n + 1)-Krylov subspace of A: the space
@@ -79,11 +80,25 @@ def QR_eigvals(A, tol=1e-15, maxiter=1000):
 
     return eigvals
 
-A = np.array([[-6, 3, 4], [4,5, 6], [7,8, 9]])
+A = np.array([[-2,-4,2], [-2,1,2], [4,2,5]])
+correctEigenvalues,  correctEigenvectors = scipy.linalg.eig(A)
+print(correctEigenvectors)
+
 b = [1,2,3]
 Q, h = arnoldi_iteration(A, b, 3)
 h = h[:3, :]
-print(h)
-#print(eigh(h))
-print(QR_eigvals(h))
-[-7.93382333, -0.26847464, 16.20229798]
+#print(scipy.linalg.eig(h))
+eigenvalues = QR_eigvals(h)
+
+M = 3
+
+for eigenvalue in eigenvalues:
+    print(scipy.linalg.null_space((A - eigenvalue*np.eye(M))))
+    
+# correctEV1 = np.array([ 0.40824829, -0.80178373,  0.35052374])
+# correctEV2 = np.array([-0.40824829, -0.26726124,  0.93472998])
+       
+# calculatedEV1 = np.array([-0.81649658, -0.40824829, 0.40824829])
+# calculatedEV2 = np.array([ 0.53452248, -0.80178373, -0.26726124])
+
+
