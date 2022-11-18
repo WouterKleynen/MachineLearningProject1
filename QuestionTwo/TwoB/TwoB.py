@@ -80,9 +80,10 @@ def QR_eigvals(A, tol=1e-15, maxiter=1000):
 
     return eigvals
 
-A = np.array([[-2,-4,2], [-2,1,2], [4,2,5]])
+A = np.array([[17,-4,2], [-2,1,2], [4,2,5]])
 correctEigenvalues,  correctEigenvectors = scipy.linalg.eig(A)
 print(correctEigenvectors)
+print("\n")
 
 b = [1,2,3]
 Q, h = arnoldi_iteration(A, b, 3)
