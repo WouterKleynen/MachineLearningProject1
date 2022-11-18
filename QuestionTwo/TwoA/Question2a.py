@@ -28,7 +28,7 @@ class LaplacianMatrix:
         return np.linalg.norm(a-b)
 
     def getGaussianDistance(self, point1, point2, sigma):
-        return math.exp(-self.getEuclideanDistance(point1, point2)/(2 * sigma^2))
+        return math.exp(-self.getEuclideanDistance(point1, point2)/(2 * sigma^2) ** 2)
 
     def fillMatrixW(self):
         for point in range(0, self.NumberOfRows):

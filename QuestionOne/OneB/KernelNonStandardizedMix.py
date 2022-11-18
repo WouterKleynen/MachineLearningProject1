@@ -164,7 +164,7 @@ class KernelNonStandardizedMix(KMeansClustering):
             centroidVector = self.getCentroidVector(clusterIndex)
             for ID in clusterVector:
                 nonStandardizedPoint = self.getNonStandardizedPointFromID(ID)               # point has to be non standardized                                      
-                loss += self.getEuclideanDistance(centroidVector, nonStandardizedPoint)
+                loss += self.getEuclideanDistance(centroidVector, nonStandardizedPoint) ** 2
         return loss
 
     def firstIteration(self):

@@ -6,14 +6,20 @@ lossFunctionValuesForK =  []
 dataSetFilePath = 'Dataset/InputData.csv'                                                           # Set data File path to that of the assignment data sheet.
 
 # Is called to run the first iteration. The first iteration differs from other iteration since it has to construct start centroids.
-def runFirstIteration(K):
+def runFirstIterationRandom(K):
+    currentAlgorithmIterationValues = EuclideanKMeansClustering(dataSetFilePath, K)                 # Create an instance of the KMeansClusteringEuclidean class.
+    currentAlgorithmIterationValues.firstIterationRandom()                                                # Set the start Centroids and fill each cluster with its closest data points for the first run of the algorithm.
+    return currentAlgorithmIterationValues
+
+def runFirstIterationKPlusPlus(K):
     currentAlgorithmIterationValues = EuclideanKMeansClustering(dataSetFilePath, K)                 # Create an instance of the KMeansClusteringEuclidean class.
     currentAlgorithmIterationValues.firstIteration()                                                # Set the start Centroids and fill each cluster with its closest data points for the first run of the algorithm.
     return currentAlgorithmIterationValues
 
+
 def improveUntilTresholdReachedForOptimalK(K):
     # Update to first Iteration (this differs from other iteration since it has to construct start centroids)
-    currentAlgorithmIterationValues = runFirstIteration(K)
+    currentAlgorithmIterationValues = runFirstIterationRandom(K)
     # Calculate the start loss function value after the first iteration
     startLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()
     # set previousLossFuncitonvalue to startLossFunctionValue so they can be compared in the for loop
@@ -41,7 +47,7 @@ def runNewIterationForOptimalK(previousLossFunctionvalue, currentAlgorithmIterat
 
 
 xAxisValyes = []
-for K in range(1, 8):
+for K in range(1, 30):
     xAxisValyes.append(K)
     improveUntilTresholdReachedForOptimalK(K)
 

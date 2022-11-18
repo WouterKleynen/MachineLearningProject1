@@ -64,7 +64,7 @@ class KMeansClustering:
     def setDistanceOfPointsToCentroidsMatrix(self):                                 # Sets the centroidToPointsDistancesMatrix (N x K) entries, where row i stores the distance of point i to each cluster. Or similarly where column j stores the distance of all points to cluster j.
         for rowIndex in range (0, self.amountOfRows):
             for centroidIndex in range(self.amountOfClusters):
-                self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = self.getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex])
+                self.centroidToPointsDistancesMatrix[rowIndex, centroidIndex] = self.getEuclideanDistance(self.dataWithoutIDMatrix[rowIndex], self.centroidsMatrix[centroidIndex]) ** 2
                 
     # Picks Random Centroids first the first iteration from the data set         
     def setRandomStartCentroids(self):
