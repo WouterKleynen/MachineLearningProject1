@@ -1,6 +1,7 @@
-import numpy as np
 import scipy.linalg 
 import numpy as np
+import pandas as pd
+
 
 def arnoldi_iteration(A, b, n: int):
     """Computes a basis of the (n + 1)-Krylov subspace of A: the space
@@ -80,22 +81,37 @@ def QR_eigvals(A, tol=1e-15, maxiter=1000):
 
     return eigvals
 
-A = np.array([[17,-4,2], [-2,1,2], [4,2,5]])
-correctEigenvalues,  correctEigenvectors = scipy.linalg.eig(A)
-print(correctEigenvectors)
-print("\n")
+#variables
+Laplacian = pd.read_csv("Dataset/Laplacian.csv").to_numpy()
+A = Laplacian
+K = 8
+sample_size = A.shape[0]
 
-b = [1,2,3]
-Q, h = arnoldi_iteration(A, b, 3)
-h = h[:3, :]
+#set starting vector for arnoldi iteration
+b = np.zeros(sample_size)
+
+#arnoldi iteration and remove last row, this is not needed
+Q, h = arnoldi_iteration(A, b, K)
+h = h[:K, :]
+
 #print(scipy.linalg.eig(h))
 eigenvalues = QR_eigvals(h)
 
-M = 3
+#only take the K smallest eigenvalues
+K_smallest_eigenvalues = np.argsort(eigenvalues)[:K]
 
-for eigenvalue in eigenvalues:
-    print(scipy.linalg.null_space((A - eigenvalue*np.eye(M))))
-    
+#print the eigenvectors
+for ev in K_smallest_eigenvalues:
+    print(ev)
+    print(scipy.linalg.null_space((A - ev*np.eye(sample_size))))
+    print("\n")
+
+
+#correctEigenvalues,  correctEigenvectors = scipy.linalg.eig(A)
+#print(correctEigenvectors)
+#print("\n")
+
+
 # correctEV1 = np.array([ 0.40824829, -0.80178373,  0.35052374])
 # correctEV2 = np.array([-0.40824829, -0.26726124,  0.93472998])
        

@@ -2,12 +2,13 @@ import pandas as pd
 import numpy as np
 import math
 from scipy.linalg import eigh
+import scipy.linalg
 
 #variables
 data = pd.read_csv('Dataset/InputData.csv').to_numpy()
-K = 10
+K = 8
 sample_size = data.shape[0]
-
+data.shape
 #define the kernel function we will use
 def Kernel(a,b):
     func = np.exp(-(np.linalg.norm(a - b)/(2 * (1.7)*2))*2)
@@ -30,6 +31,9 @@ for i in range(sample_size):
 
 #create the graph Laplacian matrix
 Laplacian = D - W
+#create csv file of laplacian for use in other files
+pd.DataFrame(Laplacian).to_csv("Dataset/Laplacian.csv", index = None)
+
 
 #create EVM and EVV
 #EVextors is a matrix where the columns are the eigenvectors of matrix L
