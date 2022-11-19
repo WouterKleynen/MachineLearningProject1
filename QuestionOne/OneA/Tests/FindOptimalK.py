@@ -47,7 +47,7 @@ def runNewIterationForOptimalK(previousLossFunctionvalue, currentAlgorithmIterat
 
 
 xAxisValyes = []
-for K in range(1, 30):
+for K in range(1, 31):
     xAxisValyes.append(K)
     improveUntilTresholdReachedForOptimalK(K)
 

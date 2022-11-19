@@ -22,8 +22,6 @@ class KernelKMeansClustering(KMeansClustering):
         standardizedMatrix = np.zeros((self.amountOfRows, self.amountOfColumns))
         for columnIndex in range(0, self.amountOfColumns):
             standardizedMatrix[:, columnIndex] = self.standardize(columnIndex)
-        # self.standardizedData          = standardizedMatrix
-        # self.standardizedDataWithoutID = standardizedMatrix[:, 1:]
         self.dataWithoutIDMatrix = standardizedMatrix[:, 1:]                                 
         pd.DataFrame(self.dataWithoutIDMatrix).to_csv("Dataset\standardizedData.csv",index=False, header=False)
 

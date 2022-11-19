@@ -36,4 +36,5 @@ def improveUntilTresholdReached(dataSetFilePath, K):
 dataSetFilePath = 'Dataset/InputData.csv'   # Set data File path to that of the assignment data sheet.
 testData = "Dataset/subsetOfInputData.csv"
 
-improveUntilTresholdReached(testData, 10)
+K = 8
+improveUntilTresholdReached(dataSetFilePath, 8)
