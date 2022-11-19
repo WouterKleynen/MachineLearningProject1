@@ -11,6 +11,7 @@ class KernelKMeansClustering(KMeansClustering):
         self.kernel = kernel
         self.kAccentMatrix = np.zeros((self.amountOfRows, self.amountOfClusters)) # Row i consists of the distances of the kAccent values of point i.
         # The inherited self.dataWithoutIDMatrix is set to standardizedDataWithoutID in the first step of the firstiteration: self.standardizeData()
+        self.IDClusterDictionary = {}
         
     def standardize(self, columnIndex):                                                                
         mu = np.average(self.data[:, columnIndex])
@@ -38,12 +39,21 @@ class KernelKMeansClustering(KMeansClustering):
                     clusterSize  = clusterVectorSizes[clusterIndex]
                     self.kAccentMatrix[rowIndex, clusterIndex] = self.getKAccentValue(point, clusterIndex, K3Value, clusterSize)
     
+    def setClusterDictionary(self):                                                # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.
+        self.emptyClusterDictionary()                                              # empty the old cluster vectors.
+        for rowIndex in range(self.amountOfRows):                                  # iterate over all the points.
+            id = self.idVector[rowIndex]                                           # Get the ID belonging to each point.
+            closestClusterIndex = self.getIndexClosestCentroid(rowIndex)           # Get the index of closest centroid by finding the minimum of row i of centroidToPointsDistancesMatrix.
+            self.clusterDictionary[closestClusterIndex].append(id)
+            self.IDClusterDictionary[id] = closestClusterIndex
+    
     def setKernelClusterDictionary(self):                                          
         self.emptyClusterDictionary()                                               # empty the old cluster vectors.
         for rowIndex in range(self.amountOfRows):                                   # iterate over all the points.
             id = self.idVector[rowIndex]                                            # Get the ID belonging to each point.
             closestClusterIndex = self.getIndexMinimumCluster(rowIndex)             # Get the index of the minimum entry of row i that is the, that index is the cluster index of the cluster that point i is put in.
             self.clusterDictionary[closestClusterIndex].append(id)
+            self.IDClusterDictionary[id] = closestClusterIndex
 
     def sumOfKernelOfAllPointsInClusterVector(self):
         sumOfKernelOfAllPointsInClusterVector = []
