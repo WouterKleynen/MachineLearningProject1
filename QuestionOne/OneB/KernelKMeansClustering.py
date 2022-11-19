@@ -12,6 +12,7 @@ class KernelKMeansClustering(KMeansClustering):
         self.kAccentMatrix = np.zeros((self.amountOfRows, self.amountOfClusters)) # Row i consists of the distances of the kAccent values of point i.
         # The inherited self.dataWithoutIDMatrix is set to standardizedDataWithoutID in the first step of the firstiteration: self.standardizeData()
         self.IDClusterDictionary = {}
+        self.T3Vector = np.zeros(self.amountOfClusters)
         
     def standardize(self, columnIndex):                                                                
         mu = np.average(self.data[:, columnIndex])
@@ -46,14 +47,36 @@ class KernelKMeansClustering(KMeansClustering):
             closestClusterIndex = self.getIndexClosestCentroid(rowIndex)           # Get the index of closest centroid by finding the minimum of row i of centroidToPointsDistancesMatrix.
             self.clusterDictionary[closestClusterIndex].append(id)
             self.IDClusterDictionary[id] = closestClusterIndex
+        self.T3Vector = self.sumOfKernelOfAllPointsInClusterVector()
     
     def setKernelClusterDictionary(self):                                          
         self.emptyClusterDictionary()                                               # empty the old cluster vectors.
         for rowIndex in range(self.amountOfRows):                                   # iterate over all the points.
-            id = self.idVector[rowIndex]                                            # Get the ID belonging to each point.
-            closestClusterIndex = self.getIndexMinimumCluster(rowIndex)             # Get the index of the minimum entry of row i that is the, that index is the cluster index of the cluster that point i is put in.
-            self.clusterDictionary[closestClusterIndex].append(id)
-            self.IDClusterDictionary[id] = closestClusterIndex
+            id = self.idVector[rowIndex]    
+            point = self.getPointFromID(id)# Get the ID belonging to each point.
+            previousClostestClusterIndex = self.IDClusterDictionary[id]
+            newClosestClusterIndex = self.getIndexMinimumCluster(rowIndex) # Get the index of the minimum entry of row i that is the, that index is the cluster index of the cluster that point i is put in.
+            if (newClosestClusterIndex != previousClostestClusterIndex):
+                previousClusterT3 = self.T3Vector[previousClostestClusterIndex]
+                print(previousClusterT3)
+            self.clusterDictionary[newClosestClusterIndex].append(id)
+            self.IDClusterDictionary[id] = newClosestClusterIndex
+
+    # def setKernelClusterDictionary(self):                                          
+    #     self.emptyClusterDictionary()                                               # empty the old cluster vectors.
+    #     for rowIndex in range(self.amountOfRows):                                   # iterate over all the points.
+    #         id = self.idVector[rowIndex] 
+    #         closestClusterIndex = self.getIndexMinimumCluster(rowIndex)             # Get the index of the minimum entry of row i that is the, that index is the cluster index of the cluster that point i is put in.
+    #         previousClostestClusterIndex = self.IDClusterDictionary[id]
+    #         if (previousClostestClusterIndex != closestClusterIndex):
+    #             previousClusterT3 = self.T3vector[previousClostestClusterIndex]
+    #             newClusterT3 = self.T3vector[closestClusterIndex]
+    #             self.T3vector[previousClostestClusterIndex] = previousClusterT3 - 2 * self.sumOfKernelOfPoint(point, previousClostestClusterIndex) + self.kernel(point, point)
+    #             self.T3Vector[closestClusterIndex] = newClusterT3 + 2 * self.sumOfKernelOfPoint(point, previousClostestClusterIndex) - self.kernel(point, point)
+    #         self.clusterDictionary[closestClusterIndex].append(id)
+    #         self.IDClusterDictionary[id] = closestClusterIndex
+
+
 
     def sumOfKernelOfAllPointsInClusterVector(self):
         sumOfKernelOfAllPointsInClusterVector = []

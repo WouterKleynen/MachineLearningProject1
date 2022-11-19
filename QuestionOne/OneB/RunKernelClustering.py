@@ -10,7 +10,8 @@ def gaussianKernel(point1, point2):
     return np.exp(-(getEuclideanDistance(point1, point2)/(2 * sigma**2)))
 
 kernel              = gaussianKernel
-dataSetFilePath     = 'Dataset/InputData.csv'                                                       
+dataSetFilePath     = 'Dataset/InputData.csv'
+dataSetFilePath     = 'Dataset/subsetOfInputData.csv'                                                       
 K                   = 10
 
 def runFirstIterationKernel(dataSetFilePath, K, kernel):
