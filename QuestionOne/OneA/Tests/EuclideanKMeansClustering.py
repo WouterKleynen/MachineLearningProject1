@@ -45,7 +45,7 @@ class EuclideanKMeansClustering(KMeansClustering):
             centroidVector = self.getCentroidVector(clusterIndex)
             for id in clusterVector:
                 point = self.getPointFromID(id)
-                loss += getEuclideanDistance(centroidVector, point)
+                loss += getEuclideanDistance(centroidVector, point) ** 2
         return loss
     
     #########################################################################################################

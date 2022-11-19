@@ -78,7 +78,7 @@ for i in range(0, 40):
     AmountOfIterationsList.append(i)
     
 # Iterate from K=2 to K=41
-for K in range(2, 41):
+for K in range(8, 9):
     plt.clf()
     KPlusPlusFinalLossList = []
     randomCentroidsFinalLossList = []
@@ -126,5 +126,5 @@ for K in range(2, 41):
     plt.ylabel('Value of the loss function')
     plt.title(f'Loss function value after each given number of iterations where K = {K}')
     plt.savefig(f'k={K}.png')
-    plt.close()
+    plt.show()
     
