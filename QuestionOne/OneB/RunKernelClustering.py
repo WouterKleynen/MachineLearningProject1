@@ -22,12 +22,11 @@ def runFirstIterationKernel(dataSetFilePath, K, kernel):
 def runNewIterationKernel(algorithmValues, K):
     previousLossFunctionValue = algorithmValues.calculateLossFunctionValue()
     createCSVClusterFilesKernel(K)
-    #print(algorithmValues.getClusterVectorSizesVector())          
-    #print(algorithmValues.IDClusterDictionary)                                                                                                                          
-    #print(f"current loss fuction value = {previousLossFunctionValue}")
+    print(f"current loss fuction value = {previousLossFunctionValue}")
     algorithmValues.improveKernelLossFunctionValue()                                                
     newLossFunctionValue = algorithmValues.calculateLossFunctionValue()
     if (previousLossFunctionValue  == newLossFunctionValue): 
+        print(algorithmValues.calculateLossFunctionValue())       
         print(algorithmValues.getClusterVectorSizesVector())                                                                                          
         algorithmValues.fillClusterCSV()                                                            
         return None           

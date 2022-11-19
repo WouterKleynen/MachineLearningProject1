@@ -13,6 +13,7 @@ class KernelKMeansClustering(KMeansClustering):
         # The inherited self.dataWithoutIDMatrix is set to standardizedDataWithoutID in the first step of the firstiteration: self.standardizeData()
         self.IDClusterDictionary = {}
         self.T3Vector = np.zeros(self.amountOfClusters)
+        self.oldClusterDictionary = {}
         
     def standardize(self, columnIndex):                                                                
         mu = np.average(self.data[:, columnIndex])
@@ -33,9 +34,9 @@ class KernelKMeansClustering(KMeansClustering):
     def setKAccentValues(self):
             clusterVectorSizes = self.getClusterVectorSizesVector()
             K3Vector           = self.sumOfKernelOfAllPointsInClusterVector()                     # get the third K expression in the formula. This is the same for every cluster point and very expensive in computing so calculate beforehand
-            print(K3Vector)
-            print(self.T3Vector)
-            print("\n")
+            # print(K3Vector)
+            # print(self.T3Vector)
+            # print("\n")
             for rowIndex in range (0, self.amountOfRows):
                 for clusterIndex in range(self.amountOfClusters):
                     point        = self.dataWithoutIDMatrix[rowIndex]                       # get normalized point
@@ -51,24 +52,49 @@ class KernelKMeansClustering(KMeansClustering):
             self.clusterDictionary[closestClusterIndex].append(id)
             self.IDClusterDictionary[id] = closestClusterIndex
         self.T3Vector = self.sumOfKernelOfAllPointsInClusterVector()
+
     
-    def setKernelClusterDictionary(self):                                          
+    def setKernelClusterDictionary(self):   
+        self.oldClusterDictionary = self.clusterDictionary
+        clusterDictionary = {}
+        for clusterIndex in range(0, self.amountOfClusters):
+            clusterDictionary[clusterIndex] = []
         self.emptyClusterDictionary()                                               # empty the old cluster vectors.
         for rowIndex in range(self.amountOfRows):                                   # iterate over all the points.
             id = self.idVector[rowIndex]    
-            point = self.getPointFromID(id)# Get the ID belonging to each point.
-            previousClostestClusterIndex = self.IDClusterDictionary[id]
             newClosestClusterIndex = self.getIndexMinimumCluster(rowIndex) # Get the index of the minimum entry of row i that is the, that index is the cluster index of the cluster that point i is put in.
-            if (newClosestClusterIndex != previousClostestClusterIndex):
-                previousClusterT3 = self.T3Vector[previousClostestClusterIndex]
-                newClusterT3 = self.T3Vector[newClosestClusterIndex]
-                decrease = 2 * self.sumOfKernelOfPoint(point, previousClostestClusterIndex) - self.kernel(point, point)
-                increase = 2 * self.sumOfKernelOfPoint(point, newClosestClusterIndex) - self.kernel(point, point)
-                self.T3Vector[previousClostestClusterIndex] = previousClusterT3 - decrease
-                self.T3Vector[newClosestClusterIndex] = newClusterT3 + increase
-            self.clusterDictionary[newClosestClusterIndex].append(id)
-            self.IDClusterDictionary[id] = newClosestClusterIndex
-
+            clusterIndex = self.IDClusterDictionary[id]
+            # if (newClosestClusterIndex != previousClostestClusterIndex):
+            #     previousClusterT3 = self.T3Vector[previousClostestClusterIndex]
+            #     newClusterT3 = self.T3Vector[newClosestClusterIndex]
+            #     decrease = (2 * self.sumLessTEST(id, previousClostestClusterIndex) - self.kernel(point, point))
+            # #     increase = 2 * self.sumExtraNewTEST(id, newClosestClusterIndex) - self.kernel(point, point)
+            # #     self.T3Vector[previousClostestClusterIndex] = previousClusterT3 - decrease
+            # #     self.T3Vector[newClosestClusterIndex] = newClusterT3 + increase
+            #self.IDClusterDictionary[id] = newClosestClusterIndex
+            clusterDictionary[newClosestClusterIndex].append(id)
+        self.clusterDictionary = clusterDictionary
+            
+    def sumExtraNewTEST(self, id, clusterIndex):
+        totalSum = 0
+        clusterVector = self.getClusterVector(clusterIndex)
+        clusterVector.append(id)
+        for ID in clusterVector:
+            pointInCluster = self.getPointFromID(ID)                                # gets point from nonStandardizedIDVector
+            point = self.getPointFromID(id)
+            totalSum += self.kernel(point, pointInCluster)
+        return totalSum
+    
+    def sumLessTEST(self, id, clusterIndex):
+        totalSum = 0
+        clusterVector = self.getClusterVector(clusterIndex)
+        clusterVector.remove(id)
+        for ID in clusterVector:
+            pointInCluster = self.getPointFromID(ID)                                # gets point from nonStandardizedIDVector
+            point = self.getPointFromID(id)
+            totalSum += self.kernel(point, pointInCluster)
+        return totalSum
+        
     def sumOfKernelOfAllPointsInClusterVector(self):
         sumOfKernelOfAllPointsInClusterVector = []
         for clusterIndex in range(0, self.amountOfClusters):
@@ -87,8 +113,6 @@ class KernelKMeansClustering(KMeansClustering):
         return totalSum
 
     def getKAccentValue(self, point, clusterIndex, sumOfKernelOfAllPointsInCluster, clusterSize):
-        if clusterSize == 0:   
-            return None
         firstTerm                          = self.kernel(point, point)
         sumOfGaussianDistanceWithPoint     = self.sumOfKernelOfPoint(point, clusterIndex)
         secondTerm = (- 2.0 / clusterSize) * sumOfGaussianDistanceWithPoint

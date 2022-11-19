@@ -91,6 +91,7 @@ class KMeansClustering:
             id = self.idVector[rowIndex]                                           # Get the ID belonging to each point.
             closestClusterIndex = self.getIndexClosestCentroid(rowIndex)           # Get the index of closest centroid by finding the minimum of row i of centroidToPointsDistancesMatrix.
             self.clusterDictionary[closestClusterIndex].append(id)    
+            
     def setCentroidOfCluster(self, clusterIndex, clusterVectorSize, sumOfClusterVectorEntries):         # Calculate new centroid based on the points in the cluster and set this new centroid in centroidsMatrix at the clusterIndex row.
         # print(clusterIndex)
         # print(clusterVectorSize)
@@ -98,7 +99,8 @@ class KMeansClustering:
         # print("\n")
         self.centroidsMatrix[clusterIndex, :] = self.calculateNewCentroid(clusterVectorSize, sumOfClusterVectorEntries)
     
-    def setCentroids(self):                                                         # Sets the Centroids of all clusters by calculatin the new cluster points average
+    def setCentroids(self):   
+        #print(self.clusterDictionary)# Sets the Centroids of all clusters by calculatin the new cluster points average
         for clusterIndex in range(0, self.amountOfClusters):                        
             clusterVector = self.getClusterVector(clusterIndex)                     # Gets the cluster vector i.e. the vector beloning to the cluster index that contains all the ID's of the points that are in that cluster.
             clusterVectorSize = self.getClusterVectorSize(clusterVector)            
