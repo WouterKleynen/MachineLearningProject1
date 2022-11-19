@@ -72,7 +72,7 @@ class KMeansClustering:
         self.centroidsMatrix = np.array([np.random.uniform(min_, max_) for _ in range(self.amountOfClusters)]) 
     
     def kMeansPlusPlusMethod(self):                                                 # More advanced K++ method to set the start centroids
-        C = [self.dataWithoutIDMatrix[0]]                                           # Start column vector of length 11
+        C = [self.dataWithoutIDMatrix[0]]                                           # Start column vector of length K-1
         for _ in range(1, self.amountOfClusters):
             D2 = scipy.array([min([scipy.inner(c-x,c-x) for c in C]) for x in self.dataWithoutIDMatrix])
             probs = D2/D2.sum()
