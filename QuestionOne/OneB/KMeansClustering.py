@@ -72,7 +72,7 @@ class KMeansClustering:
         self.centroidsMatrix = np.array([np.random.uniform(min_, max_) for _ in range(self.amountOfClusters)]) 
     
     def kMeansPlusPlusMethod(self):                                                 # More advanced K++ method to set the start centroids
-        C = [self.dataWithoutIDMatrix[0]]                                           # Start column vector of length 11
+        C = [self.dataWithoutIDMatrix[0]]                                           # Start column vector of length K-1
         for _ in range(1, self.amountOfClusters):
             D2 = scipy.array([min([scipy.inner(c-x,c-x) for c in C]) for x in self.dataWithoutIDMatrix])
             probs = D2/D2.sum()
@@ -90,8 +90,8 @@ class KMeansClustering:
         for rowIndex in range(self.amountOfRows):                                  # iterate over all the points.
             id = self.idVector[rowIndex]                                           # Get the ID belonging to each point.
             closestClusterIndex = self.getIndexClosestCentroid(rowIndex)           # Get the index of closest centroid by finding the minimum of row i of centroidToPointsDistancesMatrix.
-            self.clusterDictionary[closestClusterIndex].append(id)
-    
+            self.clusterDictionary[closestClusterIndex].append(id)    
+            
     def setCentroidOfCluster(self, clusterIndex, clusterVectorSize, sumOfClusterVectorEntries):         # Calculate new centroid based on the points in the cluster and set this new centroid in centroidsMatrix at the clusterIndex row.
         # print(clusterIndex)
         # print(clusterVectorSize)
@@ -99,7 +99,8 @@ class KMeansClustering:
         # print("\n")
         self.centroidsMatrix[clusterIndex, :] = self.calculateNewCentroid(clusterVectorSize, sumOfClusterVectorEntries)
     
-    def setCentroids(self):                                                         # Sets the Centroids of all clusters by calculatin the new cluster points average
+    def setCentroids(self):   
+        #print(self.clusterDictionary)# Sets the Centroids of all clusters by calculatin the new cluster points average
         for clusterIndex in range(0, self.amountOfClusters):                        
             clusterVector = self.getClusterVector(clusterIndex)                     # Gets the cluster vector i.e. the vector beloning to the cluster index that contains all the ID's of the points that are in that cluster.
             clusterVectorSize = self.getClusterVectorSize(clusterVector)            

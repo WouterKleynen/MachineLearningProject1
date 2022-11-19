@@ -9,8 +9,9 @@ sigma = 1.7
 def gaussianKernel(point1, point2):
     return np.exp(-(getEuclideanDistance(point1, point2)/(2 * sigma**2)))
 
-kernel              = gaussianKernel
-dataSetFilePath     = 'Dataset/InputData.csv'                                                       
+kernel              = getEuclideanDistance
+dataSetFilePath     = 'Dataset/InputData.csv'
+#dataSetFilePath     = 'Dataset/subsetOfInputData.csv'                                                       
 K                   = 10
 
 def runFirstIterationKernel(dataSetFilePath, K, kernel):
@@ -21,7 +22,6 @@ def runFirstIterationKernel(dataSetFilePath, K, kernel):
 def runNewIterationKernel(algorithmValues, K):
     previousLossFunctionValue = algorithmValues.calculateLossFunctionValue()
     createCSVClusterFilesKernel(K)
-    print(algorithmValues.getClusterVectorSizesVector())                                                                  
     print(f"current loss fuction value = {previousLossFunctionValue}")
     algorithmValues.improveKernelLossFunctionValue()                                                
     newLossFunctionValue = algorithmValues.calculateLossFunctionValue()
