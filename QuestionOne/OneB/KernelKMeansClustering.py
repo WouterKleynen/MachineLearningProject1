@@ -33,6 +33,9 @@ class KernelKMeansClustering(KMeansClustering):
     def setKAccentValues(self):
             clusterVectorSizes = self.getClusterVectorSizesVector()
             K3Vector           = self.sumOfKernelOfAllPointsInClusterVector()                     # get the third K expression in the formula. This is the same for every cluster point and very expensive in computing so calculate beforehand
+            print(K3Vector)
+            print(self.T3Vector)
+            print("\n")
             for rowIndex in range (0, self.amountOfRows):
                 for clusterIndex in range(self.amountOfClusters):
                     point        = self.dataWithoutIDMatrix[rowIndex]                       # get normalized point
@@ -58,25 +61,13 @@ class KernelKMeansClustering(KMeansClustering):
             newClosestClusterIndex = self.getIndexMinimumCluster(rowIndex) # Get the index of the minimum entry of row i that is the, that index is the cluster index of the cluster that point i is put in.
             if (newClosestClusterIndex != previousClostestClusterIndex):
                 previousClusterT3 = self.T3Vector[previousClostestClusterIndex]
-                print(previousClusterT3)
+                newClusterT3 = self.T3Vector[newClosestClusterIndex]
+                decrease = 2 * self.sumOfKernelOfPoint(point, previousClostestClusterIndex) - self.kernel(point, point)
+                increase = 2 * self.sumOfKernelOfPoint(point, newClosestClusterIndex) - self.kernel(point, point)
+                self.T3Vector[previousClostestClusterIndex] = previousClusterT3 - decrease
+                self.T3Vector[newClosestClusterIndex] = newClusterT3 + increase
             self.clusterDictionary[newClosestClusterIndex].append(id)
             self.IDClusterDictionary[id] = newClosestClusterIndex
-
-    # def setKernelClusterDictionary(self):                                          
-    #     self.emptyClusterDictionary()                                               # empty the old cluster vectors.
-    #     for rowIndex in range(self.amountOfRows):                                   # iterate over all the points.
-    #         id = self.idVector[rowIndex] 
-    #         closestClusterIndex = self.getIndexMinimumCluster(rowIndex)             # Get the index of the minimum entry of row i that is the, that index is the cluster index of the cluster that point i is put in.
-    #         previousClostestClusterIndex = self.IDClusterDictionary[id]
-    #         if (previousClostestClusterIndex != closestClusterIndex):
-    #             previousClusterT3 = self.T3vector[previousClostestClusterIndex]
-    #             newClusterT3 = self.T3vector[closestClusterIndex]
-    #             self.T3vector[previousClostestClusterIndex] = previousClusterT3 - 2 * self.sumOfKernelOfPoint(point, previousClostestClusterIndex) + self.kernel(point, point)
-    #             self.T3Vector[closestClusterIndex] = newClusterT3 + 2 * self.sumOfKernelOfPoint(point, previousClostestClusterIndex) - self.kernel(point, point)
-    #         self.clusterDictionary[closestClusterIndex].append(id)
-    #         self.IDClusterDictionary[id] = closestClusterIndex
-
-
 
     def sumOfKernelOfAllPointsInClusterVector(self):
         sumOfKernelOfAllPointsInClusterVector = []
