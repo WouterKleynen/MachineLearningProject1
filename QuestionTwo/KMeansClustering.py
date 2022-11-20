@@ -72,17 +72,17 @@ class KMeansClustering:
         self.centroidsMatrix = np.array([np.random.uniform(min_, max_) for _ in range(self.amountOfClusters)]) 
     
     def kMeansPlusPlusMethod(self):                                                 # More advanced K++ method to set the start centroids
-        C = [self.dataWithoutIDMatrix[0]]                                           # Start column vector of length 11
-        for _ in range(1, self.amountOfClusters):
-            D2 = scipy.array([min([scipy.inner(c-x,c-x) for c in C]) for x in self.dataWithoutIDMatrix])
-            probs = D2/D2.sum()
-            cumprobs = probs.cumsum()
-            r = scipy.rand()
+        C = [self.dataWithoutIDMatrix[0]]                                           # Start with the first row vector of the input data
+        for _ in range(1, self.amountOfClusters):                                   # Skip the first entry since we already have a start vector.
+            D2 = scipy.array([min([scipy.inner(c-x,c-x) for c in C]) for x in self.dataWithoutIDMatrix]) # Inner product of the difference of every point of the input data to the set centroids
+            probs = D2/D2.sum()                                                     # Determine the probability
+            cumprobs = probs.cumsum()                                               # The output of cumsum gives us boundaries to partition the interval [0,1].
+            r = scipy.rand()                                                        # Pick a random number between 0 and 1
             for j,p in enumerate(cumprobs):
-                if r < p:
+                if r < p:                                                           # if the probability is high enough the index is saved
                     i = j
                     break
-            C.append(self.dataWithoutIDMatrix[i])
+            C.append(self.dataWithoutIDMatrix[i])                                   # Add the most suited vector based on probability to the centroidsMatrix
         self.centroidsMatrix = np.array(C)
     
     def setClusterDictionary(self):                                                # For each key (clusterIndex) in the clusterDictionary, determines which points are closests to the centroid of that cluster, then it adds the ID's of these points to the clusterVector being the value belonging to the clusterIndex key.

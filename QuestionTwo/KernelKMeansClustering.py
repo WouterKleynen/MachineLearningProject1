@@ -88,7 +88,7 @@ class KernelKMeansClustering(KMeansClustering):
             for pointID in clusterIDVector:
                 dataPoint = self.getPointFromIDWithID(pointID)
                 dataFrame = pd.DataFrame(dataPoint)
-                dataFrame.T.to_csv(f'Dataset\KernelClusteredData\Cluster{clusterIndexKey}.csv', mode='a', index=False, header=False)
+                dataFrame.T.to_csv(f'Dataset/KernelClusteredData{clusterIndexKey}.csv', mode='a', index=False, header=False)
     
     def firstIteration(self):
         self.standardizeData()
