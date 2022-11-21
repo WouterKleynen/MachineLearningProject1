@@ -60,7 +60,7 @@ def QR_Decomposition(A):
     return Q, R
 
 
-def QR_eigvals(A, tol=1e-15, maxiter=1000):
+def QR_eigvals(A, tol=1e-15, maxiter=10000):
     "Find the eigenvalues of A using QR decomposition."
 
     A_old = np.copy(A)
@@ -88,23 +88,23 @@ K = 8
 sample_size = A.shape[0]
 
 #set starting vector for arnoldi iteration
-b = np.zeros(sample_size)
+b = np.linspace(10**(-4),10**(-1),sample_size)
 
 #arnoldi iteration and remove last row, this is not needed
 Q, h = arnoldi_iteration(A, b, K)
 h = h[:K, :]
-
+h
 #print(scipy.linalg.eig(h))
 eigenvalues = QR_eigvals(h)
 
 #only take the K smallest eigenvalues
 K_smallest_eigenvalues = np.argsort(eigenvalues)[:K]
 
-#print the eigenvectors
-for ev in K_smallest_eigenvalues:
-    print(ev)
-    print(scipy.linalg.null_space((A - ev*np.eye(sample_size))))
-    print("\n")
+# #print the eigenvectors
+# for ev in K_smallest_eigenvalues:
+#     print(ev)
+#     print(scipy.linalg.null_space((A - ev*np.eye(sample_size))))
+#     print("\n")
 
 
 #correctEigenvalues,  correctEigenvectors = scipy.linalg.eig(A)
@@ -117,5 +117,3 @@ for ev in K_smallest_eigenvalues:
        
 # calculatedEV1 = np.array([-0.81649658, -0.40824829, 0.40824829])
 # calculatedEV2 = np.array([ 0.53452248, -0.80178373, -0.26726124])
-
-
