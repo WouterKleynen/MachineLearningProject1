@@ -12,16 +12,15 @@ def runFirstIteration(dataSetFilePath, K):
 
 # Is called in every iteration to decrease the Loss Function. If the intermediate loss function values need to be printed, set printIntermediateLossFunctionValues to true
 def runNewIteration(previousLossFunctionvalue, currentAlgorithmIterationValues, K):
-    currentAlgorithmIterationValues.createCSVClusterFiles(K) 
-    print(currentAlgorithmIterationValues.getClusterVectorSizesVector())                                                                  
+    currentAlgorithmIterationValues.createCSVClusterFiles() 
+    print(f"Current division of amount of ID's per cluster {currentAlgorithmIterationValues.getClusterVectorSizesVector()}")
     # Create CSV file for each cluster
     print(f"current loss fuction value = {previousLossFunctionvalue}")
     currentAlgorithmIterationValues.improveLossFunctionValue()                                      # Update the centroids by using the improveLossFunction() function
     newLossFunctionValue = currentAlgorithmIterationValues.calculateLossFunctionValue()             # Determine the value of the loss function after the new centroid update
     if (previousLossFunctionvalue == newLossFunctionValue):                                # Since newLossFunctionValue <= previousLossFuncitonvalue we get a decreasing number, we stop when they're very close i.e. their fraction is very small
         currentAlgorithmIterationValues.fillClusterCSV()                                            # Fill each cluster's CSV file with its datapoints
-        print(currentAlgorithmIterationValues.getClusterVectorSizesVector())
-        print(f"Final loss function value for K = {K} is {newLossFunctionValue}")
+        print(f"Current division of amount of ID's per cluster {currentAlgorithmIterationValues.getClusterVectorSizesVector()}")
         return None                                                                                 # Return None when the ratio is below the Treshold
     return newLossFunctionValue
 
@@ -32,8 +31,3 @@ def improveUntilTresholdReached(dataSetFilePath, K):
     while (lossFunctionvalue != None):                                                              # loop from 0 untill the iteration that the treshold is reached: when previousLossFunctionvalue == None
         lossFunctionvalue = runNewIteration(lossFunctionvalue, currentAlgorithmIterationValues, K)  # update each previous loss function value with a new improved one
     return lossFunctionvalue
-
-dataSetFilePath = 'Dataset/InputData.csv'   # Set data File path to that of the assignment data sheet.
-testData = "Dataset/subsetOfInputData.csv"
-
-improveUntilTresholdReached(testData, 10)

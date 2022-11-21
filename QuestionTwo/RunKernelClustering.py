@@ -1,6 +1,6 @@
 import numpy as np
 from Tools import createCSVClusterFilesKernel
-from KernelKMeansClustering import KernelKMeansClustering
+from Run1b import KernelKMeansClustering
 
 def getEuclideanDistance(a,b):
     return np.linalg.norm(a-b)
