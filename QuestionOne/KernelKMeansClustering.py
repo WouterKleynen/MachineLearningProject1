@@ -157,3 +157,4 @@ class KernelKMeansClustering(KMeansClustering):
         print("set dictionary started")
         self.setKernelClusterDictionary()
         print("set dictionary finished")
+        self.setCentroids()
