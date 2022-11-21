@@ -13,13 +13,6 @@ class EuclideanKMeansClustering(KMeansClustering):
         self.centroidsMatrix = np.array([np.random.uniform(min_, max_) for _ in range(self.amountOfClusters)]) 
         
     #########################################################################################################
-    # Calculation functions
-    #########################################################################################################
-
-        
-
-    
-    #########################################################################################################
     #  Composite funcitions
     #########################################################################################################
 
@@ -40,10 +33,6 @@ class EuclideanKMeansClustering(KMeansClustering):
         self.setClusterDictionary()
         self.setCentroids()
         
-    # Gets Euclidean distance of 2 vectors 
-    def getEuclideanDistance(self, a,b):
-        return np.linalg.norm(a-b)
-
     # Create a CSV file for this specific K value that will contain the eventual clusters. First emptry.
     def createCSVClusterFiles(self):
         for clusterIndex in range (0,self.amountOfClusters):

@@ -1,8 +1,8 @@
 import pandas as pd
 from EuclideanKMeansClustering import EuclideanKMeansClustering
 
-# This file contains the functions that are used to iteratively call the KMeansClusteringEuclidean() class functions
-# to run the K Means Euclidean Clustering algorithm until the given the treshold is reached
+# This file contains the functions that are used to iteratively call the EuclideanKMeansClustering() class functions
+# to run the K Means Euclidean Clustering algorithm until the loss function stops increasing
 
 # Is called to run the first iteration. The first iteration differs from other iteration since it has to construct start centroids.
 def runFirstIteration(dataSetFilePath, K):

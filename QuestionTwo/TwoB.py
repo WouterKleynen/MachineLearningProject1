@@ -100,17 +100,15 @@ eigenvalues = QR_eigvals(h)
 #only take the K smallest eigenvalues
 K_smallest_eigenvalues = np.argsort(eigenvalues)[:K]
 
-# #print the eigenvectors
-# for ev in K_smallest_eigenvalues:
-#     print(ev)
-#     print(scipy.linalg.null_space((A - ev*np.eye(sample_size))))
-#     print("\n")
-
+#print the eigenvectors
+for ev in K_smallest_eigenvalues:
+    print(ev)
+    print(scipy.linalg.null_space((A - ev*np.eye(sample_size))))
+    print("\n")
 
 #correctEigenvalues,  correctEigenvectors = scipy.linalg.eig(A)
 #print(correctEigenvectors)
 #print("\n")
-
 
 # correctEV1 = np.array([ 0.40824829, -0.80178373,  0.35052374])
 # correctEV2 = np.array([-0.40824829, -0.26726124,  0.93472998])
