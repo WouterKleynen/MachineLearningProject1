@@ -16,17 +16,6 @@ class EuclideanKMeansClustering(KMeansClustering):
     # Calculation functions
     #########################################################################################################
 
-    def calculateSumOfClusterVectorEntries(self, clusterVector):                    # Calculate the sum of all points in the given clusterVector
-        sum = np.zeros(self.amountOfColumns - 1)
-        for id in clusterVector:
-            sum += self.getPointFromID(id)    
-        return sum
-                
-    def calculateNewCentroid(self, clusterVectorSize, sumOfClusterVectorEntries):   # Calculate the new averaged value of the centroid of the given cluster. 
-        if (clusterVectorSize == 0):                                                # If a cluster has no ID's then return a vector with only 0 as an entry
-            return np.zeros(1)
-        else:
-            return sumOfClusterVectorEntries / clusterVectorSize
         
 
     

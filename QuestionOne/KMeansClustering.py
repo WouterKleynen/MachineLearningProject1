@@ -111,7 +111,19 @@ class KMeansClustering:
                 dataPoint = self.getPointFromIDWithID(pointID)
                 dataFrame = pd.DataFrame(dataPoint)
                 dataFrame.T.to_csv(f'Dataset\EuclideanClusteredData\Cluster{clusterIndexKey}.csv', mode='a', index=False, header=False)
-        
+    
+    def calculateSumOfClusterVectorEntries(self, clusterVector):                    # Calculate the sum of all points in the given clusterVector
+        sum = np.zeros(self.amountOfColumns - 1)
+        for id in clusterVector:
+            sum += self.getPointFromID(id)    
+        return sum
+                
+    def calculateNewCentroid(self, clusterVectorSize, sumOfClusterVectorEntries):   # Calculate the new averaged value of the centroid of the given cluster. 
+        if (clusterVectorSize == 0):                                                # If a cluster has no ID's then return a vector with only 0 as an entry
+            return np.zeros(1)
+        else:
+            return sumOfClusterVectorEntries / clusterVectorSize
+    
     def calculateLossFunctionValue(self):                                           # Calculate the sum of all the distances of the data points to the centers of the clusters they belong to.        
         loss = 0
         for clusterIndex in range(0, self.amountOfClusters):

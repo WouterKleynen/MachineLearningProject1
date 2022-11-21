@@ -11,7 +11,7 @@ sample_size = data.shape[0]
 data.shape
 #define the kernel function we will use
 def Kernel(a,b):
-    func = np.exp(-(np.linalg.norm(a - b)/(2 * (1.7)*2))*2)
+    func = np.exp(-(np.linalg.norm(a - b)**2/(2*((1.7)**2))))
     return func
 
 #create W with zeroes
@@ -41,6 +41,7 @@ pd.DataFrame(Laplacian).to_csv("Dataset/Laplacian.csv", index = None)
 EValues, EVectors = eigh(Laplacian, eigvals= (0,K-1))
 
 
+print(EValues, EVectors)
 
 #run K-means with the 10 vectors (columns) of EVectors as the centroids to find the clustering corresponding
 #to the 10 smallest eigenvectors
